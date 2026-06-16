@@ -1,1 +1,2010 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kasbaum — Gerador de Apresentações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; min-height: 100vh; }
+
+/* ===== APP SHELL ===== */
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-brand { display: flex; align-items: baseline; gap: 14px; }
+.topbar-logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 22px; letter-spacing: 8px; color: white; }
+.topbar-sub { font-size: 10px; letter-spacing: 3px; color: #666; text-transform: uppercase; }
+.topbar-label { font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; }
+
+/* ===== CONTROL PANEL ===== */
+.panel {
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(244,241,236,0.08);
+  padding: 28px 40px;
+}
+.panel-inner { max-width: 1000px; display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(244,241,236,0.4); font-weight: 400; }
+.field select {
+  padding: 10px 14px;
+  border: 1px solid #d5cfc6;
+  border-radius: 3px;
+  background: white;
+  color: #1a1a1a;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  min-width: 280px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  transition: border-color .15s;
+}
+.field select:focus { outline: none; border-color: #0a0a0a; }
+.field input[type="text"] {
+  padding: 10px 14px;
+  border: 1px solid rgba(244,241,236,0.15);
+  border-radius: 3px;
+  background: #0c0c0c;
+  color: #f4f1ec;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  width: 440px;
+  transition: border-color .15s;
+}
+.field input[type="text"]:focus { outline: none; border-color: #0a0a0a; }
+.btn-load {
+  padding: 10px 20px;
+  border: 1px solid rgba(244,241,236,0.2);
+  border-radius: 3px;
+  background: transparent;
+  color: #f4f1ec;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.btn-load:hover { background: rgba(244,241,236,0.08); color: white; }
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid rgba(244,241,236,0.25);
+  border-radius: 3px;
+  background: rgba(244,241,236,0.06);
+  color: #f4f1ec;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.btn-upload:hover { background: rgba(244,241,236,0.12); border-color: rgba(244,241,236,0.4); }
+.btn-upload svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.btn-gerar {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 3px;
+  background: #0a0a0a;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity .15s;
+  white-space: nowrap;
+}
+.btn-gerar:hover { opacity: .8; }
+.btn-gerar:disabled { opacity: .3; cursor: not-allowed; }
+
+.status-bar {
+  padding: 10px 40px;
+  font-size: 12px;
+  color: rgba(244,241,236,0.45);
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(244,241,236,0.06);
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-bar.error { color: #c0392b; }
+.status-bar.ok { color: #27ae60; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* ===== MAIN CONTENT ===== */
+.main { flex: 1; padding: 24px 32px 60px; background: #141414; }
+.empty-state {
+  max-width: 480px;
+  margin: 80px auto;
+  text-align: center;
+}
+.empty-state .es-logo { font-family: 'Jost', sans-serif; font-weight: 200; font-size: 48px; letter-spacing: 12px; color: rgba(244,241,236,0.15); margin-bottom: 16px; }
+.empty-state p { font-size: 13px; color: rgba(244,241,236,0.35); line-height: 1.7; }
+
+/* ===== PRINT ACTIONS ===== */
+.print-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.print-bar .prop-title { font-family: 'Jost', sans-serif; font-size: 16px; font-weight: 300; letter-spacing: 0.08em; color: #f4f1ec; }
+.print-bar .prop-sub { font-size: 11px; color: rgba(244,241,236,0.45); margin-top: 2px; }
+.btn-print {
+  margin-left: auto;
+  padding: 10px 24px;
+  border: 1px solid rgba(244,241,236,0.25);
+  border-radius: 3px;
+  background: transparent;
+  color: #f4f1ec;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-print:hover { background: rgba(244,241,236,0.08); color: #fff; }
+.btn-print svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ===== SLIDES WRAPPER ===== */
+.slides-wrapper { display: flex; flex-direction: column; gap: 4px; }
+
+/* ===== SLIDES BASE ===== */
+.slide {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #0c0c0c;
+  color: #f4f1ec;
+  font-family: 'Jost', sans-serif;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 24px rgba(0,0,0,.35);
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* ===== SLIDE: CAPA ===== */
+.slide-capa {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6% 7%;
+}
+.capa-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: clamp(8px,1.2vw,14px);
+  font-weight: 300;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(244,241,236,0.5);
+}
+.capa-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 5%;
+}
+.capa-logo-name {
+  font-size: clamp(18px,3.8vw,52px);
+  font-weight: 200;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  line-height: 1;
+}
+.capa-divider {
+  width: 48px;
+  height: 1px;
+  background: rgba(244,241,236,0.45);
+  flex-shrink: 0;
+  align-self: center;
+}
+.capa-prop-name {
+  font-size: clamp(24px,7vw,88px);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+.capa-prop-addr {
+  font-size: clamp(8px,1.4vw,18px);
+  font-weight: 300;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(244,241,236,0.65);
+  margin-top: 1%;
+}
+.capa-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.capa-hero img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(1) contrast(1.05);
+}
+.capa-hero-overlay {
+  position: absolute; inset: 0;
+  background: rgba(12,12,12,0.72);
+}
+.capa-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 6% 7%; }
+.capa-watermark {
+  position: absolute;
+  bottom: 5%;
+  left: 7%;
+  font-size: clamp(12px,1.8vw,22px);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #fff;
+  z-index: 2;
+  text-shadow: 0 2px 24px rgba(0,0,0,.7);
+}
+
+/* ===== SLIDE: FOTO ===== */
+.slide-foto { background: #0c0c0c; position: relative; }
+.slide-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* todas as fotos coloridas */
+.slide-foto .watermark {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(16px,3vw,40px);
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  color: rgba(255,255,255,0.22);
+  text-shadow: 0 1px 10px rgba(0,0,0,0.45);
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ===== SLIDE: INFO ===== */
+.slide-info {
+  display: flex;
+  height: 100%;
+  background: #0c0c0c;
+  color: #f4f1ec;
+}
+.info-left {
+  flex: 0 0 54%;
+  display: flex;
+  flex-direction: column;
+  padding: 3% 4.5%;
+  overflow: hidden;
+}
+.info-right {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.info-right img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  filter: grayscale(1) contrast(1.05);
+}
+.info-right-wm {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(12px,2vw,26px);
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  color: rgba(255,255,255,0.22);
+  text-shadow: 0 1px 10px rgba(0,0,0,0.45);
+  text-transform: uppercase;
+}
+.info-header {
+  font-size: clamp(7px,0.85vw,11px);
+  font-weight: 300;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(244,241,236,0.5);
+  margin-bottom: 1.5%;
+}
+.info-title {
+  font-size: clamp(14px,2.8vw,36px);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 1%;
+}
+.info-addr {
+  font-size: clamp(7px,0.9vw,12px);
+  font-weight: 300;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(244,241,236,0.6);
+  margin-bottom: 2%;
+}
+.info-icons {
+  display: flex;
+  align-items: center;
+  gap: 3%;
+  margin-bottom: 2.5%;
+  padding-bottom: 2.5%;
+  border-bottom: 1px solid rgba(244,241,236,0.12);
+  font-size: clamp(10px,1.3vw,16px);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: #f4f1ec;
+}
+.icon-block { display: flex; align-items: center; gap: 4%; }
+.icon-sep { width: 1px; height: clamp(12px,1.5vw,18px); background: rgba(244,241,236,0.2); }
+.icon-block svg {
+  width: clamp(12px,1.4vw,18px); height: clamp(12px,1.4vw,18px);
+  stroke: rgba(244,241,236,0.7); fill: none;
+  stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.icon-block span { color: #f4f1ec; }
+.info-highlights { flex: 1; overflow: hidden; margin-bottom: 3%; }
+.obs-texto {
+  font-size: clamp(10px,1.3vw,15px);
+  font-weight: 300;
+  line-height: 1.72;
+  color: rgba(244,241,236,0.78);
+  text-align: justify;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 12;
+  hyphens: auto;
+}
+.info-prices {
+  display: flex;
+  gap: 6%;
+  border-top: 1px solid rgba(244,241,236,0.15);
+  padding-top: 3%;
+  margin-top: auto;
+}
+.price-block { display: flex; flex-direction: column; gap: 3px; }
+.price-label {
+  font-size: clamp(6px,0.75vw,9px);
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(244,241,236,0.5);
+}
+.price-val {
+  font-size: clamp(9px,1.5vw,20px);
+  font-weight: 400;
+  color: #f4f1ec;
+}
+
+/* ===== SLIDE: ENCERRAMENTO ===== */
+.slide-fim {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4%;
+  background: #0c0c0c;
+}
+.fim-logo {
+  font-size: clamp(24px,5.5vw,72px);
+  font-weight: 200;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  line-height: 1;
+  color: #f4f1ec;
+}
+.fim-sub {
+  font-size: clamp(8px,1.4vw,18px);
+  font-weight: 300;
+  letter-spacing: 0.6em;
+  text-indent: 0.6em;
+  color: rgba(244,241,236,0.5);
+}
+.fim-divider {
+  width: 8%;
+  height: 1px;
+  background: rgba(244,241,236,0.28);
+}
+.fim-tagline {
+  font-size: clamp(7px,1vw,13px);
+  font-weight: 300;
+  letter-spacing: 0.44em;
+  text-transform: uppercase;
+  color: rgba(244,241,236,0.5);
+}
+
+
+/* ===== LOADING SPINNER ===== */
+.loader { display: inline-block; width: 12px; height: 12px; border: 1.5px solid #ccc; border-top-color: #0a0a0a; border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  @page { size: 297mm 210mm; margin: 0; }
+
+  .topbar, .panel, .status-bar, .print-bar, .empty-state { display: none !important; }
+  .main { padding: 0 !important; margin: 0 !important; }
+  .slides-wrapper { gap: 0 !important; }
+  body { background: #0c0c0c !important; margin: 0 !important; padding: 0 !important; }
+
+  /* Cada slide ocupa exatamente uma página A4 landscape */
+  .slide {
+    width: 297mm !important;
+    height: 210mm !important;
+    aspect-ratio: auto !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .slide * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* ---- CAPA: fontes fixas em mm ---- */
+  .capa-top       { font-size: 5mm !important; }
+  .capa-logo-name { font-size: 11mm !important; }
+  .capa-prop-name { font-size: 20mm !important; }
+  .capa-prop-addr { font-size: 4.5mm !important; }
+  .capa-watermark { font-size: 5mm !important; }
+
+  /* ---- SLIDE FOTO: watermark + remove fundo preto ---- */
+  .slide-foto {
+    background: transparent !important;
+  }
+  .slide-foto img {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+  .slide-foto .watermark {
+    font-size: 10mm !important;
+    color: rgba(255,255,255,0.22) !important;
+    -webkit-text-fill-color: rgba(255,255,255,0.22) !important;
+    background: transparent !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  /* info-right: remove possível fundo escuro atrás da marca d'água */
+  .info-right-wm {
+    background: transparent !important;
+  }
+
+  /* ---- SLIDE INFO: textos legíveis ---- */
+  .info-left      { padding: 3% 4.5% !important; }
+  .info-header    { font-size: 3mm !important; margin-bottom: 1.5% !important; }
+  .info-title     { font-size: 9mm !important; }
+  .info-addr      { font-size: 3.2mm !important; margin-bottom: 2% !important; }
+  .info-icons     { font-size: 4.5mm !important; margin-bottom: 2.5% !important; padding-bottom: 2.5% !important; }
+  .icon-block svg { width: 4mm !important; height: 4mm !important; }
+  .obs-texto      { font-size: 4.5mm !important; line-height: 1.72 !important; -webkit-line-clamp: 9 !important; }
+  .price-label    { font-size: 2.8mm !important; }
+  .price-val      { font-size: 6mm !important; }
+  .info-right-wm  { font-size: 6mm !important; }
+
+  /* ---- SLIDE ENCERRAMENTO ---- */
+  .fim-logo    { font-size: 18mm !important; }
+  .fim-sub     { font-size: 4.5mm !important; }
+  .fim-tagline { font-size: 3mm !important; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .topbar { padding: 0 20px; }
+  .panel { padding: 20px; }
+  .panel-inner { flex-direction: column; }
+  .field input[type="text"] { width: 100%; }
+  .field select { min-width: 100%; }
+  .main { padding: 20px; }
+  .status-bar { padding: 10px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-logo">KASBAUM</span>
+      <span class="topbar-sub">Relações Imobiliárias</span>
+    </div>
+    <span class="topbar-label">Gerador de Apresentações</span>
+  </header>
+
+  <!-- CONTROL PANEL -->
+  <div class="panel">
+    <div class="panel-inner">
+      <div class="field" style="flex:2">
+        <label>URL do XML NIDOImóvel</label>
+        <input type="text" id="xml-url" value="https://script.google.com/macros/s/AKfycbxTWTAxLi09SbU_mXHtza3KJaL6plET1O9OGrK0hkpY_bNK8HVCfGrezpgy1EwwVyNo/exec" placeholder="Cole a URL do feed XML">
+      </div>
+      <button class="btn-load" onclick="carregarXML()">Carregar XML</button>
+      <label class="btn-load" style="cursor:pointer" title="Abrir arquivo XML local">
+        Abrir .xml
+        <input type="file" accept=".xml,text/xml" onchange="carregarArquivo(this)" style="display:none">
+      </label>
+      <div class="field">
+        <label>Imóvel</label>
+        <select id="imovel-select"></select>
+      </div>
+      <button class="btn-gerar" id="btn-gerar" onclick="gerarApresentacao()">Gerar</button>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar" id="status"></div>
+
+  <!-- MAIN -->
+  <main class="main" id="main">
+    <div class="empty-state" id="empty-state">
+      <div class="es-logo">K</div>
+      <p>Selecione um imóvel e clique em <strong>Gerar Apresentação</strong>.</p>
+    </div>
+    <div id="presentation-area" style="display:none">
+      <div class="print-bar">
+        <div>
+          <div class="prop-title" id="prop-title"></div>
+          <div class="prop-sub" id="prop-sub"></div>
+        </div>
+        <button class="btn-print" onclick="window.print()">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimir / Salvar PDF
+        </button>
+      </div>
+      <div class="slides-wrapper" id="slides"></div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+/* =============================================
+   DADOS EMBUTIDOS — todos os imóveis do XML KB
+   ============================================= */
+var IMOVEIS_FIXOS = [
+  {
+    codigo:"KB5", nomeEmp:"Europark", tipo:"Apartamento",
+    endereco:"Av Pl 3, 155", bairro:"Park Lozandes", cidade:"Goiânia", andar:"7",
+    area:"105", areaTotal:"105",
+    quartos:"3", suites:"3", vagas:"2", banheiros:"4",
+    transaction:"For Sale",
+    precoVenda:"1090000", precoLocacao:"0,00",
+    condominio:"820", iptu:"730", tipoIptu:"0",
+    observacao:"Apartamento mobiliado e decorado à venda no Europark Ibirapuera, no Park Lozandes. 3 suítes, mobiliário completo e decoração contemporânea, pronto para morar. 4 banheiros, 2 vagas de garagem individuais e escaninho. Condomínio com área de lazer de mais de 7 mil m². Localizado ao lado do Alphaville Araguaia, Paço Municipal e Assembleia Legislativa de Goiás. Apto para financiamento.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5052.jpg?1779145486",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5047.jpg?1779145027",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5048.jpg?1779145028",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5066.jpg?1779206465",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5042.jpg?1779145023",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5043.jpg?1779145024",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5044.jpg?1779145025",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5051.jpg?1779145485",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5050.jpg?1779145029",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5049.jpg?1779145028",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5068.jpg?1779206466",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5057.jpg?1779145489",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5058.jpg?1779145539",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5054.jpg?1779145487",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5053.jpg?1779145487",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5055.jpg?1779145488",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5067.jpg?1779206466",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5060.jpg?1779145491",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5032.jpg?1779145017",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5040.jpg?1779145022",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5038.jpg?1779145021",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5037.jpg?1779145020",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5036.jpg?1779145019",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5035.jpg?1779145019",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5034.jpg?1779145018",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5065.jpg?1779145676",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5031.jpg?1779145016",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5023.jpg?1779145012",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5030.jpg?1779145015",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5024.jpg?1779145012",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5028.jpg?1779145014",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5027.jpg?1779145014",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5026.jpg?1779145013",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5022.jpg?1779145011",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5005.jpg?1779145000",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB5/KB5001.jpg?1779144998"
+    ]
+  },
+  {
+    codigo:"KB6", nomeEmp:"Residencial Granville", tipo:"Casa de Condomínio",
+    endereco:"R Gv2, 1", bairro:"Residencial Granville", cidade:"Goiânia", andar:"",
+    area:"307", areaTotal:"450",
+    quartos:"5", suites:"4", vagas:"4", banheiros:"7",
+    transaction:"For Sale",
+    precoVenda:"2600000", precoLocacao:"0,00",
+    condominio:"846", iptu:"4026", tipoIptu:"0",
+    observacao:"Casa à venda no Residencial Granville. 307 m² em terreno de 450 m², com reforma recente. 4 suítes no pavimento superior, suíte master com closet e banheira de hidromassagem. Sala ampla com porcelanato, armários fixos, DCE completa, despensa e dois escaninhos. 4 vagas de garagem, sendo 2 cobertas. Sistema de energia fotovoltaica. Comercializada com móveis fixos inclusos.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6050.jpg?1779205174",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6002.jpg?1779205136",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6043.jpg?1779205168",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6003.jpg?1779205136",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6001.jpg?1779205135",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6004.jpg?1779205137",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6038.jpg?1779205164",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6039.jpg?1779205165",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6040.jpg?1779205166",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6032.jpg?1779205160",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6022.jpg?1779210525",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6026.jpg?1779205156",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6033.jpg?1779205161",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6027.jpg?1779205156",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6028.jpg?1779205157",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6021.jpg?1779205152",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6020.jpg?1779205152",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6023.jpg?1779205154",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6024.jpg?1779205154",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6025.jpg?1779205155",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6029.jpg?1779205158",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6031.jpg?1779205159",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6030.jpg?1779205158",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6037.jpg?1779205164",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6036.jpg?1779205163",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6034.jpg?1779205161",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6048.jpg?1779210700",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6049.jpg?1779205173",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6042.jpg?1779205167",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6010.jpg?1779205143",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6011.jpg?1779205144",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6007.jpg?1779205140",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6009.jpg?1779205142",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6012.jpg?1779205144",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6013.jpg?1779205146",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6005.jpg?1779210554",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6014.jpg?1779205146",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6015.jpg?1779205147",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6016.jpg?1779205148",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6017.jpg?1779205149",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6018.jpg?1779205150",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB6/KB6019.jpg?1779205151"
+    ]
+  },
+  {
+    codigo:"KB20", nomeEmp:"Persona Bueno By Brasal", tipo:"Apartamento",
+    endereco:"R T 27, 1500", bairro:"Setor Bueno", cidade:"Goiânia", andar:"8",
+    area:"153", areaTotal:"153",
+    quartos:"3", suites:"3", vagas:"3", banheiros:"5",
+    transaction:"For Sale",
+    precoVenda:"1600000", precoLocacao:"0,00",
+    condominio:"1100", iptu:"2508", tipoIptu:"0",
+    observacao:"Apartamento à venda no Persona Bueno by Brasal, Setor Bueno. 153 m² privativos com projeto completo de mobiliário e decoração, pronto para morar. Integração entre sala, jantar e varanda gourmet com churrasqueira a carvão. Elevador privativo com acesso direto à unidade. Marcenaria planejada. 3 vagas de garagem. Próximo ao Parque Vaca Brava e Goiânia Shopping.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20015.jpg?1781548256",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20019.jpg?1781548258",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20030.jpg?1781548264",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20020.jpg?1781548258",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20027.jpg?1781548262",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20006.jpg?1781548252",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20021.jpg?1781548259",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20025.jpg?1781548261",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20017.jpg?1781548257",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20001.jpg?1781548249",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20026.jpg?1781548262",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20029.jpg?1781548263",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20002.jpg?1781548249",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20028.jpg?1781548263",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20007.jpg?1781548252",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20011.jpg?1781548254",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20014.jpg?1781548256",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20004.jpg?1781548250",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20008.jpg?1781548253",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20009.jpg?1781548253",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20010.jpg?1781548253",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20012.jpg?1781548254",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20023.jpg?1781548260",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20013.jpg?1781548255",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20022.jpg?1781548259",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20018.jpg?1781548258",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20016.jpg?1781548257",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20005.jpg?1781548251",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20024.jpg?1781548261",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB20/KB20003.jpg?1781548250"
+    ]
+  },
+  {
+    codigo:"KB1", nomeEmp:"Área Comercial BR-153", tipo:"Galpão Comercial",
+    endereco:"Rod Br-153", bairro:"Zona Rural", cidade:"Hidrolândia", andar:"",
+    area:"3057", areaTotal:"42000",
+    quartos:"0", suites:"0", vagas:"50", banheiros:"10",
+    transaction:"For Rent",
+    precoVenda:"0,00", precoLocacao:"75000",
+    condominio:"0", iptu:"8000", tipoIptu:"0",
+    observacao:"Estrutura comercial para locação em Hidrolândia-GO, às margens da BR-153. 42.000 m² com galpão de 2.500 m², pé-direito de 18 metros, mezanino e 7 docas. Escritório corporativo de 392 m² com recepção, 10 salas e 10 banheiros. Pátio pavimentado em asfalto e paver. 165 metros de frente para a BR-153. Acesso rápido a Goiânia, Aparecida de Goiânia e Anápolis.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/dc89876fde7129b9867eebfbc31473bc.jpg?1778791550",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/1f31e9959970deeea2aac0a1782842d9.jpg?1778791548",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/881d489004634e2982dbee8d89318810.jpg?1778791534",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/a2e4d12d3e7ba5736e84d5a4571159c1.jpg?1778791535",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/47b9ed8734ce3e677bd9af0308a1845a.jpg?1778791550",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/6b960ce523ae4c39cc54e0b288443549.jpg?1778791549",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/KB1044.jpg?1778793319",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/de6df2d767bc6ae44b173761b260109b.jpg?1778791526",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/e6ff49f027f20069e582b006a206e694.jpg?1778791527",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/5179b58393ad1e9bd3e0312a4eee676b.jpg?1778791528",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/36d8d47a5927e81fcb6b2c5952e068a8.jpg?1778791528",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/622db8b5d07b8f36169836544bbf0c6f.jpg?1778791529",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/4444859f5878d63694b3aa4c151fd1cd.jpg?1778791530",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/3f6d9b7a9556f57043b52e6bb12d91f6.jpg?1778791530",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/bac69db71a9f020ddffdfa6f9336f377.jpg?1778791531",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/46f39d768fa8325553a687b69385fa8c.jpg?1778791531",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/86d7ac9a1dc6e592619f0e87aedc2eb6.jpg?1778791532",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/aa1557a83661f444372b5a70d74f478b.jpg?1778791533",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/545ef79ecea3fc0388d5c54a3278f7fe.jpg?1778791533",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/d5d90666593b9e32220bae5a11877435.jpg?1778791534",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/22d1e30600c0cc7a4504a05069c1eb69.jpg?1778791536",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/1f0ab9a49f453eda925e3148f187713c.jpg?1778791536",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/15fb18bea1b052481ee6d0d2ed590591.jpg?1778791537",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/cf90c6e409bd036390f66fb78b1f6ecb.jpg?1778791537",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/b4c5ad5da018260c90f86cfaa1289d10.jpg?1778791538",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/be66e7dee9c74e6d705752dc42841f25.jpg?1778791538",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/a762f31f505560de8a96e5db1df462a7.jpg?1778791539",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/2cc5401e94bb32d3cc6d008e65ad7406.jpg?1778791540",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/19f1e1516b3548c3cd546ce63fe0e99f.jpg?1778791540",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/05eccfec61c75893825020ff95bd4baf.jpg?1778791541",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/a2c2390673619b0688c34ebbbd40601b.jpg?1778791541",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/718bb39c377d3f663abae52782480788.jpg?1778791542",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/7eef2da94690c470c91f58ffb13c0e94.jpg?1778791542",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/e19e89ca3aa70ea8b6172e3a15eb5bea.jpg?1778791543",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/b41038a8904106d28f1a9f48933224bd.jpg?1778791543",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/6fe4c88c09e992bdd0d3dc00a6d85600.jpg?1778791544",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/d6d8340816dc639267eea5e222355209.jpg?1778791544",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/9992924e2f3dbbdf9085b5c796221d5a.jpg?1778791545",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/78deb8fe135d30cf59449cfca6d68819.jpg?1778791545",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/7f36b619bf26b0fe34e8a1f50d6a1dcd.jpg?1778791546",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/53affdb9f8a65a47d9d5ab56d99f6602.jpg?1778791546",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/564d9039d15d43921c45757ffcd56494.jpg?1778791547",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/ffae32b030fc37b4da2533ccc34e9bc0.jpg?1778791547",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB1/29acbe2a7a9e58f2fbd9ca1b938433b8.jpg?1778791549"
+    ]
+  },
+  {
+    codigo:"KB4", nomeEmp:"Jardins França", tipo:"Casa de Condomínio",
+    endereco:"R Chablis, 1", bairro:"Jardins França", cidade:"Goiânia", andar:"",
+    area:"440", areaTotal:"543",
+    quartos:"5", suites:"5", vagas:"4", banheiros:"8",
+    transaction:"For Sale",
+    precoVenda:"7290000", precoLocacao:"0,00",
+    condominio:"748", iptu:"4973", tipoIptu:"0",
+    observacao:"Sobrado 5 suítes à venda no Jardins França. 440 m² em terreno de 543 m², lote de esquina com frente para área de reserva. Suíte master com closet e banheiro em mármore Biancatto, duchas de teto e banheira de imersão. Pé-direito de 8 metros, jardins internos e parede em travertino. Área gourmet com teto em bamboo natural importado e churrasqueira em mármore. Piscina com borda transbordante. Automação residencial, energia fotovoltaica e elevador em aço inox.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4064.jpg?1779123306",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4070.jpg?1779123311",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4049.jpg?1779122800",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4055.jpg?1779123300",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4062.jpg?1779123305",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4069.jpg?1779123310",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4063.jpg?1779123306",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4065.jpg?1779123307",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4060.jpg?1779123303",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4050.jpg?1779122800",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4051.jpg?1779123296",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4052.jpg?1779123297",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4054.jpg?1779123299",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4056.jpg?1779123300",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4058.jpg?1779123302",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4057.jpg?1779123301",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4071.jpg?1779123973",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4072.jpg?1779123974",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4073.jpg?1779123975",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4074.jpg?1779123976",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4078.jpg?1779123978",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4075.jpg?1779123976",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4076.jpg?1779123977",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4077.jpg?1779123977",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4082.jpg?1779123981",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4080.jpg?1779123980",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4081.jpg?1779123980",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4085.jpg?1779124246",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4084.jpg?1779123983",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4046.jpg?1779122798",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4002.jpg?1779122763",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4003.jpg?1779122764",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4004.jpg?1779122765",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4005.jpg?1779122765",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4025.jpg?1779122780",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4007.jpg?1779122767",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4010.jpg?1779122769",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4011.jpg?1779122770",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4012.jpg?1779122770",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4013.jpg?1779122771",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4014.jpg?1779122772",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4015.jpg?1779122772",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4016.jpg?1779122773",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4018.jpg?1779122775",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4020.jpg?1779122776",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4021.jpg?1779122777",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4028.jpg?1779122782",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4032.jpg?1779122786",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4040.jpg?1779122793",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB4/KB4083.jpg?1779123982"
+    ]
+  },
+  {
+    codigo:"KB19", nomeEmp:"Singah", tipo:"Apartamento",
+    endereco:"Av L, 25", bairro:"Jardim Goiás", cidade:"Goiânia", andar:"25",
+    area:"71", areaTotal:"71",
+    quartos:"2", suites:"1", vagas:"1", banheiros:"2",
+    transaction:"For Sale",
+    precoVenda:"850000", precoLocacao:"0,00",
+    condominio:"0", iptu:"0", tipoIptu:"0",
+    observacao:"Apartamento à venda no Singah Jardim Goiás. 71 m² com 2 quartos sendo 1 suíte, sala integrada à cozinha, área de serviço e 1 vaga. Localizado em andar alto, ao lado do Parque Flamboyant e a poucos minutos do Shopping Flamboyant. Arquitetura moderna com elementos de biofilia. Previsão de entrega: julho de 2027.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19024.jpg?1781536024",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19027.jpg?1781536031",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19016.jpg?1781536005",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19026.jpg?1781536029",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19017.jpg?1781536007",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19018.jpg?1781536010",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19028.jpg?1781536034",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19022.jpg?1781536019",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19025.jpg?1781536026",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19020.jpg?1781536015",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19019.jpg?1781536012",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19023.jpg?1781536022",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19021.jpg?1781536017",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19005.jpg?1781535948",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19002.jpg?1781535945",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19004.jpg?1781535947",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19006.jpg?1781535949",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19001.jpg?1781535944",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19003.jpg?1781535946",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19007.jpg?1781535950",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19008.jpg?1781535952",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19009.jpg?1781535953",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19010.jpg?1781535954",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19011.jpg?1781535955",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19012.jpg?1781535956",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19013.jpg?1781535956",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19014.jpg?1781535957",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB19/KB19015.jpg?1781535957"
+    ]
+  },
+  {
+    codigo:"KB12", nomeEmp:"Terraço Bougainville", tipo:"Apartamento",
+    endereco:"R 13, 860", bairro:"Setor Marista", cidade:"Goiânia", andar:"22",
+    area:"239", areaTotal:"239",
+    quartos:"3", suites:"3", vagas:"3", banheiros:"5",
+    transaction:"For Sale",
+    precoVenda:"2800000", precoLocacao:"0,00",
+    condominio:"1100", iptu:"4000", tipoIptu:"0",
+    observacao:"Apartamento à venda no Terraço Bougainville com 239 m², 3 suítes e piscina privativa no Setor Marista. Terraço com piscina privativa para convivência e lazer. 3 suítes amplas, churrasqueira a carvão integrada à cozinha e 3 vagas. Próximo ao Parque Areião. Academia desenvolvida em parceria com a FLEX. BikeStay privativo em cada unidade.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12004.jpg?1779743126",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12003.jpg?1779743126",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12006.jpg?1779743128",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12002.jpg?1779743124",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12001.jpg?1779743124",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12005.jpg?1779743127",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12007.jpg?1779743129",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12008.jpg?1779743129",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12009.jpg?1779743130",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12010.jpg?1779743130",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12011.jpg?1779743131",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12012.jpg?1779743131",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12013.jpg?1779743316",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12014.jpg?1779743317",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12015.jpg?1779743318",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12018.jpg?1779743322",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12019.jpg?1779743323",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12024.jpg?1779743328",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12025.jpg?1779743329",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12029.jpg?1779743335",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12030.jpg?1779743336",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12033.jpg?1779743338",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12031.jpg?1779743337",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12034.jpg?1779743339",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12017.jpg?1779743320",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12035.jpg?1779743340",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12016.jpg?1779743319",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12026.jpg?1779743330",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB12/KB12028.jpg?1779743333"
+    ]
+  },
+  {
+    codigo:"KB18", nomeEmp:"Jardins Barcelona", tipo:"Casa de Condomínio",
+    endereco:"Via Mediterrânea, 1", bairro:"Jardins Barcelona", cidade:"Senador Canedo", andar:"",
+    area:"232", areaTotal:"300",
+    quartos:"4", suites:"4", vagas:"4", banheiros:"5",
+    transaction:"For Sale",
+    precoVenda:"1690000", precoLocacao:"0,00",
+    condominio:"870", iptu:"1825", tipoIptu:"0",
+    observacao:"Sobrado novo à venda no Jardins Barcelona, Senador Canedo. 232 m² em terreno de 300 m². 4 suítes, sendo uma no térreo. Suíte principal com espaço para closet. Sala com pé-direito elevado. Preparação para ar-condicionado em todos os ambientes. Área de lazer com piscina aquecida, hidromassagem, cascata e deck. Quartos e banheiros maiores que o padrão. 4 vagas, sendo 2 cobertas. Portaria 24 horas.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18001.jpg?1781271661",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18002.jpg?1781271662",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18003.jpg?1781271663",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18005.jpg?1781271666",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18006.jpg?1781271667",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18007.jpg?1781271667",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18009.jpg?1781271669",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18010.jpg?1781271670",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18011.jpg?1781271671",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18012.jpg?1781271672",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18013.jpg?1781271673",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18014.jpg?1781271673",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18015.jpg?1781271674",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18016.jpg?1781271675",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18018.jpg?1781271677",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18019.jpg?1781271678",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18020.jpg?1781271679",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18021.jpg?1781271680",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18022.jpg?1781271681",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18023.jpg?1781271681",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18024.jpg?1781271682",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18025.jpg?1781271683",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18026.jpg?1781271684",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18027.jpg?1781271685",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18028.jpg?1781271686",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18029.jpg?1781271686",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18030.jpg?1781271687",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18031.jpg?1781271688",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18032.jpg?1781271689",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18033.jpg?1781271690",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18034.jpg?1781271691",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18035.jpg?1781271692",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18036.jpg?1781271693",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18037.jpg?1781271694",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18038.jpg?1781271694",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18039.jpg?1781271695",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18040.jpg?1781271696",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18041.jpg?1781271697",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18042.jpg?1781271698",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18043.jpg?1781271699",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18044.jpg?1781271699",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18045.jpg?1781271700",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18046.jpg?1781271701",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18047.jpg?1781271702",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18048.jpg?1781271703",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18049.jpg?1781271704",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18050.jpg?1781271705",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB18/KB18051.jpg?1781271801"
+    ]
+  },
+  {
+    codigo:"KB17", nomeEmp:"Cristal Tower", tipo:"Apartamento",
+    endereco:"R T 27, 1416", bairro:"Setor Bueno", cidade:"Goiânia", andar:"4",
+    area:"123", areaTotal:"123",
+    quartos:"3", suites:"3", vagas:"2", banheiros:"4",
+    transaction:"For Sale",
+    precoVenda:"1300000", precoLocacao:"0,00",
+    condominio:"1355", iptu:"1133", tipoIptu:"0",
+    observacao:"Apartamento pronto para morar no Cristal Tower, Setor Bueno. 123 m² com 3 suítes, incluindo suíte master com closet. Marcenaria planejada completa, projeto de iluminação executado e ar-condicionado instalado. Sem necessidade de reformas ou adaptações. Próximo a serviços, escolas e restaurantes.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17004.jpg?1781268308",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17011.jpg?1781268259",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17007.jpg?1781268257",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17005.jpg?1781268256",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17012.jpg?1781268260",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17006.jpg?1781268257",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17001.jpg?1781268254",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17010.jpg?1781268259",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17014.jpg?1781268261",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17009.jpg?1781268258",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17002.jpg?1781268255",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17013.jpg?1781268260",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17015.jpg?1781268262",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17017.jpg?1781268263",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17018.jpg?1781268263",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17019.jpg?1781268264",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17020.jpg?1781268264",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17021.jpg?1781268265",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17022.jpg?1781268265",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17023.jpg?1781268266",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17024.jpg?1781268266",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17026.jpg?1781268267",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17027.jpg?1781268268",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17028.jpg?1781268268",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17033.jpg?1781268272",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17029.jpg?1781268269",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17030.jpg?1781268269",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17008.jpg?1781268258",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17003.jpg?1781268255",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17031.jpg?1781268270",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17025.jpg?1781268267",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17032.jpg?1781268271",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17034.jpg?1781268272",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17035.jpg?1781268273",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17036.jpg?1781268273",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17037.jpg?1781268274",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17038.jpg?1781268274",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17039.jpg?1781268275",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17040.jpg?1781268276",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17041.jpg?1781268276",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17042.jpg?1781268277",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17043.jpg?1781268277",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17044.jpg?1781268278",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17045.jpg?1781268279",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17046.jpg?1781268279",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB17/KB17047.jpg?1781268280"
+    ]
+  },
+  {
+    codigo:"KB14", nomeEmp:"Solaris Laguna", tipo:"Casa de Condomínio",
+    endereco:"Rod Go 020, 1", bairro:"Estância Vargem Bonita", cidade:"Senador Canedo", andar:"",
+    area:"214", areaTotal:"285",
+    quartos:"3", suites:"3", vagas:"4", banheiros:"5",
+    transaction:"For Sale",
+    precoVenda:"1690000", precoLocacao:"0,00",
+    condominio:"282", iptu:"744", tipoIptu:"0",
+    observacao:"Sobrado à venda no Condomínio Solaris Laguna, na GO-020. 214 m² em terreno de 285 m². 3 suítes plenas, office para home office, sala com pé-direito elevado, cozinha com ilha e cooktop. Varanda gourmet com churrasqueira a carvão e piscina privativa. Próximo ao Shopping Flamboyant. Condomínio com lazer completo e segurança.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14019.jpg?1780923999",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14018.jpg?1780922082",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14017.jpg?1780922045",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14020.jpg?1780924001",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14001.jpg?1780921198",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14002.jpg?1780921310",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14003.jpg?1780921328",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14004.jpg?1780921401",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14005.jpg?1780921506",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14006.jpg?1780921960",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14007.jpg?1780921975",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14008.jpg?1780921981",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14009.jpg?1780921984",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14010.jpg?1780921989",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14011.jpg?1780921993",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14012.jpg?1780921996",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14013.jpg?1780921999",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14014.jpg?1780922006",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14015.jpg?1780922015",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14021.jpg?1780924003",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14022.jpg?1780924006",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14023.jpg?1780924008",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14024.jpg?1780924010",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14025.jpg?1780924013",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14026.jpg?1780924015",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14027.jpg?1780924017",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB14/KB14028.jpg?1780924019"
+    ]
+  },
+  {
+    codigo:"KB15", nomeEmp:"Terra Mundi Parque Cascavel", tipo:"Apartamento",
+    endereco:"R Do Parque, 135", bairro:"Jardim Atlântico", cidade:"Goiânia", andar:"9",
+    area:"117", areaTotal:"117",
+    quartos:"3", suites:"3", vagas:"2", banheiros:"4",
+    transaction:"For Sale",
+    precoVenda:"990000", precoLocacao:"0,00",
+    condominio:"850", iptu:"823", tipoIptu:"0",
+    observacao:"Apartamento à venda no Terra Mundi Cascavel com 3 suítes, churrasqueira a carvão e vista definitiva para o Parque Cascavel. 117 m² prontos para morar. 3 suítes, sala integrada à cozinha, área de serviço separada e depósito privativo no andar. Varanda gourmet com vista livre para o parque. Área de lazer completa com portaria 24 horas.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15005.jpg?1779828797",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15010.jpg?1779828801",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15001.jpg?1779828793",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15003.jpg?1779828795",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15002.jpg?1779828794",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15004.jpg?1779828796",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15006.jpg?1779828798",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15007.jpg?1779828799",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15008.jpg?1779828799",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15009.jpg?1779828800",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15011.jpg?1779828801",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15012.jpg?1779828802",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15013.jpg?1779828803",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15014.jpg?1779828804",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15015.jpg?1779828804",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15016.jpg?1779828805",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15017.jpg?1779828806",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15018.jpg?1779828806",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15019.jpg?1779828807",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15020.jpg?1779828807",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15021.jpg?1779828808",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15022.jpg?1779828809",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15023.jpg?1779828809",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15024.jpg?1779828810",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15025.jpg?1779828811",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15026.jpg?1779828812",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15027.jpg?1779828812",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15028.jpg?1779828813",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15029.jpg?1779828846",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15030.jpg?1779828847",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15031.jpg?1779828848",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15032.jpg?1779828848",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15033.jpg?1779828849",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15034.jpg?1779828850",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15037.jpg?1779828852",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15038.jpg?1779828852",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15039.jpg?1779828853",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15040.jpg?1779828854",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15041.jpg?1779828854",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15042.jpg?1779828855",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15043.jpg?1779828856",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15044.jpg?1779828856",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15045.jpg?1779828857",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15046.jpg?1779828857",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15048.jpg?1779828859",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15049.jpg?1779828859",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15050.jpg?1779828860",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15051.jpg?1779828912",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB15/KB15052.jpg?1779828930"
+    ]
+  },
+  {
+    codigo:"KB2", nomeEmp:"Mundi Consciente Square", tipo:"Apartamento",
+    endereco:"R 25, 230", bairro:"Setor Marista", cidade:"Goiânia", andar:"25",
+    area:"147", areaTotal:"147",
+    quartos:"3", suites:"3", vagas:"3", banheiros:"4",
+    transaction:"For Sale",
+    precoVenda:"1490000", precoLocacao:"0,00",
+    condominio:"1215", iptu:"1941", tipoIptu:"0",
+    observacao:"Apartamento à venda no Mundi Consciente Square, Setor Marista. 147 m² com 3 suítes, churrasqueira a carvão e varanda com cortina de vidro. Andar alto, nascente e com vista livre. Marcenaria completa em todos os espaços. Lavabo, área de serviço e 3 vagas com escaninho. Ao lado do Órion Complex. Condomínio com piscina de borda infinita, rooftop de lazer e elevador privativo.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2044.jpg?1778796247",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2035.jpg?1778796241",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2045.jpg?1778796248",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2030.jpg?1778796238",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2046.jpg?1778796249",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2032.jpg?1778796239",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2031.jpg?1778796238",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2036.jpg?1778796242",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2047.jpg?1778796249",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2039.jpg?1778796244",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2040.jpg?1778796244",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2041.jpg?1778796245",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2042.jpg?1778796246",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2043.jpg?1778796246",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2029.jpg?1778796237",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2001.jpg?1778796222",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2002.jpg?1778796222",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2003.jpg?1778796223",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2004.jpg?1778796223",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2005.jpg?1778796224",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2006.jpg?1778796224",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2007.jpg?1778796225",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2008.jpg?1778796225",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2009.jpg?1778796226",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2010.jpg?1778796226",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2011.jpg?1778796227",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2012.jpg?1778796227",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2013.jpg?1778796228",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2014.jpg?1778796229",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2015.jpg?1778796229",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2016.jpg?1778796230",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2017.jpg?1778796230",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2018.jpg?1778796231",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2019.jpg?1778796232",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2020.jpg?1778796232",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2021.jpg?1778796233",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2022.jpg?1778796233",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2023.jpg?1778796234",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2024.jpg?1778796234",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2025.jpg?1778796235",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2026.jpg?1778796235",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2027.jpg?1778796236",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB2/KB2028.jpg?1778796236"
+    ]
+  },
+  {
+    codigo:"KB13", nomeEmp:"Vero Home Gourmet", tipo:"Apartamento",
+    endereco:"R 1128, 242", bairro:"Setor Marista", cidade:"Goiânia", andar:"5",
+    area:"162", areaTotal:"162",
+    quartos:"3", suites:"3", vagas:"2", banheiros:"4",
+    transaction:"For Sale",
+    precoVenda:"2090000", precoLocacao:"0,00",
+    condominio:"1400", iptu:"3500", tipoIptu:"0",
+    observacao:"Apartamento de luxo totalmente mobiliado e decorado no Vero Home Marista, Setor Marista. 162 m² com 3 suítes amplas. Elevador privativo e hall exclusivo. Cozinha gourmet com ilha em mármore Taj Mahal e bancadas em Calacatta. Automação residencial com Alexa, cortinas automatizadas e marcenaria de alto padrão. Suíte master com closet, penteadeira e projetor privativo. 2 vagas paralelas.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13043.jpg?1779803490",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13028.jpg?1779803291",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13024.jpg?1779803288",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13027.jpg?1779803290",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13023.jpg?1779803287",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13025.jpg?1779803288",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13026.jpg?1779803289",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13029.jpg?1779803291",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13030.jpg?1779803292",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13031.jpg?1779803293",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13032.jpg?1779803294",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13033.jpg?1779803295",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13034.jpg?1779803295",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13035.jpg?1779803296",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13036.jpg?1779803297",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13037.jpg?1779803297",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13038.jpg?1779803488",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13039.jpg?1779803488",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13040.jpg?1779803489",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13041.jpg?1779803489",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13042.jpg?1779803490",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB13/KB13044.jpg?1779803490"
+    ]
+  },
+  {
+    codigo:"KB7", nomeEmp:"Chateau Marista LifeStyle", tipo:"Apartamento",
+    endereco:"R 1141, 536", bairro:"Setor Marista", cidade:"Goiânia", andar:"19",
+    area:"233", areaTotal:"233",
+    quartos:"3", suites:"3", vagas:"3", banheiros:"6",
+    transaction:"For Sale",
+    precoVenda:"2690000", precoLocacao:"0,00",
+    condominio:"1830", iptu:"493", tipoIptu:"0",
+    observacao:"Apartamento mobiliado à venda no Chateau Marista LifeStyle, 233 m², entre o Parque Areião e a Alameda Ricardo Paranhos. Integração entre sala, jantar e varanda gourmet com churrasqueira a carvão. Automação completa de iluminação, climatização e som. Acabamentos em mármore e porcelanato. 3 suítes com suíte master possuindo closet e dois banheiros. Andar alto, posição nascente. 3 vagas e escaninho.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7001.jpg?1779326198",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7002.jpg?1779326199",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7003.jpg?1779326200",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7004.jpg?1779326201",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7005.jpg?1779326201",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7006.jpg?1779326202",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7007.jpg?1779326203",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7008.jpg?1779326203",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7009.jpg?1779326204",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7010.jpg?1779326205",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7011.jpg?1779326206",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7012.jpg?1779326207",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7013.jpg?1779326207",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7014.jpg?1779326208",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7015.jpg?1779326208",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7016.jpg?1779326209",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7017.jpg?1779326210",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7018.jpg?1779326211",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7019.jpg?1779326211",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7020.jpg?1779326212",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7021.jpg?1779326213",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7022.jpg?1779326213",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7023.jpg?1779326214",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7024.jpg?1779326215",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7025.jpg?1779326216",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7026.jpg?1779326216",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7027.jpg?1779326217",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7028.jpg?1779326218",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7029.jpg?1779326218",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7030.jpg?1779326219",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7031.jpg?1779326220",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7032.jpg?1779326221",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7033.jpg?1779326221",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7034.jpg?1779326222",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7035.jpg?1779326223",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7036.jpg?1779326223",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7037.jpg?1779326224",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7038.jpg?1779326225",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7039.jpg?1779326225",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7040.jpg?1779326226",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7042.jpg?1779326227",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7043.jpg?1779326228",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7044.jpg?1779326228",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7045.jpg?1779326229",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7046.jpg?1779326229",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7047.jpg?1779326230",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7048.jpg?1779326231",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7050.jpg?1779326232",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7051.jpg?1779326261",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB7/KB7052.jpg?1779326289"
+    ]
+  },
+  {
+    codigo:"KB3", nomeEmp:"Atmos City Design", tipo:"Apartamento",
+    endereco:"R 30, 910", bairro:"Setor Marista", cidade:"Goiânia", andar:"21",
+    area:"247", areaTotal:"247",
+    quartos:"3", suites:"3", vagas:"3", banheiros:"5",
+    transaction:"For Sale",
+    precoVenda:"2850000", precoLocacao:"0,00",
+    condominio:"1100", iptu:"4000", tipoIptu:"0",
+    observacao:"Apartamento com 247 m², 3 suítes e 3 vagas de garagem no Setor Marista. O grande diferencial é a varanda gourmet com piscina privativa integrada à sala. Integração total entre sala, varanda e cozinha. Fechadura digital e espera para ar-condicionado. Condomínio com lazer completo. Localização: Rua 30 esquina com Rua 13. Entregue em março de 2026.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/4e4337790f10bb2f64800b5541ad79f1.jpg?1778866075",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/631ddf97361242a27c94a02077181ec5.jpg?1778866088",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/d68f07d36b1a6ef7a85de3966d57cdb8.jpg?1778866072",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/f86ab44fb3294d5106b5184ceb5ebb4c.jpg?1778866072",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/4529669b7d4f55b46ff9bfa890c2832f.jpg?1778866073",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/15fb54ca0dc8a9e5fe176e492c4e57fe.jpg?1778866073",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/2f2eba6483f8b7cc0445484bfc0975cd.jpg?1778866073",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/777a0237071f6af960c8230e04c245c9.jpg?1778866074",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/6e726f7db4350dfe0cdca0c373296095.jpg?1778866074",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/ba38bafee61491badeb5c82d4c863b36.jpg?1778866075",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/60187b3bb26c72b699566e58a0f82b7f.jpg?1778866076",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/7ab1cd9f9f218913269d330a7ed67020.jpg?1778866076",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/6950430f407ec5c99650a72d0449e80f.jpg?1778866077",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/42c23d5ba584067d64fe5d858019231a.jpg?1778866077",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/33d737bd57862bfb23830dabf8cffb0a.jpg?1778866077",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/30fa5479ea32d5a6153c2b634e0a17d9.jpg?1778866078",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/84b21a1692660b6aa9fc8803d97b17b3.jpg?1778866078",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/bcd88e77e6627e4ab3f8eb16d515a464.jpg?1778866079",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/29ebe5957ff6b46e155c43c346f13808.jpg?1778866079",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/873fb7cf8b73e8db54a307ab56724636.jpg?1778866080",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/89c2230e28223aed2351d71ed043591c.jpg?1778866080",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/b7572e4c5972d232399efc8747bc6308.jpg?1778866080",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/74b39af894a4c569112ca671036ef938.jpg?1778866081",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/f92fb70742e2885bc5613e9032d3155d.jpg?1778866081",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/cb2f4aa4c05b3090cbbcf20d98a26701.jpg?1778866082",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/b3ce70b365f7fcf903825fc21029e15e.jpg?1778866082",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/9f73af0b5b89799310987d6d050f7694.jpg?1778866082",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/9de02424f6e681f08f5e6cdb0c722ec5.jpg?1778866083",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/08093c05a1e062a4574d6b6931524899.jpg?1778866083",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/d6a8fd567111b2125d28873aab1109df.jpg?1778866084",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/6060d0683af1c831e17afa8ada7bcfad.jpg?1778866084",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/1e3344997154763a65ad62f867151802.jpg?1778866085",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/288f62f9bd906b56e427dacf18fa5347.jpg?1778866085",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/87fb01a03f04e1ab770adcc680ee2ab2.jpg?1778866085",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/81b3386a9b7eeaf47246c26165a14ef3.jpg?1778866086",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/d8287d6c9bf71dc532aefd665bff1471.jpg?1778866086",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/1c4d9489ed1aecbdb4c6b9add38bbba9.jpg?1778866087",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB3/b9f4a8096ad019b46b214c6a2e671a47.jpg?1778866087"
+    ]
+  },
+  {
+    codigo:"KB9", nomeEmp:"Condomínio EuroHouse", tipo:"Casa de Condomínio",
+    endereco:"R B6A, 553", bairro:"Parque das Laranjeiras", cidade:"Goiânia", andar:"",
+    area:"155", areaTotal:"155",
+    quartos:"3", suites:"3", vagas:"2", banheiros:"4",
+    transaction:"For Sale",
+    precoVenda:"1200000", precoLocacao:"0,00",
+    condominio:"0", iptu:"0", tipoIptu:"0",
+    observacao:"Sobrado no Condomínio EuroHouse, no Parque das Laranjeiras, próximo ao Shopping Flamboyant. Fachada neoclássica e 155 m². 3 suítes plenas com armários planejados, suíte master com closet e banheiro com duas cubas. Área social com sala, lavabo e cozinha americana. Projeto de iluminação instalado, ar-condicionado e piso em porcelanato. Garagem coberta para 2 veículos. Piscina de borda infinita, sauna, academia e monitoramento 24 horas.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9009.jpg?1779718305",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9002.jpg?1779482885",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9003.jpg?1779482885",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9007.jpg?1779482887",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9006.jpg?1779482886",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9010.jpg?1779482888",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9005.jpg?1779482886",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9008.jpg?1779482887",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9004.jpg?1779482886",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9001.jpg?1779482884",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9011.jpg?1779718276",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9012.jpg?1779718277",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9013.jpg?1779718278",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9014.jpg?1779718279",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9015.jpg?1779718285",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9016.jpg?1779718287",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB9/KB9017.jpg?1779718288"
+    ]
+  },
+  {
+    codigo:"KB10", nomeEmp:"La Residence Visionaire", tipo:"Apartamento",
+    endereco:"R 56, 501", bairro:"Jardim Goiás", cidade:"Goiânia", andar:"11",
+    area:"170", areaTotal:"170",
+    quartos:"4", suites:"4", vagas:"3", banheiros:"6",
+    transaction:"For Sale",
+    precoVenda:"2100000", precoLocacao:"0,00",
+    condominio:"1400", iptu:"3000", tipoIptu:"0",
+    observacao:"Visionaire mobiliado e decorado à venda no Jardim Goiás, 169 m², 4 suítes e vista definitiva para o Parque Flamboyant. Andar alto, posição nascente. 4 suítes, office independente, elevador privativo. Cozinha separada e varanda gourmet com churrasqueira a carvão. Entregue completo com mobiliário e decoração. 3 vagas e escaninho.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10011.jpg?1779484630",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10013.jpg?1779484632",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10007.jpg?1779484623",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10012.jpg?1779719025",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10014.jpg?1779484634",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10015.jpg?1779484635",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10001.jpg?1779484612",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10002.jpg?1779484614",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10003.jpg?1779484616",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10054.jpg?1779485065",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10004.jpg?1779484618",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10005.jpg?1779484619",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10006.jpg?1779484621",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10008.jpg?1779484625",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10009.jpg?1779484626",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10010.jpg?1779484628",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10018.jpg?1779484640",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10019.jpg?1779484641",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10022.jpg?1779484646",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10024.jpg?1779484648",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10026.jpg?1779484651",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10027.jpg?1779484652",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10028.jpg?1779484654",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10029.jpg?1779484655",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10055.jpg?1779485067",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10031.jpg?1779484658",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10035.jpg?1779484663",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10036.jpg?1779484664",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10037.jpg?1779484666",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10033.jpg?1779484660",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10039.jpg?1779484668",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10038.jpg?1779484667",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10040.jpg?1779484670",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10041.jpg?1779484671",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10043.jpg?1779484673",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10044.jpg?1779484675",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10045.jpg?1779484676",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10046.jpg?1779484678",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10047.jpg?1779484679",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10051.jpg?1779485061",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10053.jpg?1779485064",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10052.jpg?1779485063",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10048.jpg?1779484681",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10049.jpg?1779484682",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10050.jpg?1779484684",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB10/KB10030.jpg?1779484656"
+    ]
+  },
+  {
+    codigo:"KB11", nomeEmp:"Arte Square", tipo:"Apartamento",
+    endereco:"R 70", bairro:"Jardim Goiás", cidade:"Goiânia", andar:"38",
+    area:"172", areaTotal:"172",
+    quartos:"3", suites:"3", vagas:"3", banheiros:"4",
+    transaction:"For Sale",
+    precoVenda:"1800000", precoLocacao:"0,00",
+    condominio:"900", iptu:"0", tipoIptu:"0",
+    observacao:"Apartamento à venda no Arte Square, 172 m², 3 suítes, em frente à Praça das Artes e próximo ao Parque Flamboyant, Jardim Goiás. O entorno reúne a Feira do Cerrado, Estádio Serra Dourada, Goiânia Arena e o Centro Cultural Oscar Niemeyer. Próximo à Assembleia Legislativa, Paço Municipal e Fórum Cível. Entrega prevista: julho de 2026.",
+    fotos:[
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11012.jpg?1779485956",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11017.jpg?1779485961",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11016.jpg?1779485960",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11015.jpg?1779485959",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11010.jpg?1779485954",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11013.jpg?1779485958",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11011.jpg?1779485955",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11018.jpg?1779485962",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11005.jpg?1779485949",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11002.jpg?1779485947",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11001.jpg?1779485946",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11003.jpg?1779485947",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11008.jpg?1779485952",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11006.jpg?1779485950",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11007.jpg?1779485951",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11020.jpg?1779486592",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11021.jpg?1779486594",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11022.jpg?1779486595",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11023.jpg?1779486596",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11024.jpg?1779486598",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11025.jpg?1779486599",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11026.jpg?1779486601",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11027.jpg?1779486602",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11028.jpg?1779486604",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11029.jpg?1779486605",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11030.jpg?1779486606",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11031.jpg?1779486607",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11032.jpg?1779486608",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11033.jpg?1779486609",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11034.jpg?1779486610",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11035.jpg?1779486612",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11036.jpg?1779486613",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11037.jpg?1779486614",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11038.jpg?1779486615",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11039.jpg?1779486616",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11040.jpg?1779486617",
+      "https://s3.amazonaws.com/static.nidoimovel.com.br/1a0a283bfe7c549dee6c638a05200e32/imovel/KB/KB11/KB11041.jpg?1779486618"
+    ]
+  }
+];
+
+/* =============================================
+   ESTADO
+   ============================================= */
+var imoveis = IMOVEIS_FIXOS.slice(); // começa com os fixos
+
+/* =============================================
+   INICIALIZAÇÃO
+   ============================================= */
+(function init() {
+  popularSelect(imoveis);
+  setStatus('ok', imoveis.length + ' imóveis disponíveis.');
+})();
+
+function popularSelect(lista) {
+  var sel = document.getElementById('imovel-select');
+  sel.innerHTML = '';
+  lista.forEach(function(im) {
+    var opt = document.createElement('option');
+    opt.value = im.codigo;
+    opt.textContent = im.codigo + ' — ' + im.nomeEmp + ' · ' + im.bairro;
+    sel.appendChild(opt);
+  });
+}
+
+/* =============================================
+   CARREGAR XML AO VIVO
+   ============================================= */
+/* lista de proxies CORS públicos — tenta em sequência até um funcionar */
+var PROXIES = [
+  function(url) { return { endpoint: 'https://corsproxy.io/?' + encodeURIComponent(url), extract: function(r) { return r.text(); } }; },
+  function(url) { return { endpoint: 'https://api.allorigins.win/get?url=' + encodeURIComponent(url), extract: function(r) { return r.json().then(function(d) { return d.contents; }); } }; },
+  function(url) { return { endpoint: 'https://thingproxy.freeboard.io/fetch/' + url, extract: function(r) { return r.text(); } }; },
+  function(url) { return { endpoint: 'https://cors-anywhere.herokuapp.com/' + url, extract: function(r) { return r.text(); } }; }
+];
+
+/* -------------------------------------------
+   Parser formato NIDOImóvel (Carga KB.xml)
+   ------------------------------------------- */
+function parsearXMLNido(xml) {
+  var nodes = xml.querySelectorAll('Imovel');
+  if (!nodes.length) return null;
+  var lista = [];
+  nodes.forEach(function(n) {
+    var g = function(tag) { var el = n.querySelector(tag); return el ? el.textContent.trim() : ''; };
+    var fs = [];
+    n.querySelectorAll('Foto').forEach(function(f) {
+      var u = f.querySelector('URLArquivo'); if (u && u.textContent.trim()) fs.push(u.textContent.trim());
+    });
+    lista.push({
+      codigo: g('CodigoImovel'),
+      nomeEmp: g('NomeEmpreendimento') || g('Titulo').split('|')[0].trim(),
+      tipo: g('TipoImovel'), endereco: g('Endereco'), numero: g('Numero'),
+      bairro: g('Bairro'), cidade: g('Cidade'), uf: g('UF'), andar: g('Andar'),
+      area: g('AreaUtil'), areaTotal: g('AreaTotal'),
+      quartos: g('QtdDormitorios'), suites: g('QtdSuites'),
+      vagas: g('QtdVagas'), banheiros: g('QtdBanheiros'),
+      transaction: g('TransactionType'),
+      precoVenda: g('PrecoVenda'), precoLocacao: g('PrecoLocacao'),
+      condominio: g('PrecoCondominio'), iptu: g('Iptu'), tipoIptu: g('TipoIptu'),
+      observacao: g('Observacao'), fotos: fs
+    });
+  });
+  return lista;
+}
+
+/* -------------------------------------------
+   Parser formato VRSync (VivaReal / GAS)
+   ------------------------------------------- */
+function parsearXMLVR(xml) {
+  var nodes = xml.querySelectorAll('Listing');
+  if (!nodes.length) return null;
+  var lista = [];
+  nodes.forEach(function(n) {
+    var g = function(tag) {
+      var el = n.querySelector(tag); return el ? el.textContent.trim() : '';
+    };
+    var fs = [];
+    n.querySelectorAll('Item[medium="image"]').forEach(function(i) {
+      var u = i.textContent.trim(); if (u.startsWith('http')) fs.push(u);
+    });
+    var venda = parseFloat(g('ListPrice')) || 0;
+    var aluguel = parseFloat(g('RentalPrice')) || 0;
+    var transaction = g('TransactionType');
+    var addr = [g('Address'), g('StreetNumber'), g('Complement')].filter(Boolean).join(' ');
+    lista.push({
+      codigo: g('ListingID'),
+      nomeEmp: (function(cod, titulo) {
+        var NOMES = {
+          'KB1':'Área Comercial BR-153','KB2':'Mundi Consciente Square','KB3':'Atmos City Design',
+          'KB4':'Jardins França','KB5':'Europark','KB6':'Residencial Granville',
+          'KB7':'Chateau Marista LifeStyle','KB9':'Condomínio EuroHouse','KB10':'La Residence Visionaire',
+          'KB11':'Arte Square','KB12':'Terraço Bougainville','KB13':'Vero Home Gourmet',
+          'KB14':'Solaris Laguna','KB15':'Terra Mundi Parque Cascavel','KB17':'Cristal Tower',
+          'KB18':'Jardins Barcelona','KB19':'Singah','KB20':'Persona Bueno By Brasal'
+        };
+        return NOMES[cod] || titulo.split('|')[0].split(',')[0].trim();
+      })(g('ListingID'), g('Title')),
+      tipo: g('PropertyType').split('/').pop().trim(),
+      endereco: addr,
+      numero: g('StreetNumber'),
+      bairro: g('Neighborhood'),
+      cidade: g('City'),
+      uf: 'GO',
+      andar: '',
+      area: g('LivingArea') || g('ConstructedArea'),
+      areaTotal: g('LotArea') || g('ConstructedArea'),
+      quartos: g('Bedrooms'),
+      suites: g('Suites'),
+      vagas: g('Garage'),
+      banheiros: g('Bathrooms'),
+      transaction: transaction,
+      precoVenda: transaction === 'For Sale' ? String(venda).replace('.', ',') : '0,00',
+      precoLocacao: transaction === 'For Rent' ? String(aluguel).replace('.', ',') : '0,00',
+      condominio: g('PropertyAdministrationFee'),
+      iptu: g('Iptu'),
+      tipoIptu: '0',
+      observacao: g('Description'),
+      fotos: fs
+    });
+  });
+  return lista;
+}
+
+function parsearXML(xmlText) {
+  var parser = new DOMParser();
+  var xml = parser.parseFromString(xmlText, 'text/xml');
+  var lista = parsearXMLNido(xml) || parsearXMLVR(xml);
+  if (!lista || !lista.length) throw new Error('Nenhum imóvel encontrado no XML.');
+  return lista;
+}
+
+/* -------------------------------------------
+   Mapper JSON do Google Apps Script
+   ------------------------------------------- */
+function mapearJSON(arr) {
+  /* Tabela de nomes canônicos por código — evita herdar subtítulos do título VRSync */
+  var NOMES_FIXOS = {
+    'KB1':'Área Comercial BR-153','KB2':'Mundi Consciente Square','KB3':'Atmos City Design',
+    'KB4':'Jardins França','KB5':'Europark','KB6':'Residencial Granville',
+    'KB7':'Chateau Marista LifeStyle','KB9':'Condomínio EuroHouse','KB10':'La Residence Visionaire',
+    'KB11':'Arte Square','KB12':'Terraço Bougainville','KB13':'Vero Home Gourmet',
+    'KB14':'Solaris Laguna','KB15':'Terra Mundi Parque Cascavel','KB17':'Cristal Tower',
+    'KB18':'Jardins Barcelona','KB19':'Singah','KB20':'Persona Bueno By Brasal'
+  };
+  return arr.map(function(im) {
+    var venda = im.operacao === 'Venda';
+    var valor = im.valor ? String(im.valor) : '0';
+    var cod = im.id || '';
+    var nome = NOMES_FIXOS[cod] || (im.titulo ? im.titulo.split('|')[0].split(',')[0].trim() : 'Imóvel');
+    return {
+      codigo: cod,
+      nomeEmp: nome,
+      tipo: im.tipo || '',
+      endereco: im.endereco || '',
+      numero: '',
+      bairro: im.bairro || '',
+      cidade: im.cidade || '',
+      uf: 'GO',
+      andar: im.andar ? String(im.andar) : '',
+      area: im.area ? String(im.area) : '',
+      areaTotal: im.area ? String(im.area) : '',
+      quartos: im.quartos ? String(im.quartos) : '',
+      suites: im.suites ? String(im.suites) : '',
+      vagas: im.vagas ? String(im.vagas) : '',
+      banheiros: im.banheiros ? String(im.banheiros) : '',
+      transaction: venda ? 'For Sale' : 'For Rent',
+      precoVenda: venda ? valor : '0,00',
+      precoLocacao: !venda ? valor : '0,00',
+      condominio: im.condominio ? String(im.condominio) : '',
+      iptu: im.iptu ? String(im.iptu) : '',
+      tipoIptu: '0',
+      observacao: im.descricao || '',
+      fotos: Array.isArray(im.fotos) ? im.fotos : []
+    };
+  }).filter(function(i) { return i.codigo; });
+}
+
+function tentarProxy(url, indice) {
+  if (indice >= PROXIES.length) {
+    setStatus('error', 'Todos os proxies falharam. Use o botão "Carregar arquivo .xml" abaixo ou use os dados embutidos.');
+    return;
+  }
+  var p = PROXIES[indice](url);
+  setStatus('loading', 'Tentando proxy ' + (indice + 1) + ' de ' + PROXIES.length + '...');
+  fetch(p.endpoint, { signal: AbortSignal.timeout(8000) })
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return p.extract(r);
+    })
+    .then(function(texto) {
+      var lista = parsearXML(texto);
+      imoveis = lista;
+      popularSelect(imoveis);
+      setStatus('ok', lista.length + ' imóveis carregados com sucesso (proxy ' + (indice + 1) + ').');
+    })
+    .catch(function() {
+      tentarProxy(url, indice + 1);
+    });
+}
+
+function carregarXML() {
+  var url = document.getElementById('xml-url').value.trim();
+  if (!url) { setStatus('error', 'Informe a URL do feed.'); return; }
+
+  /* Google Apps Script → JSON direto, sem proxy */
+  if (url.indexOf('script.google.com') !== -1) {
+    setStatus('loading', 'Carregando dados do Google Apps Script...');
+    var ctrl = new AbortController();
+    var timer = setTimeout(function() { ctrl.abort(); }, 15000);
+    fetch(url, { signal: ctrl.signal })
+      .then(function(r) {
+        clearTimeout(timer);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(json) {
+        if (json.error) throw new Error(json.message || 'Erro no servidor');
+        var lista = mapearJSON(Array.isArray(json) ? json : []);
+        if (!lista.length) throw new Error('Nenhum imóvel retornado.');
+        imoveis = lista;
+        popularSelect(imoveis);
+        setStatus('ok', lista.length + ' imóveis carregados com sucesso.');
+      })
+      .catch(function(err) {
+        clearTimeout(timer);
+        setStatus('error', 'Erro ao carregar JSON: ' + err.message);
+      });
+    return;
+  }
+
+  /* XML via proxies CORS */
+  tentarProxy(url, 0);
+}
+
+function carregarArquivo(input) {
+  var file = input.files[0];
+  if (!file) return;
+  setStatus('loading', 'Lendo arquivo ' + file.name + '...');
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var lista = parsearXML(e.target.result);
+      imoveis = lista;
+      popularSelect(imoveis);
+      setStatus('ok', lista.length + ' imóveis carregados do arquivo ' + file.name + '.');
+    } catch(err) {
+      setStatus('error', 'Erro ao ler arquivo: ' + err.message);
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+  input.value = '';
+}
+
+/* =============================================
+   STATUS HELPER
+   ============================================= */
+function setStatus(tipo, msg) {
+  var el = document.getElementById('status');
+  el.className = 'status-bar' + (tipo === 'error' ? ' error' : tipo === 'ok' ? ' ok' : '');
+  if (tipo === 'loading') {
+    el.innerHTML = '<span class="loader"></span><span>' + msg + '</span>';
+  } else {
+    el.innerHTML = (tipo === 'ok' ? '<span class="dot"></span>' : '') + '<span>' + msg + '</span>';
+  }
+}
+
+/* =============================================
+   HELPERS
+   ============================================= */
+function fmtPreco(v) {
+  if (!v || v === '0,00' || v === '0' || v === '') return null;
+  var num = parseFloat(v.replace(/\./g, '').replace(',', '.'));
+  if (isNaN(num) || num === 0) return null;
+  return 'R$ ' + num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function extrairDestaques(obs) {
+  if (!obs) return ['', '', ''];
+
+  // Limpa quebras de linha e espaços extras
+  var texto = obs.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+
+  // Divide em sentenças por ponto final seguido de espaço e maiúscula
+  var sentencas = [];
+  var atual = '';
+  var palavras = texto.split(' ');
+  for (var i = 0; i < palavras.length; i++) {
+    atual += (atual ? ' ' : '') + palavras[i];
+    // Fim de sentença: palavra termina com ponto e próxima começa com maiúscula
+    var proxima = palavras[i + 1] || '';
+    var terminaComPonto = /\.$/.test(palavras[i]) && !/^[A-Z]{2,}$/.test(palavras[i]);
+    var proximaMaiuscula = proxima && /^[A-ZÁÉÍÓÚÀÂÊÔÃÕ]/.test(proxima);
+    if (terminaComPonto && (proximaMaiuscula || i === palavras.length - 1)) {
+      if (atual.trim().length > 50) sentencas.push(atual.trim());
+      atual = '';
+    }
+  }
+  if (atual.trim().length > 50) sentencas.push(atual.trim());
+
+  // Seleciona 3 destaques por palavras-chave — prioriza características do imóvel
+  var kws = [
+    ['varanda','gourmet','churrasqueira','piscina','terraço'],
+    ['suíte','master','closet','banheiro','dormitório','quarto'],
+    ['localiz','acesso','região','próximo','bairro','condomín','lazer','academia']
+  ];
+  var resultado = ['', '', ''];
+  sentencas.forEach(function(s) {
+    var l = s.toLowerCase();
+    for (var g = 0; g < kws.length; g++) {
+      if (resultado[g]) continue;
+      for (var k = 0; k < kws[g].length; k++) {
+        if (l.indexOf(kws[g][k]) > -1) {
+          resultado[g] = s;
+          break;
+        }
+      }
+    }
+  });
+
+  // Preenche os vazios com as primeiras sentenças disponíveis
+  var usadas = resultado.filter(Boolean);
+  sentencas.forEach(function(s) {
+    if (usadas.indexOf(s) === -1 && resultado.filter(Boolean).length < 3) {
+      for (var i = 0; i < 3; i++) {
+        if (!resultado[i]) { resultado[i] = s; usadas.push(s); break; }
+      }
+    }
+  });
+
+  return resultado;
+}
+
+function iconSVG(tipo) {
+  var icons = {
+    area: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>',
+    bed:  '<svg viewBox="0 0 24 24"><path d="M2 20V10a2 2 0 012-2h16a2 2 0 012 2v10M2 16h20M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2"/></svg>',
+    car:  '<svg viewBox="0 0 24 24"><rect x="2" y="10" width="20" height="10" rx="2"/><path d="M5 10L7.5 4h9L19 10"/><circle cx="7" cy="17" r="1"/><circle cx="17" cy="17" r="1"/></svg>',
+    bath: '<svg viewBox="0 0 24 24"><path d="M4 12h16a1 1 0 011 1v3a4 4 0 01-4 4H7a4 4 0 01-4-4v-3a1 1 0 011-1zM6 12V5a2 2 0 014 0v1"/><line x1="4" y1="16" x2="4" y2="20"/><line x1="20" y1="16" x2="20" y2="20"/></svg>'
+  };
+  return icons[tipo] || '';
+}
+
+/* =============================================
+   GERAÇÃO DAS SLIDES
+   ============================================= */
+function gerarApresentacao() {
+  var codigo = document.getElementById('imovel-select').value;
+  var im = imoveis.find(function(x) { return x.codigo === codigo; });
+  if (!im) { setStatus('error', 'Imóvel não encontrado.'); return; }
+
+  var addr = im.endereco + (im.numero ? ', ' + im.numero : '');
+  var emp  = im.nomeEmp || im.tipo;
+  var hero = im.fotos[0] || '';
+  var isVenda = im.transaction !== 'For Rent';
+  var preco = isVenda ? fmtPreco(im.precoVenda) : fmtPreco(im.precoLocacao);
+  var precoLabel = isVenda ? 'Venda' : 'Locação';
+  var destaques = extrairDestaques(im.observacao);
+
+  var html = '';
+
+  /* ── SLIDE 1: CAPA com foto de fundo ── */
+  html += '<div class="slide slide-capa">' +
+    (hero ? '<div class="capa-hero"><img src="' + hero + '" alt=""><div class="capa-hero-overlay"></div></div>' : '') +
+    '<div class="capa-content">' +
+      '<div class="capa-top">' +
+        '<span>Apresentação de imóvel</span>' +
+        '<span>Cód. ' + im.codigo + '</span>' +
+      '</div>' +
+      '<div class="capa-mid">' +
+        '<div class="capa-logo-name">KASBAUM</div>' +
+        '<div class="capa-divider"></div>' +
+        '<div class="capa-prop-name">' + emp + '</div>' +
+        '<div class="capa-prop-addr">' + addr + ' · ' + im.bairro + '</div>' +
+      '</div>' +
+      '<div style="visibility:hidden;font-size:1px;">.</div>' +
+    '</div>' +
+  '</div>';
+
+  /* ── SLIDES DE FOTO ── */
+  var maxFotos = im.fotos.length;
+  for (var i = 0; i < maxFotos; i++) {
+    var fotoClass = 'slide slide-foto';
+    html += '<div class="' + fotoClass + '">' +
+      '<img src="' + im.fotos[i] + '" alt="Foto ' + (i+1) + ' — ' + emp + '">' +
+      '<div class="watermark">KASBAUM</div>' +
+    '</div>';
+  }
+
+  /* ── SLIDE INFO ── */
+  /* ícones inline */
+  /* tijolinhos = área útil */
+  function svgAreaUtil() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(244,241,236,0.7)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="2" y="4" width="9" height="4" rx="0.4"/>' +
+      '<rect x="13" y="4" width="9" height="4" rx="0.4"/>' +
+      '<rect x="2" y="10" width="5" height="4" rx="0.4"/>' +
+      '<rect x="9" y="10" width="6" height="4" rx="0.4"/>' +
+      '<rect x="17" y="10" width="5" height="4" rx="0.4"/>' +
+      '<rect x="2" y="16" width="9" height="4" rx="0.4"/>' +
+      '<rect x="13" y="16" width="9" height="4" rx="0.4"/>' +
+    '</svg>';
+  }
+  /* perímetro tracejado = área total */
+  function svgAreaTotal() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(244,241,236,0.7)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="2" y="3" width="20" height="18" rx="0.4" stroke-dasharray="2 1.5"/>' +
+      '<line x1="5" y1="7" x2="19" y2="7"/>' +
+      '<polyline points="7,5.5 5,7 7,8.5"/>' +
+      '<polyline points="17,5.5 19,7 17,8.5"/>' +
+      '<line x1="17" y1="10" x2="17" y2="18"/>' +
+      '<polyline points="15.5,12 17,10 18.5,12"/>' +
+      '<polyline points="15.5,16 17,18 18.5,16"/>' +
+    '</svg>';
+  }
+  function svgBed()  { return '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(244,241,236,0.7)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5"/><path d="M3 18v2M21 18v2"/><path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/></svg>'; }
+  function svgCar()  { return '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(244,241,236,0.7)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M4 13h16v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H7v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M7 16h.01M17 16h-.01"/></svg>'; }
+  function svgBath() { return '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(244,241,236,0.7)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><path d="M9 6h2"/><path d="M7 19l-1 2M18 19l1 2"/></svg>'; }
+
+  var icones = '';
+  var SEP = '<span class="icon-sep"></span>';
+  if (im.area) icones += '<span class="icon-block">' + svgAreaUtil() + '<span>' + im.area + ' m² útil</span></span>';
+  if (im.areaTotal && im.areaTotal !== im.area) icones += SEP + '<span class="icon-block">' + svgAreaTotal() + '<span>' + im.areaTotal + ' m² total</span></span>';
+  var dormLabel = (im.suites && im.suites !== '0') ? im.suites + ' suíte' + (parseInt(im.suites)>1?'s':'') : (im.quartos && im.quartos!=='0' ? im.quartos + ' quarto'+(parseInt(im.quartos)>1?'s':'') : '');
+  if (dormLabel) icones += SEP + '<span class="icon-block">' + svgBed() + '<span>' + dormLabel + '</span></span>';
+  if (im.vagas && im.vagas!=='0') icones += SEP + '<span class="icon-block">' + svgCar() + '<span>' + im.vagas + ' vaga'+(parseInt(im.vagas)>1?'s':'')+'</span></span>';
+  if (im.banheiros && im.banheiros!=='0') icones += SEP + '<span class="icon-block">' + svgBath() + '<span>' + im.banheiros + ' banheiro'+(parseInt(im.banheiros)>1?'s':'')+'</span></span>';
+
+  var hlHTML = '';
+  // Texto corrido da observação, até 3000 caracteres
+  var obsTexto = (im.observacao || '').replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+  if (obsTexto.length > 3000) {
+    obsTexto = obsTexto.substring(0, 3000).replace(/\s\w+$/, '') + '...';
+  }
+  hlHTML = '<div class="obs-texto">' + obsTexto + '</div>';
+
+  var precosHTML = '';
+  if (preco) precosHTML += '<div class="price-block"><span class="price-label">'+precoLabel+'</span><span class="price-val">'+preco+'</span></div>';
+  var cond = fmtPreco(im.condominio);
+  var iptu2 = fmtPreco(im.iptu);
+  if (cond && parseFloat((im.condominio||'0').replace(/\./g,'').replace(',','.')) < 50000)
+    precosHTML += '<div class="price-block"><span class="price-label">Condomínio</span><span class="price-val">'+cond+'</span></div>';
+  if (iptu2 && im.iptu !== '0') {
+    var iptuLabel = (im.tipoIptu === '1') ? 'IPTU mensal' : 'IPTU anual';
+    precosHTML += '<div class="price-block"><span class="price-label">'+iptuLabel+'</span><span class="price-val">'+iptu2+'</span></div>';
+  }
+
+  /* foto lateral do slide info */
+  var infoFoto = im.fotos[Math.floor(im.fotos.length/2)] || im.fotos[0] || '';
+
+  html += '<div class="slide slide-info">' +
+    '<div class="info-left">' +
+      '<div class="info-header">Informações sobre o imóvel</div>' +
+      '<div class="info-title">' + emp + '</div>' +
+      '<div class="info-addr">' + addr + ' · ' + im.bairro + (im.andar ? ' · ' + im.andar + 'º andar' : '') + '</div>' +
+      '<div class="info-icons">' + icones + '</div>' +
+      '<div class="info-highlights">' + hlHTML + '</div>' +
+      '<div class="info-prices">' + precosHTML + '</div>' +
+    '</div>' +
+    '<div class="info-right">' +
+      (infoFoto ? '<img src="' + infoFoto + '" alt="">' : '') +
+      '<div class="info-right-wm">KASBAUM</div>' +
+    '</div>' +
+  '</div>';
+
+  /* ── SLIDE ENCERRAMENTO ── */
+  html += '<div class="slide slide-fim">' +
+    '<div class="fim-logo">KASBAUM</div>' +
+    '<div class="fim-sub">Relações Imobiliárias</div>' +
+  '</div>';
+
+  /* Injeta no DOM */
+  document.getElementById('slides').innerHTML = html;
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('presentation-area').style.display = 'block';
+  document.getElementById('prop-title').textContent = emp;
+  document.getElementById('prop-sub').textContent = im.codigo + ' · ' + addr + ', ' + im.bairro + ' — ' + (maxFotos + 2) + ' páginas';
+
+  setStatus('ok', 'Apresentação gerada: ' + im.codigo + ' — ' + emp + ' (' + (maxFotos + 2) + ' páginas). Use Imprimir para salvar em PDF.');
+  setTimeout(function() {
+    document.getElementById('presentation-area').scrollIntoView({ behavior: 'smooth' });
+  }, 150);
+}
+</script>
+</body>
+</html>
