@@ -236,8 +236,8 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 }
 .print-bar .prop-title { font-family: 'Jost', sans-serif; font-size: 16px; font-weight: 300; letter-spacing: 0.08em; color: #f4f1ec; }
 .print-bar .prop-sub { font-size: 11px; color: rgba(244,241,236,0.45); margin-top: 2px; }
+.print-btn-group { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; }
 .btn-print {
-  margin-left: auto;
   padding: 10px 24px;
   border: 1px solid rgba(244,241,236,0.25);
   border-radius: 3px;
@@ -681,7 +681,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
    compatibilidade entre iOS/macOS/Safari/Chrome mobile/Android/tablet.
    ===================================================================== */
 @media print {
-  @page { size: A4 landscape; margin: 3mm; }
+  @page { size: 297mm 210mm; margin: 3mm; }
   html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; background: #0c0c0c !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; -webkit-text-size-adjust: 100% !important; text-size-adjust: 100% !important; }
   .topbar, .panel, .status-bar, .print-bar, .empty-state, .no-print, .app > *:not(.main), .main > *:not(#presentation-area) { display: none !important; }
   .main { padding: 0 !important; margin: 0 !important; background: transparent !important; }
@@ -843,10 +843,16 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
           <div class="prop-title" id="prop-title"></div>
           <div class="prop-sub" id="prop-sub"></div>
         </div>
+        <div class="print-btn-group">
         <button class="btn-print" onclick="window.print()">
           <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Imprimir / Salvar PDF
         </button>
+        <button class="btn-print" onclick="imprimirIsolado()" title="Use esta opção se a impressão pelo iPhone/Safari sair desconfigurada">
+          <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/></svg>
+          Imprimir (iPhone/Safari)
+        </button>
+        </div>
       </div>
       <div class="slides-wrapper" id="slides"></div>
     </div>
@@ -1287,6 +1293,57 @@ function carregarArquivo(input) {
   };
   reader.readAsText(file, 'UTF-8');
   input.value = '';
+}
+
+function imprimirIsolado() {
+  var slidesEl = document.getElementById('slides');
+  if (!slidesEl || !slidesEl.innerHTML.trim()) { setStatus('error', 'Gere a apresentação antes de imprimir.'); return; }
+  var estiloCompleto = document.querySelector('style') ? document.querySelector('style').innerHTML : '';
+  var classesTema = document.getElementById('presentation-area').className
+    .split(' ').filter(function(c){ return c.indexOf('theme-') === 0; }).join(' ');
+
+  var iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;';
+  document.body.appendChild(iframe);
+  var doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open();
+  doc.write(
+    '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+    '<style>' + estiloCompleto + '</style>' +
+    '</head><body style="background:#0c0c0c;">' +
+    '<div class="app"><main class="main" style="padding:0;">' +
+    '<div id="presentation-area" class="' + classesTema + '" style="display:block">' +
+    '<div class="slides-wrapper" id="slides">' + slidesEl.innerHTML + '</div>' +
+    '</div></main></div>' +
+    '</body></html>'
+  );
+  doc.close();
+
+  // Espera as imagens do iframe carregarem antes de chamar a impressão
+  var imgs = doc.querySelectorAll('img');
+  var pendentes = imgs.length;
+  function tentarImprimir() {
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    setTimeout(function() { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 2000);
+  }
+  if (pendentes === 0) {
+    setTimeout(tentarImprimir, 300);
+  } else {
+    var carregadas = 0;
+    var finalizado = false;
+    imgs.forEach(function(img) {
+      img.addEventListener('load', verificar);
+      img.addEventListener('error', verificar);
+    });
+    function verificar() {
+      carregadas++;
+      if (carregadas >= pendentes && !finalizado) { finalizado = true; setTimeout(tentarImprimir, 200); }
+    }
+    // trava de segurança: imprime mesmo se alguma imagem nunca disparar load/error
+    setTimeout(function() { if (!finalizado) { finalizado = true; tentarImprimir(); } }, 6000);
+  }
 }
 
 function setStatus(tipo, msg) {
