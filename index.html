@@ -162,6 +162,45 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   white-space: nowrap;
 }
 .hide-options input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; accent-color: #f4f1ec; }
+.hide-warning {
+  font-size: 11px;
+  color: #ff5c5c;
+  font-weight: 500;
+  max-width: 260px;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* ===== BOTÕES FLUTUANTES DE NAVEGAÇÃO (subir/descer rápido) ===== */
+.scroll-fab-group {
+  position: fixed;
+  right: 24px;
+  bottom: 28px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.scroll-fab {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(244,241,236,0.18);
+  background: #1a1a1a;
+  color: #f4f1ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+  transition: background .15s, transform .15s;
+}
+.scroll-fab:hover { background: #2a2a2a; transform: translateY(-2px); }
+.scroll-fab svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 768px) {
+  .scroll-fab-group { right: 14px; bottom: 18px; }
+  .scroll-fab { width: 40px; height: 40px; }
+}
 
 .status-bar {
   padding: 10px 40px;
@@ -354,7 +393,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   color: #f4f1ec;
 }
 .info-left {
-  flex: 0 0 54%;
+  flex: 0 0 62%;
   display: flex;
   flex-direction: column;
   padding: 3% 4.5%;
@@ -442,7 +481,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 18;
+  -webkit-line-clamp: 22;
   hyphens: auto;
 }
 
@@ -644,7 +683,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 @media print {
   @page { size: A4 landscape; margin: 3mm; }
   html, body { width: 100% !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; background: #0c0c0c !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; -webkit-text-size-adjust: 100% !important; text-size-adjust: 100% !important; }
-  .topbar, .panel, .status-bar, .print-bar, .empty-state, .app > *:not(.main), .main > *:not(#presentation-area) { display: none !important; }
+  .topbar, .panel, .status-bar, .print-bar, .empty-state, .no-print, .app > *:not(.main), .main > *:not(#presentation-area) { display: none !important; }
   .main { padding: 0 !important; margin: 0 !important; background: transparent !important; }
   .slides-wrapper { gap: 0 !important; margin: 0 !important; padding: 0 !important; }
   #presentation-area { margin: 0 !important; padding: 0 !important; }
@@ -693,7 +732,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .slide-foto img { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; }
   .slide-foto .watermark { font-size: 9.6mm !important; color: rgba(255,255,255,0.55) !important; -webkit-text-fill-color: rgba(255,255,255,0.55) !important; text-shadow: none !important; background: transparent !important; }
   .slide-info { display: flex !important; flex-direction: row !important; height: 204mm !important; max-height: none !important; overflow: hidden !important; }
-  .info-left { flex: 0 0 54% !important; display: flex !important; flex-direction: column !important; padding: 7.7mm 8.7mm !important; height: 100% !important; max-height: 204mm !important; overflow: hidden !important; }
+  .info-left { flex: 0 0 62% !important; display: flex !important; flex-direction: column !important; padding: 7.7mm 8.7mm !important; height: 100% !important; max-height: 204mm !important; overflow: hidden !important; }
   .info-right { flex: 1 !important; position: relative !important; overflow: hidden !important; }
   .info-right img { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; }
   .info-right-wm { background: transparent !important; color: rgba(255,255,255,0.55) !important; -webkit-text-fill-color: rgba(255,255,255,0.55) !important; text-shadow: none !important; font-size: 5.8mm !important; }
@@ -703,7 +742,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .info-icons     { font-size: 4.4mm !important; margin-bottom: 4mm !important; padding-bottom: 4mm !important; flex-shrink: 0 !important; }
   .icon-block svg { width: 4.6mm !important; height: 4.6mm !important; }
   .info-highlights { flex: 1 1 auto !important; overflow: hidden !important; margin-bottom: 4mm !important; min-height: 0 !important; }
-  .obs-texto      { font-size: 3.9mm !important; line-height: 1.65 !important; -webkit-line-clamp: 16 !important; }
+  .obs-texto      { font-size: 3.9mm !important; line-height: 1.65 !important; -webkit-line-clamp: 20 !important; }
   .slide-fim { display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; height: 204mm !important; max-height: none !important; background: #0c0c0c !important; }
   .theme-arbor .slide-fim { background: #10241b !important; }
   .theme-paulo .slide-fim { background: #4f5230 !important; }
@@ -772,6 +811,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
           <label><input type="checkbox" id="ocultar-condominio" onchange="salvarOcultacao()"> Condomínio</label>
           <label><input type="checkbox" id="ocultar-iptu" onchange="salvarOcultacao()"> IPTU</label>
         </div>
+        <div class="hide-warning">Atenção: para imóveis com terreno (casas, chácaras, lotes), desmarque "Área total" para que ela apareça na apresentação.</div>
       </div>
 
       <!-- BOTÕES DE GERAÇÃO POR MARCA -->
@@ -811,6 +851,16 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
       <div class="slides-wrapper" id="slides"></div>
     </div>
   </main>
+
+  <!-- BOTÕES FLUTUANTES DE NAVEGAÇÃO -->
+  <div class="scroll-fab-group no-print" id="scroll-fab-group" style="display:none">
+    <button class="scroll-fab" title="Ir para o topo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+      <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+    <button class="scroll-fab" title="Ir para o final" onclick="window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'})">
+      <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
 
 </div>
 
@@ -970,7 +1020,8 @@ var IMOVEIS_FIXOS = [
    ESTADO
    ============================================= */
 var imoveis = IMOVEIS_FIXOS.slice();
-var OCULTACOES = {}; // codigo -> { condominio: bool, iptu: bool }
+var OCULTACOES = {}; // codigo -> { condominio: bool, iptu: bool, areaTotal: bool }
+var ULTIMA_MARCA = null; // última marca gerada, usada para atualizar a prévia ao mudar checkboxes
 
 /* =============================================
    INICIALIZAÇÃO
@@ -1021,8 +1072,9 @@ function filtrarImoveis(query) {
    ============================================= */
 function carregarOcultacoes() {
   var codigo = document.getElementById('imovel-select').value;
-  var o = OCULTACOES[codigo] || { condominio: false, iptu: false, areaTotal: false };
-  document.getElementById('ocultar-areatotal').checked = !!o.areaTotal;
+  var o = OCULTACOES[codigo] || {};
+  // Área total vem OCULTA por padrão (marcada); condomínio/IPTU vêm visíveis por padrão (desmarcados)
+  document.getElementById('ocultar-areatotal').checked = (typeof o.areaTotal === 'boolean') ? o.areaTotal : true;
   document.getElementById('ocultar-condominio').checked = !!o.condominio;
   document.getElementById('ocultar-iptu').checked = !!o.iptu;
 }
@@ -1035,6 +1087,10 @@ function salvarOcultacao() {
     condominio: document.getElementById('ocultar-condominio').checked,
     iptu: document.getElementById('ocultar-iptu').checked
   };
+  // Se já existe uma apresentação gerada na tela para este imóvel, atualiza na hora
+  if (ULTIMA_MARCA && document.getElementById('presentation-area').style.display !== 'none') {
+    gerarApresentacao(ULTIMA_MARCA);
+  }
 }
 
 /* =============================================
@@ -1264,6 +1320,7 @@ function gerarApresentacao(brandId) {
   var codigo = document.getElementById('imovel-select').value;
   var im = imoveis.find(function(x) { return x.codigo === codigo; });
   if (!im) { setStatus('error', 'Imóvel não encontrado.'); return; }
+  ULTIMA_MARCA = brandId;
 
   var marca = MARCAS[brandId] || MARCAS['kasbaum'];
 
@@ -1323,7 +1380,8 @@ function gerarApresentacao(brandId) {
   var icones = '';
   var SEP = '<span class="icon-sep"></span>';
   if (im.area) icones += '<span class="icon-block">' + svgAreaUtil() + '<span>' + im.area + ' m² útil</span></span>';
-  if (im.areaTotal && !oculta.areaTotal) icones += SEP + '<span class="icon-block">' + svgAreaTotal() + '<span>' + im.areaTotal + ' m² total</span></span>';
+  var esconderAreaTotal = (typeof oculta.areaTotal === 'boolean') ? oculta.areaTotal : true;
+  if (im.areaTotal && !esconderAreaTotal) icones += SEP + '<span class="icon-block">' + svgAreaTotal() + '<span>' + im.areaTotal + ' m² total</span></span>';
 
   var qtdQuartos = parseInt(im.quartos) || 0;
   var qtdSuites = parseInt(im.suites) || 0;
@@ -1393,6 +1451,7 @@ function gerarApresentacao(brandId) {
   document.getElementById('presentation-area').classList.toggle('theme-celio', brandId === 'celio');
   document.getElementById('empty-state').style.display = 'none';
   document.getElementById('presentation-area').style.display = 'block';
+  document.getElementById('scroll-fab-group').style.display = 'flex';
   document.getElementById('prop-title').textContent = emp;
   document.getElementById('prop-sub').textContent = im.codigo + ' · ' + addr + ', ' + im.bairro + ' — ' + (maxFotos + 2) + ' páginas';
 
