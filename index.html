@@ -6,7 +6,7 @@
 <title>Gerador de Apresentações</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&family=Anton&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&family=Anton&family=La+Belle+Aurore&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
 <style>
 /* TT Ramillas é uma fonte licenciada (TypeType). O pacote enviado até agora é um TRIAL,
@@ -141,6 +141,8 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 .btn-gerar.brand-paulo:hover { background: #656a3d; }
 .btn-gerar.brand-celio { background: #17233a; color: #cfd6e0; border: 1px solid rgba(207,214,224,0.35); } /* Azul-marinho + prata — Célio Netto */
 .btn-gerar.brand-celio:hover { background: #1f2f4d; }
+.btn-gerar.brand-bruna { background: #9a4f35; color: #f5e9dc; border: 1px solid rgba(245,233,220,0.34); } /* Terracota — Bruna Chaene */
+.btn-gerar.brand-bruna:hover { background: #ad5b3e; }
 .btn-gerar:disabled { opacity: .3; cursor: not-allowed; }
 
 /* Checkboxes de ocultação por imóvel */
@@ -1098,17 +1100,29 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 }
 .theme-kasbaum .slide-foto { background: #eee8df; }
 .theme-kasbaum .slide-foto > img {
-  inset: 2.8% 2.8% 9% 2.8%;
-  width: auto;
-  height: auto;
+  inset: auto;
+  top: 2.8%;
+  left: 2.8%;
+  width: 94.4%;
+  height: 88.2%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
   filter: saturate(.92) contrast(1.02);
+  /* Mantém o mesmo centro/enquadramento, mas faz a foto ultrapassar levemente a moldura editorial. */
+  transform: scale(1.022);
+  transform-origin: center center;
+  z-index: 2;
 }
 .theme-kasbaum .slide-foto::after {
   content: '';
   position: absolute;
   inset: 2.8% 2.8% 9% 2.8%;
-  border: 1px solid rgba(90,78,62,.28);
+  /* Moldura preta permanece íntegra e visível SOBRE a fotografia. */
+  border: 2px solid #181612;
+  box-shadow: 0 0 0 1px rgba(24,22,18,.10);
   pointer-events: none;
+  z-index: 5;
 }
 .theme-kasbaum .slide-foto .watermark {
   top: auto;
@@ -1574,7 +1588,8 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 /* Ajustes de impressão/PDF para preservar os desenhos individuais. */
 @media print {
   .theme-kasbaum .slide-foto { background: #eee8df !important; }
-  .theme-kasbaum .slide-foto > img { inset: 5.7mm 5.7mm 18.3mm 5.7mm !important; width: auto !important; height: auto !important; }
+  .theme-kasbaum .slide-foto > img { inset:auto!important; top:5.7mm!important; left:5.7mm!important; width:calc(100% - 11.4mm)!important; height:calc(100% - 24mm)!important; object-fit:cover!important; object-position:center!important; display:block!important; transform:scale(1.022)!important; transform-origin:center center!important; z-index:2!important; }
+  .theme-kasbaum .slide-foto::after { content:''!important; position:absolute!important; inset:5.7mm 5.7mm 18.4mm 5.7mm!important; border:.55mm solid #181612!important; box-shadow:0 0 0 .2mm rgba(24,22,18,.10)!important; pointer-events:none!important; z-index:5!important; }
   .theme-kasbaum .slide-foto .watermark { top: auto !important; left: 8.5mm !important; bottom: 5.2mm !important; transform: none !important; color: #4d4439 !important; -webkit-text-fill-color: #4d4439 !important; font-size: 4.1mm !important; }
   .theme-kasbaum .info-left { flex: 0 0 60% !important; background: #eee8df !important; color: #2b2721 !important; padding: 8.5mm 10mm !important; }
   .theme-kasbaum .info-right-wm { inset: auto 7mm 7mm auto !important; display: block !important; font-size: 4.1mm !important; }
@@ -2144,10 +2159,12 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 }
 .theme-arbor .arbor-welcome-note {
   margin-top: 4.2%;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-style: italic;
-  font-size: clamp(13px, 1.55vw, 21px);
-  line-height: 1.35;
+  font-family: 'La Belle Aurore', cursive;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(16px, 1.78vw, 24px);
+  line-height: 1.45;
+  letter-spacing: 0;
   color: #204030;
 }
 .theme-arbor .arbor-welcome-logo {
@@ -2362,7 +2379,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .theme-arbor .arbor-welcome-content { width: 190mm !important; }
   .theme-arbor .arbor-welcome-title { font-size: 4.2mm !important; margin-bottom: 10mm !important; }
   .theme-arbor .arbor-welcome-copy { font-size: 5mm !important; max-width: 190mm !important; }
-  .theme-arbor .arbor-welcome-note { font-size: 4.5mm !important; margin-top: 9mm !important; }
+  .theme-arbor .arbor-welcome-note { font-family: 'La Belle Aurore', cursive !important; font-style: normal !important; font-weight: 400 !important; font-size: 5.2mm !important; line-height: 1.45 !important; margin-top: 9mm !important; }
   .theme-arbor .arbor-welcome-logo { width: 25mm !important; right: 12mm !important; bottom: 11mm !important; }
 
   .theme-arbor .slide-arbor-location {
@@ -2381,6 +2398,669 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .theme-arbor .arbor-map-shell { margin: 12mm 12mm 12mm 0 !important; }
   .theme-arbor .arbor-map-label { font-size: 2.5mm !important; padding: 2mm 3mm !important; }
   .theme-arbor .arbor-map-attribution { font-size: 1.7mm !important; }
+}
+
+
+
+/* =====================================================================
+   LOCALIZAÇÃO & REGIÃO — ESTRUTURA COMUM
+   O layout funcional do mapa é compartilhado; somente paleta, tipografia
+   e acabamento mudam em cada tema abaixo.
+   ===================================================================== */
+.slide-location {
+  display:grid;
+  grid-template-columns:39% 61%;
+  position:relative;
+  overflow:hidden;
+}
+.slide-location .arbor-location-copy {
+  padding:8% 8% 7% 9%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+  z-index:3;
+  min-width:0;
+}
+.slide-location .arbor-location-eyebrow {
+  font-size:clamp(8px,.92vw,12px);
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  margin-bottom:4%;
+}
+.slide-location .arbor-location-title {
+  font-size:clamp(27px,4.2vw,54px);
+  line-height:.98;
+  margin-bottom:5%;
+}
+.slide-location .arbor-location-divider {
+  width:40px;
+  height:1px;
+  margin-bottom:5%;
+  flex:0 0 auto;
+}
+.slide-location .arbor-location-address {
+  font-size:clamp(10px,1.12vw,15px);
+  line-height:1.55;
+  font-weight:500;
+  margin-bottom:4%;
+  hyphens:none;
+  -webkit-hyphens:none;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+.slide-location .arbor-location-text {
+  font-size:clamp(10px,1.06vw,14px);
+  line-height:1.62;
+  hyphens:none;
+  -webkit-hyphens:none;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+.slide-location .arbor-location-coords {
+  margin-top:4.5%;
+  font-size:clamp(7px,.78vw,10px);
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.slide-location .arbor-map-shell {
+  position:relative;
+  overflow:hidden;
+  min-width:0;
+  min-height:0;
+}
+.slide-location .arbor-map {
+  position:absolute;
+  inset:0;
+  background:#eee7dc;
+}
+.slide-location .arbor-map .leaflet-control-container { display:none; }
+.slide-location .arbor-map .leaflet-pane { z-index:200; }
+.slide-location .arbor-map .leaflet-marker-pane { z-index:500; }
+.slide-location .arbor-map-marker {
+  width:34px;
+  height:34px;
+  border-radius:50% 50% 50% 4px;
+  transform:rotate(-45deg);
+  border:2px solid #fff;
+  box-shadow:0 5px 14px rgba(0,0,0,.22);
+  position:relative;
+}
+.slide-location .arbor-map-marker::after {
+  content:'';
+  position:absolute;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  left:10px;
+  top:10px;
+}
+.slide-location .arbor-map-label {
+  position:absolute;
+  left:50%;
+  top:calc(50% + 28px);
+  transform:translateX(-50%);
+  z-index:520;
+  padding:7px 12px;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.slide-location .arbor-map-fallback {
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:12%;
+  color:rgba(45,41,35,.65);
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:clamp(16px,2vw,28px);
+  line-height:1.35;
+  background:#eee7dc;
+  z-index:100;
+}
+.slide-location .arbor-map-attribution {
+  position:absolute;
+  right:10px;
+  bottom:8px;
+  z-index:530;
+  font-size:7px;
+  padding:2px 4px;
+}
+
+/* =====================================================================
+   LOCALIZAÇÃO & REGIÃO — TEMAS INDIVIDUAIS
+   A ARBOR mantém o desenho já aprovado. As demais marcas recebem
+   acabamento próprio sobre a mesma estrutura funcional do mapa.
+   ===================================================================== */
+
+/* KASBAUM — marfim, grafite e areia */
+.theme-kasbaum .slide-arbor-location { background:#eee8df; color:#2d2923; display:grid; grid-template-columns:40% 60%; }
+.theme-kasbaum .arbor-location-copy { background:#eee8df; padding:8% 8% 7% 10%; }
+.theme-kasbaum .arbor-location-eyebrow { color:#8a7963; letter-spacing:.28em; }
+.theme-kasbaum .arbor-location-title { color:#2d2923; font-family:'Playfair Display',Georgia,serif; font-weight:400; text-transform:none; letter-spacing:.01em; }
+.theme-kasbaum .arbor-location-divider { background:#a9977e; width:64px; }
+.theme-kasbaum .arbor-location-address { color:#4d4439; }
+.theme-kasbaum .arbor-location-text { color:#625748; }
+.theme-kasbaum .arbor-location-coords { color:#8a7963; }
+.theme-kasbaum .arbor-map-shell { margin:5% 5% 5% 0; background:#e9e0d4; box-shadow:inset 0 0 0 1px rgba(77,68,57,.18); }
+.theme-kasbaum .arbor-map .leaflet-tile-pane { filter:sepia(.30) saturate(.48) contrast(.88) brightness(1.08); opacity:.88; }
+.theme-kasbaum .arbor-map-marker { background:#2d2923; border-color:#eee8df; box-shadow:0 5px 14px rgba(45,41,35,.25); }
+.theme-kasbaum .arbor-map-marker::after { background:#a9977e; }
+.theme-kasbaum .arbor-map-label { background:rgba(238,232,223,.95); color:#2d2923; border-color:rgba(45,41,35,.18); }
+.theme-kasbaum .arbor-map-attribution { color:rgba(45,41,35,.50); background:rgba(238,232,223,.76); }
+.theme-kasbaum .arbor-map-fallback { background:#e9e0d4; color:#4d4439; }
+
+/* FABRICIO DIAS — petróleo, grafite e azul */
+.theme-fabricio .slide-arbor-location { background:#102636; color:#f2f6f8; display:grid; grid-template-columns:38% 62%; }
+.theme-fabricio .arbor-location-copy { background:#102636; padding:8% 8% 7% 10%; border-right:3px solid #5f9bc1; }
+.theme-fabricio .arbor-location-eyebrow { color:#82b0cd; }
+.theme-fabricio .arbor-location-title { color:#f4f7f9; font-family:'Jost',sans-serif; font-weight:500; letter-spacing:.035em; line-height:.95; }
+.theme-fabricio .arbor-location-divider { background:#5f9bc1; width:86px; height:3px; }
+.theme-fabricio .arbor-location-address { color:#e5eef3; }
+.theme-fabricio .arbor-location-text { color:rgba(229,238,243,.78); }
+.theme-fabricio .arbor-location-coords { color:#82b0cd; }
+.theme-fabricio .arbor-map-shell { margin:4.5%; background:#dce8ee; box-shadow:0 0 0 1px rgba(95,155,193,.34); }
+.theme-fabricio .arbor-map .leaflet-tile-pane { filter:saturate(.42) hue-rotate(165deg) contrast(.88) brightness(1.08); opacity:.90; }
+.theme-fabricio .arbor-map-marker { background:#102636; border-color:#dce8ee; }
+.theme-fabricio .arbor-map-marker::after { background:#5f9bc1; }
+.theme-fabricio .arbor-map-label { background:rgba(16,38,54,.94); color:#f4f7f9; border-color:rgba(95,155,193,.55); }
+.theme-fabricio .arbor-map-attribution { color:rgba(16,38,54,.58); background:rgba(220,232,238,.78); }
+.theme-fabricio .arbor-map-fallback { background:#dce8ee; color:#102636; }
+
+/* PAULO HENRIQUE — oliva e sálvia */
+.theme-paulo .slide-arbor-location { background:#a7ab8d; color:#24261a; display:grid; grid-template-columns:41% 59%; }
+.theme-paulo .arbor-location-copy { background:#a7ab8d; padding:8% 8% 7% 10%; }
+.theme-paulo .arbor-location-eyebrow { color:rgba(36,38,26,.62); }
+.theme-paulo .arbor-location-title { color:#24261a; font-family:'Anton','Inter',sans-serif; font-weight:400; letter-spacing:.01em; line-height:.92; }
+.theme-paulo .arbor-location-divider { background:#4f5230; width:52px; height:2px; }
+.theme-paulo .arbor-location-address { color:#303321; }
+.theme-paulo .arbor-location-text { color:rgba(36,38,26,.82); }
+.theme-paulo .arbor-location-coords { color:rgba(36,38,26,.56); }
+.theme-paulo .arbor-map-shell { margin:5% 5% 5% 0; background:#e3e4d5; box-shadow:inset 0 0 0 1px rgba(79,82,48,.22); }
+.theme-paulo .arbor-map .leaflet-tile-pane { filter:sepia(.12) saturate(.42) hue-rotate(28deg) contrast(.88) brightness(1.08); opacity:.90; }
+.theme-paulo .arbor-map-marker { background:#4f5230; border-color:#e3e4d5; }
+.theme-paulo .arbor-map-marker::after { background:#a7ab8d; }
+.theme-paulo .arbor-map-label { background:rgba(79,82,48,.94); color:#fff; border-color:rgba(255,255,255,.24); }
+.theme-paulo .arbor-map-attribution { color:rgba(36,38,26,.52); background:rgba(227,228,213,.80); }
+.theme-paulo .arbor-map-fallback { background:#e3e4d5; color:#4f5230; }
+
+/* CÉLIO NETTO — azul-marinho e prata */
+.theme-celio .slide-arbor-location { background:#101b2d; color:#eef1f5; display:grid; grid-template-columns:39% 61%; }
+.theme-celio .arbor-location-copy { background:#101b2d; padding:8% 9% 7% 10%; }
+.theme-celio .arbor-location-eyebrow { color:#aeb8c5; }
+.theme-celio .arbor-location-title { color:#eef1f5; font-family:'Playfair Display',Georgia,serif; font-weight:400; letter-spacing:.015em; }
+.theme-celio .arbor-location-divider { background:#cfd6e0; width:48px; }
+.theme-celio .arbor-location-address { color:#d7dde6; }
+.theme-celio .arbor-location-text { color:rgba(215,221,230,.78); }
+.theme-celio .arbor-location-coords { color:#aeb8c5; }
+.theme-celio .arbor-map-shell { margin:5%; background:#e3e7eb; box-shadow:inset 0 0 0 1px rgba(207,214,224,.34); }
+.theme-celio .arbor-map .leaflet-tile-pane { filter:grayscale(.55) saturate(.36) hue-rotate(175deg) contrast(.92) brightness(1.08); opacity:.92; }
+.theme-celio .arbor-map-marker { background:#101b2d; border-color:#e3e7eb; }
+.theme-celio .arbor-map-marker::after { background:#cfd6e0; }
+.theme-celio .arbor-map-label { background:rgba(16,27,45,.95); color:#eef1f5; border-color:rgba(207,214,224,.38); }
+.theme-celio .arbor-map-attribution { color:rgba(16,27,45,.56); background:rgba(227,231,235,.82); }
+.theme-celio .arbor-map-fallback { background:#e3e7eb; color:#101b2d; }
+
+/* =====================================================================
+   BRUNA CHAENE — TERRACOTA PREDOMINANTE
+   Terracota queimado + creme + café escuro. Identidade própria sem
+   interferir em qualquer uma das demais marcas.
+   ===================================================================== */
+.theme-bruna .slide-capa,
+.theme-bruna .slide-foto,
+.theme-bruna .slide-fim { background:#9a4f35; }
+.theme-bruna .slide-info { background:#9a4f35; }
+.theme-bruna .capa-hero img { filter:saturate(.82) contrast(1.04) brightness(.90); }
+.theme-bruna .capa-hero-overlay { background:linear-gradient(90deg,rgba(82,36,25,.88) 0%,rgba(154,79,53,.73) 52%,rgba(154,79,53,.25) 100%); }
+.theme-bruna .capa-content { align-items:flex-start; padding-left:8%; }
+.theme-bruna .capa-mid { align-items:flex-start; text-align:left; width:68%; gap:1.7vw; }
+.theme-bruna .capa-prop-name,
+.theme-bruna .info-title,
+.theme-bruna .fim-logo,
+.theme-bruna .fim-price-val { font-family:'Playfair Display',Georgia,serif; color:#f5e9dc; font-weight:400; }
+.theme-bruna .capa-prop-name { line-height:.98; letter-spacing:.025em; }
+.theme-bruna .capa-top,
+.theme-bruna .capa-prop-addr,
+.theme-bruna .capa-watermark,
+.theme-bruna .info-header,
+.theme-bruna .info-addr,
+.theme-bruna .fim-sub,
+.theme-bruna .fim-price-label { color:#efcfbd; }
+.theme-bruna .capa-divider { width:66px; background:#f1d7c7; align-self:flex-start; }
+.theme-bruna .slide-foto { background:#9a4f35; }
+.theme-bruna .slide-foto::after { content:''; position:absolute; inset:2.6%; border:1px solid rgba(245,233,220,.48); pointer-events:none; z-index:2; }
+.theme-bruna .slide-foto > img { inset:3.2%; width:93.6%; height:93.6%; filter:saturate(.90) contrast(1.02) brightness(.98); }
+.theme-bruna .slide-foto .watermark { top:auto; left:auto; right:5.3%; bottom:5%; transform:none; font-size:clamp(9px,1.1vw,15px); color:rgba(245,233,220,.88); text-shadow:0 2px 10px rgba(65,29,20,.34); letter-spacing:.18em!important; text-indent:0!important; }
+.theme-bruna .info-left { flex:0 0 60%; background:#f1e4d7; color:#3a241e; padding:4.2% 4.8%; }
+.theme-bruna .info-title { color:#7f3f2b; line-height:1; }
+.theme-bruna .info-header,.theme-bruna .info-addr { color:#9a634f; }
+.theme-bruna .info-icons { border-top:1px solid rgba(127,63,43,.18); border-bottom:1px solid rgba(127,63,43,.18); padding-top:2.4%; padding-bottom:2.4%; }
+.theme-bruna .icon-block { border-right-color:rgba(127,63,43,.18); }
+.theme-bruna .icon-block svg { stroke:#8d4934; }
+.theme-bruna .icon-block span { color:#3a241e; }
+.theme-bruna .obs-texto { color:rgba(58,36,30,.84); }
+.theme-bruna .info-right { background:#9a4f35; padding:3%; }
+.theme-bruna .info-right img { filter:saturate(.88) contrast(1.03); }
+.theme-bruna .info-right::after { content:''; position:absolute; inset:3%; border:1px solid rgba(245,233,220,.42); pointer-events:none; }
+.theme-bruna .info-right-wm { inset:auto 6% 5% auto; display:block; color:rgba(245,233,220,.82); font-size:clamp(9px,1.1vw,15px); letter-spacing:.18em!important; text-indent:0!important; }
+.theme-bruna .slide-fim {
+  background:radial-gradient(circle at 50% 38%,rgba(245,233,220,.08),transparent 30%),#9a4f35;
+}
+/* Encerramento personalizado Bruna Chaene — mesma lógica de assinatura individual das demais marcas */
+.theme-bruna .slide-fim::before {
+  content:'BC';
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-53%);
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:min(36vw,400px);
+  font-weight:400;
+  line-height:.78;
+  letter-spacing:-.08em;
+  color:rgba(245,233,220,.055);
+  pointer-events:none;
+  z-index:0;
+}
+.theme-bruna .slide-fim::after {
+  content:'';
+  position:absolute;
+  inset:3%;
+  border:1px solid rgba(245,233,220,.35);
+  pointer-events:none;
+  z-index:2;
+}
+.theme-bruna .slide-fim > * { position:relative; z-index:1; }
+.theme-bruna .fim-logo {
+  font-size:clamp(28px,5.7vw,76px);
+  letter-spacing:.12em!important;
+  text-indent:.12em!important;
+  text-transform:uppercase;
+}
+.theme-bruna .fim-sub {
+  letter-spacing:.62em;
+  text-indent:.62em;
+  color:rgba(245,233,220,.72);
+}
+.theme-bruna .fim-divider,.theme-bruna .fim-price-divider { background:rgba(245,233,220,.52); }
+.theme-bruna .fim-price-val-secondary { color:rgba(245,233,220,.90); }
+.theme-bruna .slide-arbor-location { background:#9a4f35; color:#f5e9dc; display:grid; grid-template-columns:40% 60%; }
+.theme-bruna .arbor-location-copy { background:#9a4f35; padding:8% 8% 7% 10%; }
+.theme-bruna .arbor-location-eyebrow { color:#efcfbd; }
+.theme-bruna .arbor-location-title { color:#f5e9dc; font-family:'Playfair Display',Georgia,serif; font-weight:400; letter-spacing:.01em; text-transform:none; }
+.theme-bruna .arbor-location-divider { background:#f1d7c7; width:58px; }
+.theme-bruna .arbor-location-address { color:#f7eadf; }
+.theme-bruna .arbor-location-text { color:rgba(247,234,223,.82); }
+.theme-bruna .arbor-location-coords { color:#efcfbd; }
+.theme-bruna .arbor-map-shell { margin:5%; background:#f1e4d7; box-shadow:inset 0 0 0 1px rgba(127,63,43,.22); }
+.theme-bruna .arbor-map .leaflet-tile-pane { filter:sepia(.24) saturate(.58) hue-rotate(332deg) contrast(.90) brightness(1.07); opacity:.90; }
+.theme-bruna .arbor-map-marker { background:#9a4f35; border-color:#f1e4d7; }
+.theme-bruna .arbor-map-marker::after { background:#f1d7c7; }
+.theme-bruna .arbor-map-label { background:rgba(154,79,53,.95); color:#f5e9dc; border-color:rgba(245,233,220,.34); }
+.theme-bruna .arbor-map-attribution { color:rgba(58,36,30,.56); background:rgba(241,228,215,.82); }
+.theme-bruna .arbor-map-fallback { background:#f1e4d7; color:#7f3f2b; }
+
+/* =====================================================================
+   SAÍDA PDF — LAYOUT DETERMINÍSTICO
+   html2canvas passa a capturar cada slide no mesmo canvas-base de
+   1100 x 771 px (proporção 291 x 204 mm), independentemente do viewport.
+   ===================================================================== */
+html.pdf-export-mode #presentation-area { width:1100px!important; max-width:none!important; }
+html.pdf-export-mode .slides-wrapper { width:1100px!important; max-width:none!important; gap:0!important; }
+html.pdf-export-mode .slide { width:1100px!important; height:771px!important; min-height:771px!important; max-height:771px!important; aspect-ratio:auto!important; flex:none!important; margin:0!important; box-sizing:border-box!important; overflow:hidden!important; }
+html.pdf-export-mode .slide-capa { display:flex!important; }
+html.pdf-export-mode .slide-info { display:flex!important; height:771px!important; }
+html.pdf-export-mode .slide-fim { display:flex!important; height:771px!important; }
+html.pdf-export-mode .slide-arbor-welcome { display:flex!important; height:771px!important; }
+html.pdf-export-mode .slide-arbor-location { display:grid!important; height:771px!important; }
+html.pdf-export-mode .slide-foto { height:771px!important; }
+/* Kasbaum: fixa a fotografia no passe-partout também na captura do PDF. */
+html.pdf-export-mode .theme-kasbaum .slide-foto > img {
+  inset:auto!important;
+  top:22px!important;
+  left:31px!important;
+  width:1038px!important;
+  height:681px!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+  transform:scale(1.022)!important;
+  transform-origin:center center!important;
+  z-index:2!important;
+}
+html.pdf-export-mode .theme-kasbaum .slide-foto::after {
+  content:''!important;
+  position:absolute!important;
+  top:22px!important;
+  left:31px!important;
+  right:31px!important;
+  bottom:68px!important;
+  border:2px solid #181612!important;
+  box-shadow:0 0 0 1px rgba(24,22,18,.10)!important;
+  pointer-events:none!important;
+  z-index:5!important;
+}
+html.pdf-export-mode .info-highlights { min-height:0!important; overflow:hidden!important; }
+html.pdf-export-mode .obs-texto { hyphens:none!important; -webkit-hyphens:none!important; overflow-wrap:normal!important; word-break:normal!important; }
+
+/* =====================================================================
+   IMPRESSÃO NATIVA — ESTRUTURA TRAVADA EM A4 PAISAGEM
+   Corrige variações do Safari/Chrome que alteravam flex/grid e dimensões.
+   ===================================================================== */
+@media print {
+  @page { size:A4 landscape; margin:3mm; }
+  html,body,.app,.main,#presentation-area,.slides-wrapper { margin:0!important; padding:0!important; }
+  #presentation-area,.slides-wrapper { width:291mm!important; max-width:291mm!important; }
+  .slide { width:291mm!important; height:204mm!important; min-height:204mm!important; max-height:204mm!important; aspect-ratio:auto!important; flex:none!important; transform:none!important; zoom:1!important; overflow:hidden!important; box-sizing:border-box!important; margin:0!important; }
+  .slide-capa { display:flex!important; }
+  .slide-info { display:flex!important; }
+  .slide-fim { display:flex!important; }
+  .slide-arbor-welcome { display:flex!important; }
+  .slide-arbor-location { display:grid!important; }
+  .slide-foto { display:block!important; }
+  .info-left,.info-right,.arbor-location-copy,.arbor-map-shell { box-sizing:border-box!important; min-width:0!important; min-height:0!important; }
+  .obs-texto,.obs-texto p,.arbor-location-text,.arbor-location-address { hyphens:none!important; -webkit-hyphens:none!important; overflow-wrap:normal!important; word-break:normal!important; }
+
+  .theme-kasbaum .slide-arbor-location { grid-template-columns:116.4mm 174.6mm!important; background:#eee8df!important; }
+  .theme-fabricio .slide-arbor-location { grid-template-columns:110.6mm 180.4mm!important; background:#102636!important; }
+  .theme-paulo .slide-arbor-location { grid-template-columns:119.3mm 171.7mm!important; background:#a7ab8d!important; }
+  .theme-celio .slide-arbor-location { grid-template-columns:113.5mm 177.5mm!important; background:#101b2d!important; }
+  .theme-bruna .slide-arbor-location { grid-template-columns:116.4mm 174.6mm!important; background:#9a4f35!important; }
+
+  .theme-bruna .slide-foto,.theme-bruna .slide-fim { background:#9a4f35!important; }
+  .theme-bruna .slide-foto > img { inset:6.5mm!important; width:auto!important; height:auto!important; }
+  .theme-bruna .info-left { flex:0 0 60%!important; background:#f1e4d7!important; padding:8.5mm 10mm!important; }
+  .theme-bruna .info-right { padding:6mm!important; background:#9a4f35!important; }
+  .theme-bruna .info-right img { position:relative!important; inset:auto!important; width:100%!important; height:100%!important; }
+  .theme-bruna .slide-fim { background:#9a4f35!important; }
+  .theme-bruna .slide-fim::before {
+    content:'BC'!important;
+    font-size:105mm!important;
+    color:rgba(245,233,220,.055)!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+  .theme-bruna .slide-fim::after { border-color:rgba(245,233,220,.35)!important; }
+}
+
+
+
+/* ===== BRUNA CHAENE — assinatura final no canto inferior esquerdo ===== */
+.theme-bruna .slide-fim .fim-logo {
+  position:absolute;
+  left:6.2%;
+  bottom:10.5%;
+  margin:0;
+  text-align:left;
+  transform:none;
+  z-index:3;
+}
+.theme-bruna .slide-fim .fim-sub {
+  position:absolute;
+  left:6.4%;
+  bottom:6.7%;
+  margin:0;
+  text-align:left;
+  transform:none;
+  z-index:3;
+}
+
+@media print {
+  .theme-bruna .slide-fim .fim-logo {
+    left:18mm!important;
+    bottom:21mm!important;
+    margin:0!important;
+    text-align:left!important;
+    transform:none!important;
+  }
+  .theme-bruna .slide-fim .fim-sub {
+    left:18.5mm!important;
+    bottom:13.5mm!important;
+    margin:0!important;
+    text-align:left!important;
+    transform:none!important;
+  }
+}
+
+html.pdf-export-mode .theme-bruna .slide-fim .fim-logo {
+  left:6.2%!important;
+  bottom:10.5%!important;
+  margin:0!important;
+  text-align:left!important;
+  transform:none!important;
+}
+html.pdf-export-mode .theme-bruna .slide-fim .fim-sub {
+  left:6.4%!important;
+  bottom:6.7%!important;
+  margin:0!important;
+  text-align:left!important;
+  transform:none!important;
+}
+
+
+/* =====================================================================
+   KASBAUM — REFINAMENTO EXCLUSIVO DA CAPA
+   Mantém a identidade grafite + marfim + areia e preserva todas as
+   páginas internas. Apenas a composição da capa é refinada.
+   ===================================================================== */
+.theme-kasbaum .slide-capa {
+  background:#181612;
+  isolation:isolate;
+}
+.theme-kasbaum .slide-capa::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  width:auto;
+  background:
+    linear-gradient(90deg,
+      rgba(24,22,18,.985) 0%,
+      rgba(24,22,18,.965) 28%,
+      rgba(24,22,18,.82) 46%,
+      rgba(24,22,18,.30) 66%,
+      rgba(24,22,18,.06) 100%);
+  z-index:1;
+  pointer-events:none;
+}
+.theme-kasbaum .slide-capa::after {
+  content:'';
+  position:absolute;
+  inset:2.35%;
+  border:1px solid rgba(184,167,143,.58);
+  z-index:4;
+  pointer-events:none;
+}
+.theme-kasbaum .slide-capa .capa-hero {
+  inset:0;
+  overflow:hidden;
+}
+.theme-kasbaum .slide-capa .capa-hero img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  transform:scale(1.012);
+  transform-origin:center;
+  filter:saturate(.82) contrast(1.055) brightness(.91);
+}
+.theme-kasbaum .slide-capa .capa-hero-overlay {
+  background:
+    linear-gradient(180deg, rgba(24,22,18,.03) 0%, rgba(24,22,18,.05) 56%, rgba(24,22,18,.26) 100%);
+}
+.theme-kasbaum .slide-capa .capa-content {
+  align-items:flex-start;
+  justify-content:center;
+  padding:7.3% 7.6%;
+}
+.theme-kasbaum .slide-capa .capa-top {
+  top:6.4%;
+  left:7.6%;
+  right:7.6%;
+  padding-bottom:1.15%;
+  border-bottom:1px solid rgba(184,167,143,.32);
+  color:rgba(216,203,184,.78);
+  font-size:clamp(8px,1.05vw,13px);
+  letter-spacing:.29em;
+}
+.theme-kasbaum .slide-capa .capa-mid {
+  position:relative;
+  width:48.5%;
+  max-width:660px;
+  align-items:flex-start;
+  text-align:left;
+  gap:clamp(11px,1.35vw,20px);
+  padding-left:clamp(13px,1.45vw,22px);
+}
+.theme-kasbaum .slide-capa .capa-mid::before {
+  content:'';
+  position:absolute;
+  left:0;
+  top:.18em;
+  bottom:.18em;
+  width:1px;
+  background:linear-gradient(180deg, rgba(169,151,126,.18), rgba(169,151,126,.92) 35%, rgba(169,151,126,.30));
+}
+.theme-kasbaum .slide-capa .capa-prop-name {
+  margin:0;
+  max-width:100%;
+  color:#f3eee6;
+  font-family:'Playfair Display', Georgia, serif;
+  font-weight:500;
+  font-size:clamp(34px,5.2vw,72px);
+  line-height:.94;
+  letter-spacing:-.025em;
+  text-transform:none;
+  text-wrap:balance;
+  text-shadow:0 2px 24px rgba(0,0,0,.18);
+}
+.theme-kasbaum .slide-capa .capa-prop-addr {
+  margin-top:.2%;
+  max-width:94%;
+  color:rgba(214,199,178,.86);
+  font-size:clamp(8px,1.02vw,13px);
+  font-weight:350;
+  line-height:1.55;
+  letter-spacing:.235em;
+  text-transform:uppercase;
+  text-wrap:balance;
+}
+.theme-kasbaum .slide-capa .capa-divider {
+  width:56px;
+  height:1px;
+  background:#a9977e;
+  opacity:.92;
+  align-self:flex-start;
+}
+.theme-kasbaum .slide-capa .capa-watermark {
+  left:auto;
+  right:6.2%;
+  bottom:5.7%;
+  min-width:190px;
+  padding-top:9px;
+  border-top:1px solid rgba(184,167,143,.62);
+  color:#e9e0d4;
+  font-family:'Jost',sans-serif;
+  font-size:clamp(10px,1.15vw,15px);
+  font-weight:400;
+  letter-spacing:.30em!important;
+  text-align:right;
+  text-shadow:0 2px 18px rgba(0,0,0,.35);
+}
+.theme-kasbaum .slide-capa .capa-watermark::after {
+  content:'RELAÇÕES IMOBILIÁRIAS';
+  display:block;
+  margin-top:7px;
+  color:rgba(216,203,184,.72);
+  font-size:.56em;
+  font-weight:300;
+  letter-spacing:.34em;
+  white-space:nowrap;
+}
+
+/* PDF gerado pelo próprio HTML */
+html.pdf-export-mode .theme-kasbaum .slide-capa::before {
+  width:auto!important;
+  background:linear-gradient(90deg,rgba(24,22,18,.985) 0%,rgba(24,22,18,.965) 28%,rgba(24,22,18,.82) 46%,rgba(24,22,18,.30) 66%,rgba(24,22,18,.06) 100%)!important;
+}
+html.pdf-export-mode .theme-kasbaum .slide-capa::after {
+  inset:4.8mm!important;
+  border:.25mm solid rgba(184,167,143,.58)!important;
+}
+html.pdf-export-mode .theme-kasbaum .slide-capa .capa-content {
+  padding:14.8mm 22.1mm!important;
+}
+html.pdf-export-mode .theme-kasbaum .slide-capa .capa-top {
+  top:13.1mm!important;
+  left:22.1mm!important;
+  right:22.1mm!important;
+  padding-bottom:2.3mm!important;
+}
+html.pdf-export-mode .theme-kasbaum .slide-capa .capa-mid {
+  width:141mm!important;
+  max-width:141mm!important;
+  gap:4mm!important;
+  padding-left:4.2mm!important;
+}
+html.pdf-export-mode .theme-kasbaum .slide-capa .capa-prop-name {
+  font-size:15.2mm!important;
+  line-height:.94!important;
+}
+html.pdf-export-mode .theme-kasbaum .slide-capa .capa-prop-addr {
+  font-size:3.1mm!important;
+  line-height:1.55!important;
+}
+html.pdf-export-mode .theme-kasbaum .slide-capa .capa-watermark {
+  right:18mm!important;
+  bottom:11.5mm!important;
+  min-width:50mm!important;
+  font-size:3.5mm!important;
+}
+
+@media print {
+  .theme-kasbaum .slide-capa::before {
+    width:auto!important;
+    background:linear-gradient(90deg,rgba(24,22,18,.985) 0%,rgba(24,22,18,.965) 28%,rgba(24,22,18,.82) 46%,rgba(24,22,18,.30) 66%,rgba(24,22,18,.06) 100%)!important;
+  }
+  .theme-kasbaum .slide-capa::after {
+    inset:4.8mm!important;
+    border:.25mm solid rgba(184,167,143,.58)!important;
+  }
+  .theme-kasbaum .slide-capa .capa-content {
+    padding:14.8mm 22.1mm!important;
+  }
+  .theme-kasbaum .slide-capa .capa-top {
+    top:13.1mm!important;
+    left:22.1mm!important;
+    right:22.1mm!important;
+    padding-bottom:2.3mm!important;
+    font-size:3mm!important;
+  }
+  .theme-kasbaum .slide-capa .capa-mid {
+    width:141mm!important;
+    max-width:141mm!important;
+    gap:4mm!important;
+    padding-left:4.2mm!important;
+  }
+  .theme-kasbaum .slide-capa .capa-prop-name {
+    font-size:15.2mm!important;
+    line-height:.94!important;
+  }
+  .theme-kasbaum .slide-capa .capa-prop-addr {
+    font-size:3.1mm!important;
+    line-height:1.55!important;
+  }
+  .theme-kasbaum .slide-capa .capa-watermark {
+    right:18mm!important;
+    bottom:11.5mm!important;
+    min-width:50mm!important;
+    font-size:3.5mm!important;
+  }
 }
 
 </style>
@@ -2435,6 +3115,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
           <button class="btn-gerar brand-dkz" onclick="gerarApresentacao('dkz')">Arbor Imóveis</button>
           <button class="btn-gerar brand-paulo" onclick="gerarApresentacao('paulo')">Paulo Henrique</button>
           <button class="btn-gerar brand-celio" onclick="gerarApresentacao('celio')">Célio Netto</button>
+          <button class="btn-gerar brand-bruna" onclick="gerarApresentacao('bruna')">Bruna Chaene</button>
         </div>
       </div>
     </div>
@@ -3328,6 +4009,14 @@ async function gerarPDFAsync(slideDivs) {
     // Antes de rasterizar, ajusta apenas o texto da página de informações
     // para ocupar o espaço disponível sem corte.
     ajustarTextoInfoAoEspaco();
+    document.documentElement.classList.add('pdf-export-mode');
+    if (document.fonts && document.fonts.load) {
+      try { await document.fonts.load("400 24px 'La Belle Aurore'"); await document.fonts.ready; } catch(e) {}
+    }
+    await aguardarLayoutTexto();
+    if (ARBOR_MAP_INSTANCE) { try { ARBOR_MAP_INSTANCE.invalidateSize(false); } catch(e) {} }
+    await new Promise(function(resolve){ setTimeout(resolve, 120); });
+    ajustarTextoInfoAoEspaco();
     await aguardarLayoutTexto();
     await aguardarMapaArbor();
 
@@ -3370,6 +4059,7 @@ async function gerarPDFAsync(slideDivs) {
     setStatus('error', 'Erro ao gerar PDF: ' + err.message);
   } finally {
     // A prévia volta ao tamanho normal depois da geração do arquivo.
+    document.documentElement.classList.remove('pdf-export-mode');
     restaurarTextoInfoAposSaida();
   }
 }
@@ -3471,6 +4161,9 @@ function aguardarLayoutTexto() {
 // Impressão nativa: mede já com o layout de impressão ativo.
 window.addEventListener('beforeprint', function() {
   ajustarTextoInfoAoEspaco();
+  if (ARBOR_MAP_INSTANCE) {
+    try { setTimeout(function(){ ARBOR_MAP_INSTANCE.invalidateSize(false); }, 30); } catch(e) {}
+  }
 });
 window.addEventListener('afterprint', function() {
   restaurarTextoInfoAposSaida();
@@ -3714,7 +4407,8 @@ var MARCAS = {
   'fabricio': { name: 'FABRICIO DIAS', sub: 'Imob' },
   'dkz': { name: 'ARBOR', sub: 'Imóveis' },
   'paulo': { name: 'PAULO HENRIQUE', sub: 'Corretor de Imóveis' },
-  'celio': { name: 'CÉLIO NETTO', sub: 'Corretor de Imóveis' }
+  'celio': { name: 'CÉLIO NETTO', sub: 'Corretor de Imóveis' },
+  'bruna': { name: 'BRUNA CHAENE', sub: 'Imóveis' }
 };
 
 function gerarApresentacao(brandId) {
@@ -3836,32 +4530,26 @@ function gerarApresentacao(brandId) {
 
   var infoFoto = im.fotos[Math.floor(im.fotos.length/2)] || im.fotos[0] || '';
 
-  /* ── ANTEPENÚLTIMA ARBOR: LOCALIZAÇÃO & REGIÃO ── */
-  if (brandId === 'dkz') {
-    var latArbor = numeroCoordenada(im.latitude);
-    var lngArbor = numeroCoordenada(im.longitude);
-    var coordsArbor = (latArbor != null && lngArbor != null)
-      ? latArbor.toFixed(6).replace('.', ',') + ' · ' + lngArbor.toFixed(6).replace('.', ',')
-      : 'Coordenadas não informadas no feed';
-    var enderecoArbor = enderecoLocalizacaoArbor(im);
-    var regiaoArbor = textoRegiaoArbor(im);
-    html += '<div class="slide slide-arbor-location">' +
-      '<div class="arbor-location-copy">' +
-        '<div class="arbor-location-eyebrow">' + escaparHTML([im.bairro, im.cidade].filter(Boolean).join(' · ')) + '</div>' +
-        '<div class="arbor-location-title">Localização<br>&amp; região</div>' +
-        '<div class="arbor-location-divider"></div>' +
-        '<div class="arbor-location-address">' + escaparHTML(enderecoArbor) + '</div>' +
-        '<div class="arbor-location-text">' + escaparHTML(regiaoArbor) + '</div>' +
-        '<div class="arbor-location-coords">Localização</div>' +
-      '</div>' +
-      '<div class="arbor-map-shell">' +
-        '<div id="arbor-map" class="arbor-map"></div>' +
-        '<div id="arbor-map-fallback" class="arbor-map-fallback">' + escaparHTML(enderecoArbor || [im.bairro, im.cidade].filter(Boolean).join(' · ')) + '</div>' +
-        '<div id="arbor-map-label" class="arbor-map-label">' + escaparHTML(im.nomeEmp || im.tipo || 'Imóvel') + '</div>' +
-        '<div class="arbor-map-attribution">© OpenStreetMap contributors</div>' +
-      '</div>' +
-    '</div>';
-  }
+  /* ── LOCALIZAÇÃO & REGIÃO — TODAS AS MARCAS ──
+     A estrutura é única; o acabamento visual é aplicado individualmente por theme-*. */
+  var enderecoMapa = enderecoLocalizacaoArbor(im);
+  var regiaoMapa = textoRegiaoArbor(im);
+  html += '<div class="slide slide-arbor-location slide-location">' +
+    '<div class="arbor-location-copy">' +
+      '<div class="arbor-location-eyebrow">' + escaparHTML([im.bairro, im.cidade].filter(Boolean).join(' · ')) + '</div>' +
+      '<div class="arbor-location-title">Localização<br>&amp; região</div>' +
+      '<div class="arbor-location-divider"></div>' +
+      '<div class="arbor-location-address">' + escaparHTML(enderecoMapa) + '</div>' +
+      '<div class="arbor-location-text">' + escaparHTML(regiaoMapa) + '</div>' +
+      '<div class="arbor-location-coords">Localização</div>' +
+    '</div>' +
+    '<div class="arbor-map-shell">' +
+      '<div id="arbor-map" class="arbor-map"></div>' +
+      '<div id="arbor-map-fallback" class="arbor-map-fallback">' + escaparHTML(enderecoMapa || [im.bairro, im.cidade].filter(Boolean).join(' · ')) + '</div>' +
+      '<div id="arbor-map-label" class="arbor-map-label">' + escaparHTML(im.nomeEmp || im.tipo || 'Imóvel') + '</div>' +
+      '<div class="arbor-map-attribution">© OpenStreetMap contributors</div>' +
+    '</div>' +
+  '</div>';
 
   html += '<div class="slide slide-info">' +
     '<div class="info-left">' +
@@ -3908,18 +4596,16 @@ function gerarApresentacao(brandId) {
   document.getElementById('presentation-area').classList.toggle('theme-paulo', brandId === 'paulo');
   document.getElementById('presentation-area').classList.toggle('theme-fabricio', brandId === 'fabricio');
   document.getElementById('presentation-area').classList.toggle('theme-celio', brandId === 'celio');
+  document.getElementById('presentation-area').classList.toggle('theme-bruna', brandId === 'bruna');
   document.getElementById('empty-state').style.display = 'none';
   document.getElementById('presentation-area').style.display = 'block';
   document.getElementById('scroll-fab-group').style.display = 'flex';
   document.getElementById('prop-title').textContent = emp;
-  var totalPaginas = maxFotos + (brandId === 'dkz' ? 5 : 3);
+  var totalPaginas = maxFotos + (brandId === 'dkz' ? 5 : 4);
   document.getElementById('prop-sub').textContent = im.codigo + ' · ' + addr + ', ' + im.bairro + ' — ' + totalPaginas + ' páginas';
 
-  if (brandId === 'dkz') {
-    setTimeout(function(){ inicializarMapaArbor(im); }, 80);
-  } else {
-    ARBOR_MAP_READY = Promise.resolve();
-  }
+  // Todas as marcas possuem página de localização e usam o mesmo mapa dinâmico.
+  setTimeout(function(){ inicializarMapaArbor(im); }, 80);
 
   setStatus('ok', 'Apresentação gerada com marca ' + marca.name + ' (' + totalPaginas + ' páginas).');
   setTimeout(function() {
