@@ -491,7 +491,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 .icon-block span { color: #f4f1ec; line-height: 1.25; min-width: 0; }
 .info-highlights { flex: 1 1 auto; overflow: hidden; margin-bottom: 2%; min-height: 0; }
 .obs-texto {
-  font-size: clamp(10px,1.12vw,13px);
+  font-size: clamp(11.5px,1.24vw,15px);
   font-weight: 300;
   line-height: 1.58;
   color: rgba(244,241,236,0.78);
@@ -987,7 +987,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .icon-block     { gap: 2.2mm !important; padding-right: 2.5mm !important; }
   .icon-block svg { width: 4.1mm !important; height: 4.1mm !important; }
   .info-highlights { flex: 1 1 auto !important; overflow: hidden !important; margin-bottom: 3mm !important; min-height: 0 !important; }
-  .obs-texto      { font-size: 3.35mm !important; line-height: 1.55 !important; } /* fallback; JS adapta a fonte ao espaço antes de imprimir */
+  .obs-texto      { font-size: 3.85mm !important; line-height: 1.52 !important; } /* fallback; JS adapta a fonte ao espaço antes de imprimir */
   .obs-texto p    { margin: 0 0 2.2mm !important; }
   .slide-fim { display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; height: 204mm !important; max-height: none !important; background: #0c0c0c !important; }
   .theme-arbor .slide-fim { background: #10241b !important; }
@@ -2134,39 +2134,41 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 7% 10%;
+  padding: 7% 2.5%;
 }
 .theme-arbor .arbor-welcome-content {
-  width: min(72%, 760px);
+  width: min(96%, 1260px);
   transform: translateY(-2%);
 }
 .theme-arbor .arbor-welcome-title {
   font-family: 'Jost', sans-serif;
-  font-size: clamp(12px, 1.45vw, 20px);
+  font-size: clamp(22px, 2.45vw, 36px);
   font-weight: 500;
   letter-spacing: .46em;
   text-indent: .46em;
   text-transform: uppercase;
-  margin-bottom: 4.2%;
+  margin-bottom: 5.0%;
 }
 .theme-arbor .arbor-welcome-copy {
   font-family: 'Jost', sans-serif;
-  font-size: clamp(14px, 1.65vw, 22px);
-  line-height: 1.45;
+  font-size: clamp(28px, 3.05vw, 44px);
+  line-height: 1.38;
   font-weight: 500;
-  max-width: 720px;
+  max-width: none;
+  width: 100%;
   margin: 0 auto;
 }
 .theme-arbor .arbor-welcome-note {
-  margin-top: 4.2%;
+  margin-top: 4.6%;
   font-family: 'La Belle Aurore', cursive;
   font-style: normal;
   font-weight: 400;
-  font-size: clamp(16px, 1.78vw, 24px);
+  font-size: clamp(32px, 3.35vw, 48px);
   line-height: 1.45;
   letter-spacing: 0;
   color: #204030;
 }
+.theme-arbor .arbor-welcome-copy br { display: none; }
 .theme-arbor .arbor-welcome-logo {
   position: absolute;
   width: clamp(62px, 8.2vw, 108px);
@@ -2374,12 +2376,13 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
     background: #E3D9C8 !important;
     color: #204030 !important;
     height: 204mm !important;
-    padding: 15mm 30mm !important;
+    padding: 14mm 10mm !important;
   }
-  .theme-arbor .arbor-welcome-content { width: 190mm !important; }
-  .theme-arbor .arbor-welcome-title { font-size: 4.2mm !important; margin-bottom: 10mm !important; }
-  .theme-arbor .arbor-welcome-copy { font-size: 5mm !important; max-width: 190mm !important; }
-  .theme-arbor .arbor-welcome-note { font-family: 'La Belle Aurore', cursive !important; font-style: normal !important; font-weight: 400 !important; font-size: 5.2mm !important; line-height: 1.45 !important; margin-top: 9mm !important; }
+  .theme-arbor .arbor-welcome-content { width: 271mm !important; }
+  .theme-arbor .arbor-welcome-title { font-size: 7.3mm !important; margin-bottom: 11mm !important; }
+  .theme-arbor .arbor-welcome-copy { font-size: 9.4mm !important; line-height: 1.30 !important; max-width: 271mm !important; width: 100% !important; }
+  .theme-arbor .arbor-welcome-copy br { display: none !important; }
+  .theme-arbor .arbor-welcome-note { font-family: 'La Belle Aurore', cursive !important; font-style: normal !important; font-weight: 400 !important; font-size: 10mm !important; line-height: 1.26 !important; margin-top: 10.5mm !important; max-width: 271mm !important; }
   .theme-arbor .arbor-welcome-logo { width: 25mm !important; right: 12mm !important; bottom: 11mm !important; }
 
   .theme-arbor .slide-arbor-location {
@@ -3063,7 +3066,68 @@ html.pdf-export-mode .theme-kasbaum .slide-capa .capa-watermark {
   }
 }
 
+
+
+/* =====================================================================
+   ARBOR — SAÍDA SEM MARGENS
+   PDF: canvas usa proporção A4 completa (297 x 210).
+   Impressão: a regra @page é aplicada dinamicamente apenas quando ARBOR
+   estiver ativa, para não alterar as demais marcas.
+   ===================================================================== */
+html.pdf-export-mode #presentation-area.theme-arbor,
+html.pdf-export-mode #presentation-area.theme-arbor .slides-wrapper {
+  width:1100px!important;
+  max-width:none!important;
+}
+html.pdf-export-mode #presentation-area.theme-arbor .slide,
+html.pdf-export-mode #presentation-area.theme-arbor .slide-capa,
+html.pdf-export-mode #presentation-area.theme-arbor .slide-info,
+html.pdf-export-mode #presentation-area.theme-arbor .slide-fim,
+html.pdf-export-mode #presentation-area.theme-arbor .slide-arbor-welcome,
+html.pdf-export-mode #presentation-area.theme-arbor .slide-foto {
+  width:1100px!important;
+  height:778px!important;
+  min-height:778px!important;
+  max-height:778px!important;
+  margin:0!important;
+}
+html.pdf-export-mode #presentation-area.theme-arbor .info-left,
+html.pdf-export-mode #presentation-area.theme-arbor .info-right {
+  max-height:778px!important;
+}
 </style>
+
+<style id="aumento-fonte-valor-final-arbor">
+/* Última página ARBOR — destaque maior para VENDA/LOCAÇÃO e valor principal. */
+#presentation-area.theme-arbor .slide-fim .fim-price-label {
+  font-size: clamp(13px, 1.75vw, 22px) !important;
+  line-height: 1.15 !important;
+}
+#presentation-area.theme-arbor .slide-fim .fim-price-val {
+  font-size: clamp(32px, 5.2vw, 66px) !important;
+  line-height: 1.02 !important;
+}
+
+/* Geração pelo botão Baixar PDF (html2canvas/jsPDF). */
+html.pdf-export-mode #presentation-area.theme-arbor .slide-fim .fim-price-label {
+  font-size: 20px !important;
+}
+html.pdf-export-mode #presentation-area.theme-arbor .slide-fim .fim-price-val {
+  font-size: 60px !important;
+}
+
+/* Impressão nativa / Salvar como PDF. */
+@media print {
+  #presentation-area.theme-arbor .slide-fim .fim-price-label {
+    font-size: 5mm !important;
+  }
+  #presentation-area.theme-arbor .slide-fim .fim-price-val {
+    font-size: 15.5mm !important;
+    line-height: 1.02 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -3142,7 +3206,7 @@ html.pdf-export-mode .theme-kasbaum .slide-capa .capa-watermark {
           <svg viewBox="0 0 24 24"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M4 20h16"/></svg>
           Baixar PDF
         </button>
-        <button class="btn-print" onclick="window.print()">
+        <button class="btn-print" onclick="imprimirComImagens()">
           <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Imprimir / Salvar PDF
         </button>
@@ -3987,6 +4051,344 @@ function carregarArquivo(input) {
   input.value = '';
 }
 
+/* =============================================
+   PREPARAÇÃO SEGURA DAS IMAGENS PARA O PDF
+   Evita fotos ausentes no html2canvas quando as mídias vêm de
+   Firebase Storage/CDNs externas. Durante a exportação, imagens
+   cross-origin são obtidas como Blob e trocadas temporariamente
+   por URLs blob: de mesma origem. Depois do PDF, tudo é restaurado.
+   NÃO altera XML, URLs cadastradas ou arquivos originais.
+   ============================================= */
+var ESTADO_IMAGENS_PDF = [];
+var CACHE_BLOBS_IMAGENS_PDF = {};
+var CACHE_BLOBS_OTIMIZADOS_PDF = {};
+var CODIGO_CACHE_IMAGENS_PDF = '';
+var AQUECIMENTO_IMAGENS_EM_CURSO = null;
+
+function aguardarImagemPDF(img, timeoutMs) {
+  timeoutMs = timeoutMs || 30000;
+  return new Promise(function(resolve) {
+    if (!img) { resolve(false); return; }
+
+    function finaliza(ok) {
+      if (timer) clearTimeout(timer);
+      img.removeEventListener('load', onload);
+      img.removeEventListener('error', onerror);
+      if (ok && typeof img.decode === 'function') {
+        try {
+          var p = img.decode();
+          if (p && typeof p.then === 'function') {
+            p.then(function(){ resolve(true); }).catch(function(){ resolve(true); });
+            return;
+          }
+        } catch(e) {}
+      }
+      resolve(!!ok);
+    }
+
+    function onload() { finaliza(img.naturalWidth > 0 && img.naturalHeight > 0); }
+    function onerror() { finaliza(false); }
+
+    if (img.complete) {
+      finaliza(img.naturalWidth > 0 && img.naturalHeight > 0);
+      return;
+    }
+
+    img.addEventListener('load', onload, { once: true });
+    img.addEventListener('error', onerror, { once: true });
+    var timer = setTimeout(function(){ finaliza(img.complete && img.naturalWidth > 0); }, timeoutMs);
+  });
+}
+
+function origemDaURLPDF(url) {
+  try { return new URL(url, window.location.href); }
+  catch(e) { return null; }
+}
+
+function fetchComTimeoutPDF(url, timeoutMs) {
+  timeoutMs = timeoutMs || 25000;
+  var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var timer = setTimeout(function(){ if (controller) controller.abort(); }, timeoutMs);
+  return fetch(url, {
+    mode: 'cors',
+    credentials: 'omit',
+    cache: 'force-cache',
+    signal: controller ? controller.signal : undefined
+  }).finally(function(){ clearTimeout(timer); });
+}
+
+async function respostaParaBlobImagemPDF(res) {
+  if (!res || !res.ok) throw new Error('HTTP ' + (res ? res.status : 'indisponível'));
+  var blob = await res.blob();
+  if (!blob || !blob.size) throw new Error('Imagem vazia');
+  var tipo = String(blob.type || '').toLowerCase();
+  if (tipo && tipo.indexOf('image/') !== 0 && tipo !== 'application/octet-stream') {
+    throw new Error('Resposta não é imagem: ' + tipo);
+  }
+  return blob;
+}
+
+async function obterBlobImagemPDF(url) {
+  // A mesma logo/marca d'água pode aparecer em dezenas de slides.
+  // Reutiliza o download para não fazer várias requisições idênticas.
+  if (CACHE_BLOBS_IMAGENS_PDF[url]) return CACHE_BLOBS_IMAGENS_PDF[url];
+
+  CACHE_BLOBS_IMAGENS_PDF[url] = (async function() {
+    var tentativas = [
+      url,
+      'https://corsproxy.io/?' + encodeURIComponent(url),
+      'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+      'https://images.weserv.nl/?url=' + encodeURIComponent(url)
+    ];
+    var ultimoErro = null;
+
+    for (var i = 0; i < tentativas.length; i++) {
+      try {
+        var res = await fetchComTimeoutPDF(tentativas[i], i === 0 ? 18000 : 25000);
+        return await respostaParaBlobImagemPDF(res);
+      } catch(err) {
+        ultimoErro = err;
+      }
+    }
+    throw ultimoErro || new Error('Não foi possível preparar a imagem');
+  })();
+
+  try {
+    return await CACHE_BLOBS_IMAGENS_PDF[url];
+  } catch(err) {
+    delete CACHE_BLOBS_IMAGENS_PDF[url];
+    throw err;
+  }
+}
+
+
+function ehFotoImovelParaExportacao(img) {
+  if (!img || !img.closest) return false;
+  if (img.classList && (img.classList.contains('arbor-photo-watermark') || img.classList.contains('arbor-info-watermark') || img.classList.contains('arbor-cover-brand') || img.classList.contains('fim-brand-logo'))) return false;
+  return !!img.closest('.slide-foto, .capa-hero, .info-right');
+}
+
+async function otimizarBlobFotoParaExportacao(blob, cacheKey) {
+  if (!blob || !blob.size) return blob;
+  if (cacheKey && CACHE_BLOBS_OTIMIZADOS_PDF[cacheKey]) return CACHE_BLOBS_OTIMIZADOS_PDF[cacheKey];
+
+  var tarefa = (async function() {
+    try {
+      var bitmap = null;
+      if (typeof createImageBitmap === 'function') bitmap = await createImageBitmap(blob);
+      if (!bitmap) return blob;
+
+      var largura = bitmap.width || 0;
+      var altura = bitmap.height || 0;
+      if (!largura || !altura) { if (bitmap.close) bitmap.close(); return blob; }
+
+      // Para A4 paisagem, mais que ~2200 px no lado longo não acrescenta
+      // qualidade visível relevante, mas aumenta muito peso e tempo de renderização.
+      var maxLargura = 2200;
+      var maxAltura = 1700;
+      var escala = Math.min(1, maxLargura / largura, maxAltura / altura);
+      if (escala >= 0.98) { if (bitmap.close) bitmap.close(); return blob; }
+
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(largura * escala));
+      canvas.height = Math.max(1, Math.round(altura * escala));
+      var ctx = canvas.getContext('2d', { alpha: false });
+      if (!ctx) { if (bitmap.close) bitmap.close(); return blob; }
+      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      if (bitmap.close) bitmap.close();
+
+      var otimizado = await new Promise(function(resolve) {
+        canvas.toBlob(function(b) { resolve(b || blob); }, 'image/jpeg', 0.86);
+      });
+      canvas.width = 1;
+      canvas.height = 1;
+      return otimizado && otimizado.size ? otimizado : blob;
+    } catch(e) {
+      return blob;
+    }
+  })();
+
+  if (cacheKey) CACHE_BLOBS_OTIMIZADOS_PDF[cacheKey] = tarefa;
+  try {
+    return await tarefa;
+  } catch(e) {
+    if (cacheKey) delete CACHE_BLOBS_OTIMIZADOS_PDF[cacheKey];
+    return blob;
+  }
+}
+
+async function aquecerCacheImagensPDF(root) {
+  if (!root) return;
+  if (AQUECIMENTO_IMAGENS_EM_CURSO) return AQUECIMENTO_IMAGENS_EM_CURSO;
+
+  var urls = [];
+  var vistos = {};
+  Array.from(root.querySelectorAll('img')).forEach(function(img) {
+    var src = img.currentSrc || img.src || img.getAttribute('src') || '';
+    if (!src || /^(data:|blob:)/i.test(src)) return;
+    var u = origemDaURLPDF(src);
+    if (!u || u.origin === window.location.origin || vistos[u.href]) return;
+    vistos[u.href] = true;
+    urls.push(u.href);
+  });
+
+  AQUECIMENTO_IMAGENS_EM_CURSO = (async function() {
+    var indice = 0;
+    var concorrencia = Math.min(4, urls.length);
+    async function worker() {
+      while (true) {
+        var i = indice++;
+        if (i >= urls.length) return;
+        try { await obterBlobImagemPDF(urls[i]); } catch(e) {}
+      }
+    }
+    var workers = [];
+    for (var w = 0; w < concorrencia; w++) workers.push(worker());
+    await Promise.all(workers);
+  })();
+
+  try { await AQUECIMENTO_IMAGENS_EM_CURSO; }
+  finally { AQUECIMENTO_IMAGENS_EM_CURSO = null; }
+}
+
+async function prepararUmaImagemPDF(img) {
+  if (!img) return { ok:false, motivo:'elemento ausente' };
+  var srcOriginalAttr = img.getAttribute('src') || '';
+  var srcAtual = img.currentSrc || img.src || srcOriginalAttr;
+  if (!srcAtual) return { ok:false, motivo:'sem src' };
+
+  // data:/blob: já são seguros para o canvas. Apenas aguarda a decodificação.
+  if (/^(data:|blob:)/i.test(srcAtual)) {
+    return { ok: await aguardarImagemPDF(img, 30000), convertida:false };
+  }
+
+  var u = origemDaURLPDF(srcAtual);
+  if (!u) return { ok:false, motivo:'url inválida' };
+
+  // Imagens da mesma origem não precisam ser convertidas.
+  if (u.origin === window.location.origin) {
+    return { ok: await aguardarImagemPDF(img, 30000), convertida:false };
+  }
+
+  try {
+    var blob = await obterBlobImagemPDF(u.href);
+    if (ehFotoImovelParaExportacao(img)) {
+      blob = await otimizarBlobFotoParaExportacao(blob, u.href);
+    }
+    var objectUrl = URL.createObjectURL(blob);
+    var crossoriginOriginal = img.getAttribute('crossorigin');
+    var referrerOriginal = img.getAttribute('referrerpolicy');
+
+    ESTADO_IMAGENS_PDF.push({
+      el: img,
+      src: srcOriginalAttr,
+      crossorigin: crossoriginOriginal,
+      referrerpolicy: referrerOriginal,
+      objectUrl: objectUrl
+    });
+
+    // Blob URL pertence à origem desta página e não necessita crossorigin.
+    img.removeAttribute('crossorigin');
+    img.removeAttribute('referrerpolicy');
+    img.src = objectUrl;
+
+    var carregou = await aguardarImagemPDF(img, 30000);
+    if (!carregou) throw new Error('Blob criado, mas imagem não decodificou');
+    return { ok:true, convertida:true };
+  } catch(err) {
+    // Se não foi possível converter, mantém a URL original e ainda aguarda o <img>.
+    try {
+      if (srcOriginalAttr) img.src = srcOriginalAttr;
+      await aguardarImagemPDF(img, 12000);
+    } catch(e) {}
+    return { ok:false, convertida:false, motivo: err && err.message ? err.message : String(err) };
+  }
+}
+
+async function prepararImagensParaPDF(root) {
+  ESTADO_IMAGENS_PDF = [];
+  if (!root) return { total:0, prontas:0, convertidas:0, falhas:0 };
+
+  var imagens = Array.from(root.querySelectorAll('img'));
+  if (!imagens.length) return { total:0, prontas:0, convertidas:0, falhas:0 };
+
+  var indice = 0;
+  var prontas = 0;
+  var convertidas = 0;
+  var falhas = 0;
+  var concorrencia = Math.min(4, imagens.length);
+
+  async function worker() {
+    while (true) {
+      var meuIndice = indice++;
+      if (meuIndice >= imagens.length) return;
+      var resultado = await prepararUmaImagemPDF(imagens[meuIndice]);
+      if (resultado && resultado.ok) prontas++;
+      else falhas++;
+      if (resultado && resultado.convertida) convertidas++;
+
+      if ((meuIndice + 1) % 4 === 0 || meuIndice === imagens.length - 1) {
+        setStatus('loading', 'Preparando fotos para PDF... (' + Math.min(meuIndice + 1, imagens.length) + '/' + imagens.length + ')');
+      }
+    }
+  }
+
+  var workers = [];
+  for (var w = 0; w < concorrencia; w++) workers.push(worker());
+  await Promise.all(workers);
+  await aguardarLayoutTexto();
+  return { total:imagens.length, prontas:prontas, convertidas:convertidas, falhas:falhas };
+}
+
+function restaurarImagensAposPDF() {
+  ESTADO_IMAGENS_PDF.forEach(function(item) {
+    if (!item || !item.el) return;
+    try {
+      if (item.src) item.el.setAttribute('src', item.src);
+      else item.el.removeAttribute('src');
+
+      if (item.crossorigin == null) item.el.removeAttribute('crossorigin');
+      else item.el.setAttribute('crossorigin', item.crossorigin);
+
+      if (item.referrerpolicy == null) item.el.removeAttribute('referrerpolicy');
+      else item.el.setAttribute('referrerpolicy', item.referrerpolicy);
+
+      if (item.objectUrl) URL.revokeObjectURL(item.objectUrl);
+    } catch(e) {}
+  });
+  ESTADO_IMAGENS_PDF = [];
+  // Mantém os Blobs em cache para que um segundo PDF/print do mesmo imóvel
+  // não precise baixar todas as fotos novamente. O cache é limpo ao trocar de imóvel.
+}
+
+
+async function imprimirComImagens() {
+  var slidesEl = document.getElementById('slides');
+  var slides = slidesEl ? slidesEl.querySelectorAll('.slide') : [];
+  if (!slides.length) { setStatus('error', 'Gere a apresentação antes de imprimir.'); return; }
+
+  try {
+    setStatus('loading', 'Preparando fotos para impressão...');
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch(e) {}
+    }
+    await aguardarMapaArbor();
+    var resultado = await prepararImagensParaPDF(slidesEl);
+    await aguardarLayoutTexto();
+    ajustarTextoInfoAoEspaco();
+    await aguardarLayoutTexto();
+
+    if (resultado.falhas > 0) {
+      console.warn('[PRINT] Algumas imagens não puderam ser pré-processadas:', resultado);
+    }
+    setStatus('ok', 'Fotos prontas. Abrindo impressão...');
+    window.print();
+  } catch(err) {
+    restaurarImagensAposPDF();
+    setStatus('error', 'Erro ao preparar impressão: ' + err.message);
+  }
+}
+
 function baixarPDF() {
   var slidesEl = document.getElementById('slides');
   var slideDivs = slidesEl ? slidesEl.querySelectorAll('.slide') : [];
@@ -4014,26 +4416,36 @@ async function gerarPDFAsync(slideDivs) {
       try { await document.fonts.load("400 24px 'La Belle Aurore'"); await document.fonts.ready; } catch(e) {}
     }
     await aguardarLayoutTexto();
-    if (ARBOR_MAP_INSTANCE) { try { ARBOR_MAP_INSTANCE.invalidateSize(false); } catch(e) {} }
     await new Promise(function(resolve){ setTimeout(resolve, 120); });
     ajustarTextoInfoAoEspaco();
     await aguardarLayoutTexto();
-    await aguardarMapaArbor();
+
+    // CRÍTICO: converte temporariamente as fotos externas em Blob URLs seguras
+    // antes do html2canvas. Sem isso, imagens de Firebase/CDNs podem aparecer
+    // na prévia e desaparecer no PDF por CORS/tempo de decodificação.
+    var resultadoImagensPDF = await prepararImagensParaPDF(document.getElementById('slides'));
+    await aguardarLayoutTexto();
+    if (resultadoImagensPDF.falhas > 0) {
+      console.warn('[PDF] Algumas imagens não puderam ser pré-processadas:', resultadoImagensPDF);
+    }
 
     var jsPDFLib = window.jspdf.jsPDF;
-    var pdf = new jsPDFLib({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    var pdf = new jsPDFLib({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
     for (var i = 0; i < slideDivs.length; i++) {
       var canvas = await html2canvas(slideDivs[i], {
-        scale: 2,
+        scale: 1.7,
         useCORS: true,
         allowTaint: false,
+        imageTimeout: 30000,
         backgroundColor: null,
-        logging: false
+        logging: false,
+        removeContainer: true
       });
-      var imgData = canvas.toDataURL('image/jpeg', 0.92);
+      var imgData = canvas.toDataURL('image/jpeg', 0.86);
       if (i > 0) pdf.addPage('a4', 'landscape');
-      // imagem preenchendo a área útil (297x210mm - 0,3cm de margem em cada lado = 291x204mm), uma foto/slide por página
-      pdf.addImage(imgData, 'JPEG', 3, 3, 291, 204);
+      // ARBOR: PDF sem margens (full bleed). Demais marcas preservam 3 mm.
+      if (ULTIMA_MARCA === 'dkz') pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210);
+      else pdf.addImage(imgData, 'JPEG', 3, 3, 291, 204);
       setStatus('loading', 'Gerando PDF... (' + (i + 1) + '/' + slideDivs.length + ')');
     }
     var tituloArquivo = (document.getElementById('prop-title').textContent || 'apresentacao')
@@ -4060,6 +4472,7 @@ async function gerarPDFAsync(slideDivs) {
   } finally {
     // A prévia volta ao tamanho normal depois da geração do arquivo.
     document.documentElement.classList.remove('pdf-export-mode');
+    restaurarImagensAposPDF();
     restaurarTextoInfoAposSaida();
   }
 }
@@ -4111,8 +4524,8 @@ function ajustarTextoInfoAoEspaco() {
     });
 
     // Faixa de segurança: legível, mas capaz de acomodar textos maiores.
-    var minimo = 9.0;
-    var maximo = 16.5;
+    var minimo = 10.6;
+    var maximo = 19.2;
     var folga = 3; // px de respiro no fim do bloco
 
     function cabe(px) {
@@ -4126,8 +4539,8 @@ function ajustarTextoInfoAoEspaco() {
     // Se nem o mínimo couber, permite uma redução excepcional controlada.
     if (!cabe(minimo)) {
       var emergencia = minimo;
-      while (emergencia > 7.6 && !cabe(emergencia)) emergencia -= 0.25;
-      texto.style.setProperty('font-size', Math.max(7.6, emergencia).toFixed(2) + 'px', 'important');
+      while (emergencia > 8.4 && !cabe(emergencia)) emergencia -= 0.25;
+      texto.style.setProperty('font-size', Math.max(8.4, emergencia).toFixed(2) + 'px', 'important');
       return;
     }
 
@@ -4158,15 +4571,68 @@ function aguardarLayoutTexto() {
   });
 }
 
+// ARBOR: remove a margem da folha somente durante a impressão desta marca.
+function aplicarPaginaImpressaoPorMarca() {
+  var id = 'print-page-brand-override';
+  var anterior = document.getElementById(id);
+  if (anterior) anterior.remove();
+
+  var style = document.createElement('style');
+  style.id = id;
+  if (ULTIMA_MARCA === 'dkz') {
+    style.textContent = `
+      @page { size: A4 landscape; margin: 0 !important; }
+      @media print {
+        #presentation-area.theme-arbor,
+        #presentation-area.theme-arbor .slides-wrapper {
+          width: 297mm !important;
+          max-width: 297mm !important;
+        }
+        #presentation-area.theme-arbor .slide,
+        #presentation-area.theme-arbor .slide-capa,
+        #presentation-area.theme-arbor .slide-info,
+        #presentation-area.theme-arbor .slide-fim,
+        #presentation-area.theme-arbor .slide-arbor-welcome,
+        #presentation-area.theme-arbor .slide-foto {
+          width: 297mm !important;
+          height: 210mm !important;
+          min-height: 210mm !important;
+          max-height: 210mm !important;
+          margin: 0 !important;
+        }
+        #presentation-area.theme-arbor .capa-hero {
+          height: 210mm !important;
+        }
+        #presentation-area.theme-arbor .info-left,
+        #presentation-area.theme-arbor .info-right {
+          max-height: 210mm !important;
+        }
+      }
+    `;
+  } else {
+    style.textContent = '@page { size: A4 landscape; margin: 3mm !important; }';
+  }
+  document.head.appendChild(style);
+}
+
+function removerPaginaImpressaoPorMarca() {
+  var style = document.getElementById('print-page-brand-override');
+  if (style) style.remove();
+}
+
 // Impressão nativa: mede já com o layout de impressão ativo.
 window.addEventListener('beforeprint', function() {
+  aplicarPaginaImpressaoPorMarca();
   ajustarTextoInfoAoEspaco();
   if (ARBOR_MAP_INSTANCE) {
     try { setTimeout(function(){ ARBOR_MAP_INSTANCE.invalidateSize(false); }, 30); } catch(e) {}
   }
 });
 window.addEventListener('afterprint', function() {
+  removerPaginaImpressaoPorMarca();
+  restaurarImagensAposPDF();
   restaurarTextoInfoAposSaida();
+  setStatus('ok', 'Impressão finalizada.');
 });
 
 
@@ -4415,6 +4881,11 @@ function gerarApresentacao(brandId) {
   var codigo = document.getElementById('imovel-select').value;
   var im = imoveis.find(function(x) { return x.codigo === codigo; });
   if (!im) { setStatus('error', 'Imóvel não encontrado.'); return; }
+  if (CODIGO_CACHE_IMAGENS_PDF !== codigo) {
+    CACHE_BLOBS_IMAGENS_PDF = {};
+    CACHE_BLOBS_OTIMIZADOS_PDF = {};
+    CODIGO_CACHE_IMAGENS_PDF = codigo;
+  }
   ULTIMA_MARCA = brandId;
 
   var marca = MARCAS[brandId] || MARCAS['kasbaum'];
@@ -4458,7 +4929,7 @@ function gerarApresentacao(brandId) {
     html += '<div class="slide slide-arbor-welcome">' +
       '<div class="arbor-welcome-content">' +
         '<div class="arbor-welcome-title">Seja bem-vindo</div>' +
-        '<div class="arbor-welcome-copy">Preparamos esta apresentação para conduzir você por cada detalhe<br>deste imóvel com clareza, sensibilidade e intenção.</div>' +
+        '<div class="arbor-welcome-copy">Preparamos esta apresentação para conduzir você por cada detalhe <br>deste imóvel com clareza, sensibilidade e intenção.</div>' +
         '<div class="arbor-welcome-note">Esperamos que você se sinta em casa desde a primeira visita.</div>' +
       '</div>' +
       '<img class="arbor-welcome-logo" crossorigin="anonymous" src="' + ARBOR_WATERMARK_LOGO + '" alt="Arbor Imóveis" onerror="this.onerror=null;this.src=ARBOR_LOGO;">' +
@@ -4530,26 +5001,7 @@ function gerarApresentacao(brandId) {
 
   var infoFoto = im.fotos[Math.floor(im.fotos.length/2)] || im.fotos[0] || '';
 
-  /* ── LOCALIZAÇÃO & REGIÃO — TODAS AS MARCAS ──
-     A estrutura é única; o acabamento visual é aplicado individualmente por theme-*. */
-  var enderecoMapa = enderecoLocalizacaoArbor(im);
-  var regiaoMapa = textoRegiaoArbor(im);
-  html += '<div class="slide slide-arbor-location slide-location">' +
-    '<div class="arbor-location-copy">' +
-      '<div class="arbor-location-eyebrow">' + escaparHTML([im.bairro, im.cidade].filter(Boolean).join(' · ')) + '</div>' +
-      '<div class="arbor-location-title">Localização<br>&amp; região</div>' +
-      '<div class="arbor-location-divider"></div>' +
-      '<div class="arbor-location-address">' + escaparHTML(enderecoMapa) + '</div>' +
-      '<div class="arbor-location-text">' + escaparHTML(regiaoMapa) + '</div>' +
-      '<div class="arbor-location-coords">Localização</div>' +
-    '</div>' +
-    '<div class="arbor-map-shell">' +
-      '<div id="arbor-map" class="arbor-map"></div>' +
-      '<div id="arbor-map-fallback" class="arbor-map-fallback">' + escaparHTML(enderecoMapa || [im.bairro, im.cidade].filter(Boolean).join(' · ')) + '</div>' +
-      '<div id="arbor-map-label" class="arbor-map-label">' + escaparHTML(im.nomeEmp || im.tipo || 'Imóvel') + '</div>' +
-      '<div class="arbor-map-attribution">© OpenStreetMap contributors</div>' +
-    '</div>' +
-  '</div>';
+  /* Página Localização & Região removida de todas as marcas. */
 
   html += '<div class="slide slide-info">' +
     '<div class="info-left">' +
@@ -4580,6 +5032,16 @@ function gerarApresentacao(brandId) {
   /* Injeta no DOM */
   document.getElementById('slides').innerHTML = html;
 
+  // Carrega/decodifica as fotos desde já. Assim o usuário não precisa esperar
+  // o primeiro carregamento somente depois de clicar em PDF ou impressão.
+  Array.from(document.getElementById('slides').querySelectorAll('img')).forEach(function(img, idx) {
+    try {
+      img.loading = 'eager';
+      img.decoding = 'async';
+      if ('fetchPriority' in img) img.fetchPriority = idx < 8 ? 'high' : 'auto';
+    } catch(e) {}
+  });
+
   /* Paulo Henrique: a página de informações deve ser sempre a página 2, logo após a capa.
      Apenas reordena o DOM; não duplica nem altera o conteúdo da página. */
   if (brandId === 'paulo') {
@@ -4601,16 +5063,17 @@ function gerarApresentacao(brandId) {
   document.getElementById('presentation-area').style.display = 'block';
   document.getElementById('scroll-fab-group').style.display = 'flex';
   document.getElementById('prop-title').textContent = emp;
-  var totalPaginas = maxFotos + (brandId === 'dkz' ? 5 : 4);
+  var totalPaginas = maxFotos + (brandId === 'dkz' ? 4 : 3);
   document.getElementById('prop-sub').textContent = im.codigo + ' · ' + addr + ', ' + im.bairro + ' — ' + totalPaginas + ' páginas';
 
-  // Todas as marcas possuem página de localização e usam o mesmo mapa dinâmico.
-  setTimeout(function(){ inicializarMapaArbor(im); }, 80);
 
   setStatus('ok', 'Apresentação gerada com marca ' + marca.name + ' (' + totalPaginas + ' páginas).');
   setTimeout(function() {
     document.getElementById('presentation-area').scrollIntoView({ behavior: 'smooth' });
   }, 150);
+  setTimeout(function() {
+    aquecerCacheImagensPDF(document.getElementById('slides'));
+  }, 250);
 }
 </script>
 </body>
