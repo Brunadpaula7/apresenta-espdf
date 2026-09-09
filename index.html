@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&family=Anton&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
 <style>
 /* TT Ramillas é uma fonte licenciada (TypeType). O pacote enviado até agora é um TRIAL,
    cuja licença NÃO permite uso comercial nem embutir em páginas publicamente acessíveis.
@@ -2040,6 +2041,348 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .theme-arbor .fim-brand-logo { width: 38mm !important; opacity: .94 !important; }
 }
 
+
+
+/* =====================================================================
+   ARBOR v14 — capa integrada + boas-vindas + localização editorial
+   Somente .theme-arbor. Demais marcas permanecem inalteradas.
+   ===================================================================== */
+
+/* CAPA: fotografia deixa de ser um quadro sobreposto e passa a fazer
+   parte do próprio fundo. O degradê funde imagem e Verde Arbor. */
+.theme-arbor .slide-capa {
+  background: #204030;
+  isolation: isolate;
+}
+.theme-arbor .slide-capa::before {
+  display: none;
+}
+.theme-arbor .slide-capa::after {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(90deg,
+      rgba(32,64,48,1) 0%,
+      rgba(32,64,48,1) 31%,
+      rgba(32,64,48,.94) 38%,
+      rgba(32,64,48,.64) 47%,
+      rgba(32,64,48,.22) 59%,
+      rgba(32,64,48,.04) 77%,
+      rgba(32,64,48,.10) 100%),
+    linear-gradient(180deg, rgba(17,17,17,.04), rgba(17,17,17,.12));
+}
+.theme-arbor .capa-hero {
+  inset: 0 0 0 auto;
+  width: 64%;
+  height: 100%;
+  overflow: hidden;
+  box-shadow: none;
+  z-index: 0;
+}
+.theme-arbor .capa-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.90) contrast(1.02) brightness(.94);
+  transform: scale(1.015);
+}
+.theme-arbor .capa-hero-overlay {
+  background: transparent;
+}
+.theme-arbor .capa-content {
+  padding: 7% 50% 7% 7.2%;
+  z-index: 3;
+}
+.theme-arbor .capa-top {
+  left: 7.2%;
+  right: 52%;
+  top: 7%;
+  z-index: 4;
+}
+.theme-arbor .capa-mid {
+  max-width: 100%;
+}
+.theme-arbor .arbor-cover-brand {
+  z-index: 4;
+}
+
+/* PÁGINA 2 — BOAS-VINDAS ARBOR */
+.theme-arbor .slide-arbor-welcome {
+  background: #E3D9C8;
+  color: #204030;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 7% 10%;
+}
+.theme-arbor .arbor-welcome-content {
+  width: min(72%, 760px);
+  transform: translateY(-2%);
+}
+.theme-arbor .arbor-welcome-title {
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(12px, 1.45vw, 20px);
+  font-weight: 500;
+  letter-spacing: .46em;
+  text-indent: .46em;
+  text-transform: uppercase;
+  margin-bottom: 4.2%;
+}
+.theme-arbor .arbor-welcome-copy {
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(14px, 1.65vw, 22px);
+  line-height: 1.45;
+  font-weight: 500;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.theme-arbor .arbor-welcome-note {
+  margin-top: 4.2%;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(13px, 1.55vw, 21px);
+  line-height: 1.35;
+  color: #204030;
+}
+.theme-arbor .arbor-welcome-logo {
+  position: absolute;
+  width: clamp(62px, 8.2vw, 108px);
+  right: 4.3%;
+  bottom: 5.2%;
+  opacity: .88;
+  mix-blend-mode: multiply;
+}
+
+/* ANTEPENÚLTIMA — LOCALIZAÇÃO & REGIÃO */
+.theme-arbor .slide-arbor-location {
+  background: #E3D9C8;
+  color: #204030;
+  display: grid;
+  grid-template-columns: 39% 61%;
+}
+.theme-arbor .arbor-location-copy {
+  padding: 8% 8% 7% 9%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+}
+.theme-arbor .arbor-location-eyebrow {
+  font-size: clamp(8px, .92vw, 12px);
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: rgba(32,64,48,.64);
+  margin-bottom: 4%;
+}
+.theme-arbor .arbor-location-title {
+  font-family: 'TT Ramillas', 'Playfair Display', Georgia, serif;
+  font-size: clamp(27px, 4.2vw, 54px);
+  line-height: .98;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  margin-bottom: 5%;
+}
+.theme-arbor .arbor-location-divider {
+  width: 40px;
+  height: 1px;
+  background: #BC9570;
+  margin-bottom: 5%;
+}
+.theme-arbor .arbor-location-address {
+  font-size: clamp(10px, 1.12vw, 15px);
+  line-height: 1.55;
+  font-weight: 500;
+  margin-bottom: 4%;
+}
+.theme-arbor .arbor-location-text {
+  font-size: clamp(10px, 1.06vw, 14px);
+  line-height: 1.62;
+  color: rgba(32,64,48,.82);
+}
+.theme-arbor .arbor-location-coords {
+  margin-top: 4.5%;
+  font-size: clamp(7px, .78vw, 10px);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(32,64,48,.52);
+}
+.theme-arbor .arbor-map-shell {
+  position: relative;
+  margin: 5.5% 5.5% 5.5% 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.70), transparent 30%),
+    radial-gradient(circle at 72% 74%, rgba(188,149,112,.16), transparent 32%),
+    #eee7dc;
+  box-shadow: inset 0 0 0 1px rgba(32,64,48,.12);
+}
+.theme-arbor .arbor-map-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 450;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 38%, rgba(255,255,255,.26), transparent 24%),
+    radial-gradient(ellipse at 82% 20%, rgba(96,103,66,.08), transparent 28%),
+    radial-gradient(ellipse at 72% 84%, rgba(151,67,21,.05), transparent 22%);
+  mix-blend-mode: screen;
+}
+.theme-arbor .arbor-map-shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 451;
+  pointer-events: none;
+  box-shadow: inset 0 0 45px rgba(227,217,200,.82);
+}
+.theme-arbor .arbor-map {
+  position: absolute;
+  inset: 0;
+  background: #eee7dc;
+}
+.theme-arbor .arbor-map .leaflet-tile-pane {
+  filter: sepia(.20) saturate(.55) contrast(.84) brightness(1.10);
+  opacity: .86;
+}
+.theme-arbor .arbor-map .leaflet-control-container { display: none; }
+.theme-arbor .arbor-map .leaflet-pane { z-index: 200; }
+.theme-arbor .arbor-map .leaflet-marker-pane { z-index: 500; }
+.theme-arbor .arbor-map-marker {
+  width: 34px;
+  height: 34px;
+  border-radius: 50% 50% 50% 4px;
+  transform: rotate(-45deg);
+  background: #204030;
+  border: 2px solid #E3D9C8;
+  box-shadow: 0 5px 14px rgba(32,64,48,.28);
+  position: relative;
+}
+.theme-arbor .arbor-map-marker::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #BC9570;
+  left: 10px;
+  top: 10px;
+}
+.theme-arbor .arbor-map-label {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 28px);
+  transform: translateX(-50%);
+  z-index: 520;
+  padding: 7px 12px;
+  background: rgba(227,217,200,.94);
+  border: 1px solid rgba(32,64,48,.18);
+  color: #204030;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.theme-arbor .arbor-map-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12%;
+  color: rgba(32,64,48,.65);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(16px,2vw,28px);
+  line-height: 1.35;
+  background:
+    linear-gradient(25deg, transparent 47%, rgba(32,64,48,.10) 48%, rgba(32,64,48,.10) 50%, transparent 51%) 0 0/110px 110px,
+    linear-gradient(-18deg, transparent 47%, rgba(188,149,112,.16) 48%, rgba(188,149,112,.16) 50%, transparent 51%) 0 0/145px 145px,
+    #eee7dc;
+}
+.theme-arbor .arbor-map-attribution {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  z-index: 530;
+  font-size: 7px;
+  color: rgba(32,64,48,.48);
+  background: rgba(227,217,200,.70);
+  padding: 2px 4px;
+}
+
+@media print {
+  .theme-arbor .slide-capa::before { display: none !important; }
+  .theme-arbor .slide-capa::after {
+    display: block !important;
+    inset: 0 !important;
+    background: linear-gradient(90deg,
+      #204030 0%, #204030 31%, rgba(32,64,48,.94) 38%,
+      rgba(32,64,48,.64) 47%, rgba(32,64,48,.22) 59%,
+      rgba(32,64,48,.04) 77%, rgba(32,64,48,.10) 100%) !important;
+  }
+  .theme-arbor .capa-hero {
+    inset: 0 0 0 auto !important;
+    width: 190mm !important;
+    height: 204mm !important;
+    box-shadow: none !important;
+  }
+  .theme-arbor .capa-hero img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transform: scale(1.015) !important;
+  }
+  .theme-arbor .capa-content {
+    padding: 14mm 146mm 14mm 17mm !important;
+    z-index: 3 !important;
+  }
+  .theme-arbor .capa-top {
+    left: 17mm !important;
+    right: 150mm !important;
+    top: 14mm !important;
+  }
+
+  .theme-arbor .slide-arbor-welcome {
+    background: #E3D9C8 !important;
+    color: #204030 !important;
+    height: 204mm !important;
+    padding: 15mm 30mm !important;
+  }
+  .theme-arbor .arbor-welcome-content { width: 190mm !important; }
+  .theme-arbor .arbor-welcome-title { font-size: 4.2mm !important; margin-bottom: 10mm !important; }
+  .theme-arbor .arbor-welcome-copy { font-size: 5mm !important; max-width: 190mm !important; }
+  .theme-arbor .arbor-welcome-note { font-size: 4.5mm !important; margin-top: 9mm !important; }
+  .theme-arbor .arbor-welcome-logo { width: 25mm !important; right: 12mm !important; bottom: 11mm !important; }
+
+  .theme-arbor .slide-arbor-location {
+    display: grid !important;
+    grid-template-columns: 112mm 179mm !important;
+    background: #E3D9C8 !important;
+    color: #204030 !important;
+    height: 204mm !important;
+  }
+  .theme-arbor .arbor-location-copy { padding: 18mm 10mm 16mm 17mm !important; }
+  .theme-arbor .arbor-location-eyebrow { font-size: 2.7mm !important; }
+  .theme-arbor .arbor-location-title { font-size: 11mm !important; }
+  .theme-arbor .arbor-location-address { font-size: 3.6mm !important; }
+  .theme-arbor .arbor-location-text { font-size: 3.25mm !important; line-height: 1.6 !important; }
+  .theme-arbor .arbor-location-coords { font-size: 2.2mm !important; }
+  .theme-arbor .arbor-map-shell { margin: 12mm 12mm 12mm 0 !important; }
+  .theme-arbor .arbor-map-label { font-size: 2.5mm !important; padding: 2mm 3mm !important; }
+  .theme-arbor .arbor-map-attribution { font-size: 1.7mm !important; }
+}
+
 </style>
 </head>
 <body>
@@ -2142,6 +2485,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -2679,7 +3023,11 @@ function parsearXMLNido(xml) {
       nomeEmp: g('NomeEmpreendimento') || g('Titulo').split('|')[0].trim(),
       tipo: traduzirTipoImovel(g('TipoImovel')), endereco: g('Endereco'), numero: g('Numero'),
       bairro: g('Bairro'), cidade: g('Cidade'), uf: g('UF'), andar: g('Andar'),
-      area: g('AreaUtil'), areaTerreno: g('AreaTotal'),
+      latitude: g('Latitude'), longitude: g('Longitude'), cep: g('CEP') || g('Cep'),
+      area: g('AreaUtil') || g('AreaConstruida') || g('AreaTotal'),
+      areaConstruida: g('AreaConstruida') || g('AreaUtil'),
+      areaTotal: g('AreaTotal') || g('AreaTerreno'),
+      areaTerreno: g('AreaTerreno') || g('AreaTotal'),
       quartos: g('QtdDormitorios'), suites: g('QtdSuites'),
       vagas: g('QtdVagas'), banheiros: g('QtdBanheiros'), mobiliado: mobiliado, churrasqueira: churrasqueira, piscina: piscina,
       transaction: g('TransactionType'),
@@ -2724,10 +3072,18 @@ function parsearXMLVR(xml) {
     var aluguel = parseFloat((g('RentalPrice') || '0').replace(',', '.')) || 0;
     var addr = [g('Address'), g('StreetNumber'), g('Complement')].filter(Boolean).join(' ');
 
-    var livingArea = g('LivingArea') || g('ConstructedArea');
+    var livingArea = g('LivingArea');
+    var constructedArea = g('ConstructedArea') || g('BuiltArea');
+    var usableArea = g('UsableArea');
     var lotArea = g('LotArea');
-    var areaUtil = livingArea || lotArea;
-    var areaTerrenoCalc = (lotArea && lotArea !== livingArea) ? lotArea : null;
+    var totalArea = g('TotalArea');
+
+    // Mantém a semântica das áreas separada. Casas, sobrados e imóveis comerciais
+    // precisam poder exibir construção + terreno/total mesmo quando os números coincidem.
+    var areaUtil = livingArea || constructedArea || usableArea || totalArea || lotArea;
+    var areaConstruidaCalc = constructedArea || livingArea || usableArea || '';
+    var areaTotalCalc = totalArea || lotArea || '';
+    var areaTerrenoCalc = lotArea || totalArea || '';
 
     var mobiliado = 'Não', churrasqueira = 'Não', piscina = 'Não';
     var features = Array.from(n.getElementsByTagNameNS('*', 'Feature'));
@@ -2751,7 +3107,12 @@ function parsearXMLVR(xml) {
       cidade: g('City'),
       uf: (function(){ var s=getEl('State'); return s ? (s.getAttribute('abbreviation') || 'GO') : 'GO'; })(),
       andar: g('UnitFloor'),
+      latitude: g('Latitude'),
+      longitude: g('Longitude'),
+      cep: g('PostalCode'),
       area: areaUtil,
+      areaConstruida: areaConstruidaCalc,
+      areaTotal: areaTotalCalc,
       areaTerreno: areaTerrenoCalc,
       quartos: g('Bedrooms'),
       suites: g('Suites'),
@@ -2792,10 +3153,27 @@ function mapearJSON(arr) {
       else if (im.operacao === 'Aluguel' || im.operacao === 'Locação') transaction = 'For Rent';
     }
 
-    var areaUtil = (im.area_privativa != null ? im.area_privativa : (im.area != null ? im.area : ''));
+    var areaConstruidaJSON = (im.area_construida != null && im.area_construida !== '')
+      ? im.area_construida
+      : ((im.areaConstruida != null && im.areaConstruida !== '') ? im.areaConstruida : '');
+
+    var areaUtil = (im.area_privativa != null && im.area_privativa !== '')
+      ? im.area_privativa
+      : ((im.area != null && im.area !== '') ? im.area : areaConstruidaJSON);
+
+    var areaTotalJSON = (im.area_total != null && im.area_total !== '')
+      ? im.area_total
+      : ((im.areaTotal != null && im.areaTotal !== '')
+          ? im.areaTotal
+          : ((im.lotArea != null && im.lotArea !== '')
+              ? im.lotArea
+              : ((im.lot_area != null && im.lot_area !== '') ? im.lot_area : '')));
+
     var areaTerrenoCalc = (im.area_terreno != null && im.area_terreno !== '')
       ? im.area_terreno
-      : ((im.areaTerreno != null && im.areaTerreno !== '') ? im.areaTerreno : '');
+      : ((im.areaTerreno != null && im.areaTerreno !== '')
+          ? im.areaTerreno
+          : areaTotalJSON);
 
     var textoBuscaJSON = ((Array.isArray(im.features) ? im.features.join(' ') : '') + ' ' + (im.descricao || im.observacao || '')).toLowerCase();
     var mobiliado = im.mobiliado ? im.mobiliado : (textoBuscaJSON.indexOf('mobiliad') > -1 ? 'Sim' : 'Não');
@@ -2815,7 +3193,12 @@ function mapearJSON(arr) {
       cidade: im.cidade || '',
       uf: im.estado || im.uf || 'GO',
       andar: im.andar != null ? String(im.andar) : '',
+      latitude: im.latitude != null ? String(im.latitude) : (im.lat != null ? String(im.lat) : ''),
+      longitude: im.longitude != null ? String(im.longitude) : (im.lng != null ? String(im.lng) : (im.lon != null ? String(im.lon) : '')),
+      cep: im.cep != null ? String(im.cep) : '',
       area: areaUtil != null ? String(areaUtil) : '',
+      areaConstruida: areaConstruidaJSON != null ? String(areaConstruidaJSON) : '',
+      areaTotal: areaTotalJSON != null ? String(areaTotalJSON) : '',
       areaTerreno: areaTerrenoCalc != null ? String(areaTerrenoCalc) : '',
       quartos: im.quartos != null ? String(im.quartos) : '',
       suites: im.suites != null ? String(im.suites) : '',
@@ -2946,6 +3329,7 @@ async function gerarPDFAsync(slideDivs) {
     // para ocupar o espaço disponível sem corte.
     ajustarTextoInfoAoEspaco();
     await aguardarLayoutTexto();
+    await aguardarMapaArbor();
 
     var jsPDFLib = window.jspdf.jsPDF;
     var pdf = new jsPDFLib({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -3092,6 +3476,232 @@ window.addEventListener('afterprint', function() {
   restaurarTextoInfoAposSaida();
 });
 
+
+
+/* =============================================
+   ÁREAS — REGRAS POR TIPOLOGIA
+   ============================================= */
+function perfilAreasImovel(im) {
+  var tipo = normalizarBusca(im && im.tipo ? im.tipo : '');
+  var ehTerreno = /terreno|lote|fazenda|chacara|rural|sitio/.test(tipo);
+  var ehCasa = /casa|sobrado|townhouse|condominio/.test(tipo);
+  var ehComercial = /comercial|predio|galpao|industrial|loja|hotel|warehouse|building|office/.test(tipo);
+  var ehUnidadeVertical = /apartamento|flat|studio|cobertura|penthouse|loft/.test(tipo);
+
+  var principal = String((im && (im.areaConstruida || im.area)) || '').trim();
+  var total = String((im && (im.areaTerreno || im.areaTotal)) || '').trim();
+
+  if (ehTerreno) {
+    // Em terreno/lote/fazenda a metragem é territorial, não "privativa".
+    return {
+      principal: total || principal,
+      principalLabel: /fazenda|chacara|rural|sitio/.test(tipo) ? 'área do terreno' : 'área total',
+      secundario: '',
+      secundarioLabel: ''
+    };
+  }
+
+  if (ehCasa) {
+    return {
+      principal: principal,
+      principalLabel: 'área construída',
+      secundario: total,
+      secundarioLabel: 'área do terreno'
+    };
+  }
+
+  if (ehComercial) {
+    return {
+      principal: principal,
+      principalLabel: 'área construída',
+      secundario: total,
+      secundarioLabel: 'área total'
+    };
+  }
+
+  return {
+    principal: principal,
+    principalLabel: ehUnidadeVertical ? 'área privativa' : 'área privativa',
+    secundario: (!ehUnidadeVertical && total) ? total : '',
+    secundarioLabel: 'área total'
+  };
+}
+
+function areaValida(v) {
+  if (v == null) return false;
+  var str = String(v).trim();
+  if (!str || str === '0' || str === '0,00') return false;
+  var n = parseFloat(str.replace(/\./g, '').replace(',', '.'));
+  return isFinite(n) && n > 0;
+}
+
+/* =============================================
+   ARBOR — PÁGINA DE LOCALIZAÇÃO
+   Usa somente endereço/coordenadas e frases de localização já existentes
+   no anúncio. Não inventa pontos de interesse.
+   ============================================= */
+var ARBOR_MAP_READY = Promise.resolve();
+var ARBOR_MAP_INSTANCE = null;
+
+function numeroCoordenada(v) {
+  if (v == null || v === '') return null;
+  var n = parseFloat(String(v).trim().replace(',', '.'));
+  return isFinite(n) ? n : null;
+}
+
+function textoRegiaoArbor(im) {
+  var desc = normalizarTextoPtBR(limparDescricaoApresentacao(im.observacao || ''));
+  var bairro = String(im.bairro || '').trim();
+  var cidade = String(im.cidade || '').trim();
+  var nb = normalizarBusca(bairro);
+  var nc = normalizarBusca(cidade);
+  var termos = /localizad|regiao|região|bairro|proximo|próximo|acesso|avenida|rodovia|br-|shopping|parque|hospital|escola|colegio|colégio|restaurante|gastronomia|conveniencia|conveniência|mobilidade|servicos|serviços|comercio|comércio|condominio|condomínio/i;
+
+  var candidatas = dividirSentencas(desc).map(function(f){ return normalizarTextoPtBR(f); }).filter(function(f){
+    if (!f || f.length < 38 || ehChamadaComercial(f) || sentencaPredominantementeIngles(f)) return false;
+    var nf = normalizarBusca(f);
+    return termos.test(f) || (nb && nf.indexOf(nb) >= 0) || (nc && nf.indexOf(nc) >= 0);
+  });
+
+  var escolhidas = [];
+  candidatas.forEach(function(f){
+    if (escolhidas.length >= 2) return;
+    var nf = normalizarSentenca(f);
+    var repetida = escolhidas.some(function(e){
+      var ne = normalizarSentenca(e);
+      return nf === ne || (nf.length > 25 && ne.indexOf(nf.slice(0,25)) >= 0) || (ne.length > 25 && nf.indexOf(ne.slice(0,25)) >= 0);
+    });
+    if (!repetida) escolhidas.push(f);
+  });
+
+  if (escolhidas.length) return limitarParagrafo(escolhidas.join(' '), 520);
+
+  var local = [];
+  if (bairro) local.push(bairro);
+  if (cidade && normalizarBusca(cidade) !== normalizarBusca(bairro)) local.push(cidade);
+  if (local.length) {
+    return 'O imóvel está localizado em ' + local.join(', ') + '. A posição apresentada no mapa corresponde às coordenadas cadastradas no anúncio e serve como referência precisa para a visita.';
+  }
+  return 'A posição apresentada no mapa corresponde às coordenadas cadastradas no anúncio e serve como referência para a visita ao imóvel.';
+}
+
+function enderecoLocalizacaoArbor(im) {
+  var partes = [];
+  var e = ocultarInfoUnidade(String(im.endereco || '').trim());
+  if (e) partes.push(e);
+  if (im.bairro && normalizarBusca(e).indexOf(normalizarBusca(im.bairro)) < 0) partes.push(im.bairro);
+  if (im.cidade) partes.push(im.cidade);
+  if (im.uf) partes.push(im.uf);
+  return partes.filter(Boolean).join(' · ');
+}
+
+function geocodificarEnderecoArbor(im) {
+  var fallbackLat = numeroCoordenada(im.latitude);
+  var fallbackLng = numeroCoordenada(im.longitude);
+  var fallback = (fallbackLat != null && fallbackLng != null) ? { lat: fallbackLat, lng: fallbackLng, origem: 'feed' } : null;
+
+  var partes = [
+    String(im.endereco || '').trim(),
+    String(im.bairro || '').trim(),
+    String(im.cidade || '').trim(),
+    String(im.uf || '').trim(),
+    String(im.cep || '').trim(),
+    'Brasil'
+  ].filter(Boolean);
+
+  if (!partes.length || typeof fetch !== 'function') return Promise.resolve(fallback);
+
+  var chave = partes.join('|').toLowerCase();
+  window.__ARBOR_GEOCODE_CACHE = window.__ARBOR_GEOCODE_CACHE || {};
+  if (window.__ARBOR_GEOCODE_CACHE[chave]) return Promise.resolve(window.__ARBOR_GEOCODE_CACHE[chave]);
+
+  var url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=br&accept-language=pt-BR&q=' + encodeURIComponent(partes.join(', '));
+  return fetch(url, { headers: { 'Accept': 'application/json' } })
+    .then(function(r){ if (!r.ok) throw new Error('Geocodificação indisponível'); return r.json(); })
+    .then(function(lista){
+      if (Array.isArray(lista) && lista.length) {
+        var lat = numeroCoordenada(lista[0].lat);
+        var lng = numeroCoordenada(lista[0].lon);
+        if (lat != null && lng != null) {
+          var res = { lat: lat, lng: lng, origem: 'endereco' };
+          window.__ARBOR_GEOCODE_CACHE[chave] = res;
+          return res;
+        }
+      }
+      return fallback;
+    })
+    .catch(function(){ return fallback; });
+}
+
+function inicializarMapaArbor(im) {
+  var el = document.getElementById('arbor-map');
+  if (!el) return;
+  var fallbackEl = document.getElementById('arbor-map-fallback');
+  var label = document.getElementById('arbor-map-label');
+
+  if (ARBOR_MAP_INSTANCE) {
+    try { ARBOR_MAP_INSTANCE.remove(); } catch(e) {}
+    ARBOR_MAP_INSTANCE = null;
+  }
+
+  ARBOR_MAP_READY = geocodificarEnderecoArbor(im).then(function(pos) {
+    if (!pos || typeof L === 'undefined') {
+      if (fallbackEl) fallbackEl.style.display = 'flex';
+      if (label) label.style.display = 'none';
+      return;
+    }
+
+    if (fallbackEl) fallbackEl.style.display = 'none';
+
+    return new Promise(function(resolve) {
+      var finalizado = false;
+      function pronto(){ if (!finalizado) { finalizado = true; resolve(); } }
+      try {
+        var map = L.map(el, {
+          zoomControl: false,
+          attributionControl: false,
+          dragging: false,
+          scrollWheelZoom: false,
+          doubleClickZoom: false,
+          boxZoom: false,
+          keyboard: false,
+          tap: false,
+          touchZoom: false,
+          preferCanvas: true
+        }).setView([pos.lat, pos.lng], pos.origem === 'endereco' ? 16 : 15);
+        ARBOR_MAP_INSTANCE = map;
+        var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          crossOrigin: true
+        });
+        tiles.on('load', pronto);
+        tiles.on('tileerror', function(){ setTimeout(pronto, 250); });
+        tiles.addTo(map);
+
+        var markerIcon = L.divIcon({
+          className: 'arbor-map-marker-wrap',
+          html: '<div class="arbor-map-marker"></div>',
+          iconSize: [34, 34],
+          iconAnchor: [17, 34]
+        });
+        L.marker([pos.lat, pos.lng], { icon: markerIcon, interactive: false }).addTo(map);
+        setTimeout(function(){ map.invalidateSize(false); }, 80);
+        setTimeout(pronto, 2600);
+      } catch(err) {
+        if (fallbackEl) fallbackEl.style.display = 'flex';
+        pronto();
+      }
+    });
+  });
+}
+
+function aguardarMapaArbor() {
+  return Promise.race([
+    ARBOR_MAP_READY || Promise.resolve(),
+    new Promise(function(resolve){ setTimeout(resolve, 3000); })
+  ]);
+}
+
 /* =============================================
    GERAÇÃO DAS SLIDES MULTI-MARCA
    ============================================= */
@@ -3149,6 +3759,18 @@ function gerarApresentacao(brandId) {
     '</div>' +
   '</div>';
 
+  /* ── SLIDE 2 ARBOR: BOAS-VINDAS ── */
+  if (brandId === 'dkz') {
+    html += '<div class="slide slide-arbor-welcome">' +
+      '<div class="arbor-welcome-content">' +
+        '<div class="arbor-welcome-title">Seja bem-vindo</div>' +
+        '<div class="arbor-welcome-copy">Preparamos esta apresentação para conduzir você por cada detalhe<br>deste imóvel com clareza, sensibilidade e intenção.</div>' +
+        '<div class="arbor-welcome-note">Esperamos que você se sinta em casa desde a primeira visita.</div>' +
+      '</div>' +
+      '<img class="arbor-welcome-logo" crossorigin="anonymous" src="' + ARBOR_WATERMARK_LOGO + '" alt="Arbor Imóveis" onerror="this.onerror=null;this.src=ARBOR_LOGO;">' +
+    '</div>';
+  }
+
   /* ── SLIDES DE FOTO ── */
   var maxFotos = im.fotos.length;
   var wmFoto = brandId === 'paulo'
@@ -3175,9 +3797,15 @@ function gerarApresentacao(brandId) {
   function svgHouseMark() { return '<svg class="paulo-icon-wm" viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22 L15 10 L15 40 L4 40 Z"/><path d="M15 16 L26 6 L26 40 L15 40"/><line x1="9" y1="26" x2="9" y2="26.1"/><line x1="20" y1="22" x2="20" y2="22.1"/><line x1="20" y1="29" x2="20" y2="29.1"/><path d="M30 40 V18 H37 V40"/><line x1="33" y1="24" x2="33" y2="24.1"/><line x1="33" y1="31" x2="33" y2="31.1"/></svg>'; }
 
   var icones = '';
-  if (im.area && im.area !== '0') icones += '<span class="icon-block">' + svgAreaUtil() + '<span>' + im.area + ' m²<br>área privativa</span></span>';
+  var perfilAreas = perfilAreasImovel(im);
   var esconderAreaTerreno = (typeof oculta.areaTerreno === 'boolean') ? oculta.areaTerreno : false;
-  if (im.areaTerreno && im.areaTerreno !== '0' && !esconderAreaTerreno) icones += '<span class="icon-block">' + svgAreaTotal() + '<span>' + im.areaTerreno + ' m²<br>terreno</span></span>';
+
+  if (areaValida(perfilAreas.principal)) {
+    icones += '<span class="icon-block">' + svgAreaUtil() + '<span>' + escaparHTML(String(perfilAreas.principal)) + ' m²<br>' + escaparHTML(perfilAreas.principalLabel) + '</span></span>';
+  }
+  if (areaValida(perfilAreas.secundario) && !esconderAreaTerreno) {
+    icones += '<span class="icon-block">' + svgAreaTotal() + '<span>' + escaparHTML(String(perfilAreas.secundario)) + ' m²<br>' + escaparHTML(perfilAreas.secundarioLabel) + '</span></span>';
+  }
 
   var qtdQuartos = parseInt(im.quartos) || 0;
   var qtdSuites = parseInt(im.suites) || 0;
@@ -3208,6 +3836,33 @@ function gerarApresentacao(brandId) {
 
   var infoFoto = im.fotos[Math.floor(im.fotos.length/2)] || im.fotos[0] || '';
 
+  /* ── ANTEPENÚLTIMA ARBOR: LOCALIZAÇÃO & REGIÃO ── */
+  if (brandId === 'dkz') {
+    var latArbor = numeroCoordenada(im.latitude);
+    var lngArbor = numeroCoordenada(im.longitude);
+    var coordsArbor = (latArbor != null && lngArbor != null)
+      ? latArbor.toFixed(6).replace('.', ',') + ' · ' + lngArbor.toFixed(6).replace('.', ',')
+      : 'Coordenadas não informadas no feed';
+    var enderecoArbor = enderecoLocalizacaoArbor(im);
+    var regiaoArbor = textoRegiaoArbor(im);
+    html += '<div class="slide slide-arbor-location">' +
+      '<div class="arbor-location-copy">' +
+        '<div class="arbor-location-eyebrow">' + escaparHTML([im.bairro, im.cidade].filter(Boolean).join(' · ')) + '</div>' +
+        '<div class="arbor-location-title">Localização<br>&amp; região</div>' +
+        '<div class="arbor-location-divider"></div>' +
+        '<div class="arbor-location-address">' + escaparHTML(enderecoArbor) + '</div>' +
+        '<div class="arbor-location-text">' + escaparHTML(regiaoArbor) + '</div>' +
+        '<div class="arbor-location-coords">Localização</div>' +
+      '</div>' +
+      '<div class="arbor-map-shell">' +
+        '<div id="arbor-map" class="arbor-map"></div>' +
+        '<div id="arbor-map-fallback" class="arbor-map-fallback">' + escaparHTML(enderecoArbor || [im.bairro, im.cidade].filter(Boolean).join(' · ')) + '</div>' +
+        '<div id="arbor-map-label" class="arbor-map-label">' + escaparHTML(im.nomeEmp || im.tipo || 'Imóvel') + '</div>' +
+        '<div class="arbor-map-attribution">© OpenStreetMap contributors</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   html += '<div class="slide slide-info">' +
     '<div class="info-left">' +
       '<div class="info-header">Informações sobre o imóvel</div>' +
@@ -3236,6 +3891,18 @@ function gerarApresentacao(brandId) {
 
   /* Injeta no DOM */
   document.getElementById('slides').innerHTML = html;
+
+  /* Paulo Henrique: a página de informações deve ser sempre a página 2, logo após a capa.
+     Apenas reordena o DOM; não duplica nem altera o conteúdo da página. */
+  if (brandId === 'paulo') {
+    var slidesPaulo = document.getElementById('slides');
+    var capaPaulo = slidesPaulo.querySelector('.slide-capa');
+    var infoPaulo = slidesPaulo.querySelector('.slide-info');
+    if (capaPaulo && infoPaulo) {
+      slidesPaulo.insertBefore(infoPaulo, capaPaulo.nextSibling);
+    }
+  }
+
   document.getElementById('presentation-area').classList.toggle('theme-kasbaum', brandId === 'kasbaum');
   document.getElementById('presentation-area').classList.toggle('theme-arbor', brandId === 'dkz');
   document.getElementById('presentation-area').classList.toggle('theme-paulo', brandId === 'paulo');
@@ -3245,9 +3912,16 @@ function gerarApresentacao(brandId) {
   document.getElementById('presentation-area').style.display = 'block';
   document.getElementById('scroll-fab-group').style.display = 'flex';
   document.getElementById('prop-title').textContent = emp;
-  document.getElementById('prop-sub').textContent = im.codigo + ' · ' + addr + ', ' + im.bairro + ' — ' + (maxFotos + 2) + ' páginas';
+  var totalPaginas = maxFotos + (brandId === 'dkz' ? 5 : 3);
+  document.getElementById('prop-sub').textContent = im.codigo + ' · ' + addr + ', ' + im.bairro + ' — ' + totalPaginas + ' páginas';
 
-  setStatus('ok', 'Apresentação gerada com marca ' + marca.name + ' (' + (maxFotos + 2) + ' páginas).');
+  if (brandId === 'dkz') {
+    setTimeout(function(){ inicializarMapaArbor(im); }, 80);
+  } else {
+    ARBOR_MAP_READY = Promise.resolve();
+  }
+
+  setStatus('ok', 'Apresentação gerada com marca ' + marca.name + ' (' + totalPaginas + ' páginas).');
   setTimeout(function() {
     document.getElementById('presentation-area').scrollIntoView({ behavior: 'smooth' });
   }, 150);
