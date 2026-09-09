@@ -494,7 +494,12 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   color: rgba(244,241,236,0.78);
   text-align: left;
   overflow: hidden;
-  hyphens: auto;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  word-break: normal;
+  overflow-wrap: normal;
+  text-wrap: pretty;
 }
 .obs-texto p { margin: 0 0 0.85em; }
 .obs-texto p:last-child { margin-bottom: 0; }
@@ -1036,6 +1041,566 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .theme-arbor .icon-block { padding: 2.2mm 2.4mm !important; min-height: 12mm !important; }
 }
 
+
+/* =====================================================================
+   REFINAMENTO VISUAL INDIVIDUAL — DEMAIS MARCAS
+   ARBOR permanece intencionalmente fora deste bloco.
+   ===================================================================== */
+
+/* ===== KASBAUM — editorial grafite + marfim + areia ===== */
+.theme-kasbaum .slide-capa,
+.theme-kasbaum .slide-foto,
+.theme-kasbaum .slide-fim { background: #181612; }
+.theme-kasbaum .slide-info { background: #181612; }
+.theme-kasbaum .slide-capa::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 46%;
+  background: linear-gradient(90deg, rgba(24,22,18,.97) 0%, rgba(24,22,18,.90) 72%, rgba(24,22,18,0) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.theme-kasbaum .capa-hero img { filter: saturate(.78) contrast(1.06) brightness(.88); }
+.theme-kasbaum .capa-hero-overlay { background: rgba(24,22,18,.28); }
+.theme-kasbaum .capa-content { align-items: flex-start; }
+.theme-kasbaum .capa-mid {
+  align-items: flex-start;
+  text-align: left;
+  width: 58%;
+  gap: 1.8vw;
+}
+.theme-kasbaum .capa-prop-name,
+.theme-kasbaum .info-title,
+.theme-kasbaum .fim-logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: -.015em;
+}
+.theme-kasbaum .capa-prop-name { color: #f2ede5; line-height: .98; }
+.theme-kasbaum .capa-top,
+.theme-kasbaum .capa-prop-addr,
+.theme-kasbaum .capa-watermark,
+.theme-kasbaum .info-header,
+.theme-kasbaum .info-addr,
+.theme-kasbaum .fim-sub,
+.theme-kasbaum .fim-price-label { color: #b8a78f; }
+.theme-kasbaum .capa-divider { width: 72px; background: #a9977e; align-self: flex-start; }
+.theme-kasbaum .capa-watermark {
+  left: auto;
+  right: 5.5%;
+  bottom: 5.5%;
+  padding-top: 10px;
+  border-top: 1px solid rgba(184,167,143,.62);
+  font-size: clamp(10px,1.25vw,16px);
+}
+.theme-kasbaum .slide-foto { background: #eee8df; }
+.theme-kasbaum .slide-foto > img {
+  inset: 2.8% 2.8% 9% 2.8%;
+  width: auto;
+  height: auto;
+  filter: saturate(.92) contrast(1.02);
+}
+.theme-kasbaum .slide-foto::after {
+  content: '';
+  position: absolute;
+  inset: 2.8% 2.8% 9% 2.8%;
+  border: 1px solid rgba(90,78,62,.28);
+  pointer-events: none;
+}
+.theme-kasbaum .slide-foto .watermark {
+  top: auto;
+  left: 4.2%;
+  bottom: 2.7%;
+  transform: none;
+  color: #4d4439;
+  text-shadow: none;
+  font-size: clamp(10px,1.28vw,17px);
+  font-weight: 500;
+  letter-spacing: .24em !important;
+  text-indent: 0 !important;
+}
+.theme-kasbaum .info-left {
+  flex: 0 0 60%;
+  background: #eee8df;
+  color: #2b2721;
+  padding: 4.2% 4.8%;
+}
+.theme-kasbaum .info-right { flex: 1; }
+.theme-kasbaum .info-right img { filter: saturate(.88) contrast(1.02) brightness(.94); }
+.theme-kasbaum .info-right::after {
+  content: '';
+  position: absolute;
+  inset: 4.5%;
+  border: 1px solid rgba(238,232,223,.52);
+  pointer-events: none;
+}
+.theme-kasbaum .info-header { letter-spacing: .28em; }
+.theme-kasbaum .info-title { color: #2d2923; line-height: 1.02; }
+.theme-kasbaum .info-addr { color: #756958; }
+.theme-kasbaum .info-icons {
+  border-bottom: 1px solid rgba(89,77,62,.24);
+  gap: 10px 14px;
+}
+.theme-kasbaum .icon-block { border-right-color: rgba(89,77,62,.20); }
+.theme-kasbaum .icon-block svg { stroke: #746551; }
+.theme-kasbaum .icon-block span { color: #3a342d; }
+.theme-kasbaum .obs-texto { color: rgba(43,39,33,.86); }
+.theme-kasbaum .info-right-wm {
+  inset: auto 6% 5% auto;
+  display: block;
+  color: rgba(255,255,255,.78);
+  font-size: clamp(10px,1.35vw,17px);
+  letter-spacing: .18em !important;
+  text-indent: 0 !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,.5);
+}
+.theme-kasbaum .slide-fim { background: #181612; }
+.theme-kasbaum .slide-fim::before {
+  content: 'K';
+  position: absolute;
+  left: 4%;
+  top: 50%;
+  transform: translateY(-53%);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: min(40vw, 430px);
+  line-height: .8;
+  color: rgba(184,167,143,.055);
+  pointer-events: none;
+}
+.theme-kasbaum .fim-logo,
+.theme-kasbaum .fim-price-val { color: #f2ede5; }
+.theme-kasbaum .fim-divider,
+.theme-kasbaum .fim-price-divider { background: rgba(184,167,143,.56); }
+.theme-kasbaum .fim-price-val-secondary { color: rgba(242,237,229,.86); }
+
+/* ===== FABRICIO DIAS — urbano azul petróleo + grafite ===== */
+.theme-fabricio .slide-capa,
+.theme-fabricio .slide-foto,
+.theme-fabricio .slide-info,
+.theme-fabricio .slide-fim { background: #102636; }
+.theme-fabricio .slide-capa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(112deg, rgba(9,25,37,.95) 0%, rgba(9,25,37,.88) 43%, rgba(9,25,37,.30) 68%, rgba(9,25,37,.06) 100%);
+}
+.theme-fabricio .slide-capa::after {
+  content: '';
+  position: absolute;
+  left: 6.5%;
+  top: 18%;
+  width: 5px;
+  height: 64%;
+  background: #5f9bc1;
+  z-index: 2;
+  pointer-events: none;
+}
+.theme-fabricio .capa-hero img { filter: saturate(.72) contrast(1.1) brightness(.92); }
+.theme-fabricio .capa-hero-overlay { background: rgba(15,37,53,.18); }
+.theme-fabricio .capa-content { align-items: flex-start; padding-left: 9%; }
+.theme-fabricio .capa-mid { align-items: flex-start; text-align: left; width: 66%; gap: 1.5vw; }
+.theme-fabricio .capa-prop-name,
+.theme-fabricio .info-title,
+.theme-fabricio .fim-logo,
+.theme-fabricio .fim-price-val {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: -.025em;
+}
+.theme-fabricio .capa-prop-name { color: #f4f7f9; line-height: .96; }
+.theme-fabricio .capa-top,
+.theme-fabricio .capa-prop-addr,
+.theme-fabricio .info-header,
+.theme-fabricio .info-addr,
+.theme-fabricio .fim-sub,
+.theme-fabricio .fim-price-label { color: #82b0cd; }
+.theme-fabricio .capa-divider { width: 96px; height: 3px; background: #5f9bc1; align-self: flex-start; }
+.theme-fabricio .capa-watermark {
+  left: auto;
+  right: 5%;
+  bottom: 5%;
+  color: #e9f2f7;
+  font-size: clamp(10px,1.2vw,16px);
+  background: rgba(9,25,37,.74);
+  border-left: 3px solid #5f9bc1;
+  padding: 8px 11px;
+}
+.theme-fabricio .slide-foto { background: #0b1c29; }
+.theme-fabricio .slide-foto::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 8.5%;
+  background: #102636;
+  z-index: 1;
+  pointer-events: none;
+}
+.theme-fabricio .slide-foto::after {
+  content: '';
+  position: absolute;
+  right: 2.5%;
+  top: 4%;
+  bottom: 12%;
+  width: 2px;
+  background: rgba(95,155,193,.85);
+  z-index: 2;
+  pointer-events: none;
+}
+.theme-fabricio .slide-foto > img { bottom: 8.5%; height: 91.5%; filter: saturate(.9) contrast(1.04); }
+.theme-fabricio .slide-foto .watermark {
+  top: auto;
+  left: 4%;
+  bottom: 2.2%;
+  transform: none;
+  color: #d9e7ef;
+  text-shadow: none;
+  font-size: clamp(10px,1.2vw,16px);
+  font-weight: 500;
+  letter-spacing: .16em !important;
+  text-indent: 0 !important;
+}
+.theme-fabricio .info-left {
+  flex: 0 0 58%;
+  background: #102636;
+  padding: 4% 4.6%;
+  border-right: 5px solid #5f9bc1;
+}
+.theme-fabricio .info-right { flex: 1; }
+.theme-fabricio .info-right img { filter: saturate(.78) contrast(1.08) brightness(.88); }
+.theme-fabricio .info-right::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(16,38,54,.28), transparent 34%);
+  pointer-events: none;
+}
+.theme-fabricio .info-title { color: #f2f6f8; text-transform: uppercase; line-height: .98; }
+.theme-fabricio .info-icons {
+  border-bottom: 0;
+  gap: 10px;
+  padding-bottom: 2%;
+}
+.theme-fabricio .icon-block {
+  border: 1px solid rgba(130,176,205,.25);
+  padding: 8px 9px;
+  min-height: 46px;
+  background: rgba(255,255,255,.025);
+}
+.theme-fabricio .icon-block:nth-child(4n),
+.theme-fabricio .icon-block:last-child { border-right: 1px solid rgba(130,176,205,.25); }
+.theme-fabricio .icon-block svg { stroke: #76a9c9; }
+.theme-fabricio .icon-block span { color: #edf3f6; }
+.theme-fabricio .obs-texto { color: rgba(235,243,247,.80); }
+.theme-fabricio .info-right-wm {
+  inset: auto 5% 5% auto;
+  display: block;
+  color: rgba(255,255,255,.72);
+  font-size: clamp(10px,1.3vw,17px);
+  letter-spacing: .12em !important;
+  text-indent: 0 !important;
+}
+.theme-fabricio .slide-fim::before {
+  content: 'FD';
+  position: absolute;
+  right: 2.5%;
+  bottom: -9%;
+  font-family: 'Inter', sans-serif;
+  font-size: min(31vw, 340px);
+  font-weight: 600;
+  letter-spacing: -.08em;
+  color: rgba(95,155,193,.055);
+  pointer-events: none;
+}
+.theme-fabricio .slide-fim::after {
+  content: '';
+  position: absolute;
+  left: 6%;
+  top: 7%;
+  bottom: 7%;
+  width: 4px;
+  background: #5f9bc1;
+  pointer-events: none;
+}
+.theme-fabricio .fim-logo,
+.theme-fabricio .fim-price-val { color: #f4f7f9; }
+.theme-fabricio .fim-divider,
+.theme-fabricio .fim-price-divider { background: #5f9bc1; }
+.theme-fabricio .fim-price-val-secondary { color: rgba(232,241,246,.86); }
+
+/* ===== PAULO HENRIQUE — oliva + sálvia arquitetônico ===== */
+.theme-paulo .slide-capa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(101deg, rgba(47,50,28,.94) 0%, rgba(47,50,28,.88) 44%, rgba(47,50,28,.18) 74%, transparent 100%);
+}
+.theme-paulo .slide-capa::after {
+  content: '';
+  position: absolute;
+  left: 7%;
+  bottom: 9%;
+  width: 22%;
+  height: 8px;
+  background: #b7bca0;
+  z-index: 2;
+  pointer-events: none;
+}
+.theme-paulo .capa-hero img { filter: saturate(.82) contrast(1.03) brightness(.90); }
+.theme-paulo .capa-content { align-items: flex-start; }
+.theme-paulo .capa-mid { align-items: flex-start; text-align: left; width: 66%; gap: 1.3vw; }
+.theme-paulo .capa-prop-name {
+  color: #fff;
+  font-family: 'Anton', 'Inter', sans-serif;
+  font-size: clamp(28px,6.5vw,84px);
+  line-height: .93;
+  max-width: 92%;
+}
+.theme-paulo .capa-divider { width: 0; height: 0; display: none; }
+.theme-paulo .capa-watermark {
+  left: auto;
+  right: 6%;
+  bottom: 5%;
+  color: rgba(255,255,255,.9);
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(9px,1.05vw,14px);
+  font-weight: 500;
+  letter-spacing: .14em !important;
+  text-indent: 0 !important;
+}
+.theme-paulo .slide-foto { background: #4f5230; }
+.theme-paulo .slide-foto::after {
+  content: '';
+  position: absolute;
+  inset: 4%;
+  border: 1px solid rgba(215,220,194,.52);
+  pointer-events: none;
+  z-index: 1;
+}
+.theme-paulo .slide-foto > img { filter: saturate(.9) contrast(1.01); }
+.theme-paulo .info-left {
+  flex: 0 0 61%;
+  padding: 4.2% 4.8%;
+  position: relative;
+}
+.theme-paulo .info-left::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: #4f5230;
+}
+.theme-paulo .info-title { line-height: .96; max-width: 94%; }
+.theme-paulo .info-icons {
+  border-bottom: 0;
+  gap: 9px 12px;
+  padding-bottom: 2.2%;
+}
+.theme-paulo .icon-block {
+  border-right: 0;
+  border-bottom: 1px solid rgba(36,38,26,.22);
+  padding: 7px 4px 8px 0;
+  min-height: 44px;
+}
+.theme-paulo .info-right { background: #4f5230; padding: 3.2%; }
+.theme-paulo .info-right img {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+  filter: saturate(.88) contrast(1.02);
+}
+.theme-paulo .info-right::after {
+  content: '';
+  position: absolute;
+  inset: 3.2%;
+  border: 1px solid rgba(255,255,255,.34);
+  pointer-events: none;
+}
+.theme-paulo .slide-fim {
+  background: linear-gradient(108deg, #4f5230 0 68%, #a7ab8d 68% 100%);
+  overflow: hidden;
+}
+.theme-paulo .slide-fim::before {
+  content: 'PH';
+  position: absolute;
+  right: 2%;
+  top: 50%;
+  transform: translateY(-52%);
+  font-family: 'Anton', sans-serif;
+  font-size: min(30vw, 330px);
+  color: rgba(36,38,26,.10);
+  line-height: .8;
+  pointer-events: none;
+}
+.theme-paulo .fim-logo,
+.theme-paulo .fim-price-val { color: #fff; }
+.theme-paulo .fim-divider,
+.theme-paulo .fim-price-divider { background: rgba(255,255,255,.50); }
+.theme-paulo .fim-price-val-secondary { color: rgba(255,255,255,.86); }
+
+/* ===== CÉLIO NETTO — marinho + prata, preciso e institucional ===== */
+.theme-celio .slide-capa,
+.theme-celio .slide-foto,
+.theme-celio .slide-info,
+.theme-celio .slide-fim { background: #101b2d; }
+.theme-celio .slide-capa::before {
+  content: '';
+  position: absolute;
+  inset: 3.2%;
+  border: 1px solid rgba(207,214,224,.58);
+  z-index: 2;
+  pointer-events: none;
+}
+.theme-celio .capa-hero img { filter: saturate(.56) contrast(1.08) brightness(.82); }
+.theme-celio .capa-hero-overlay { background: linear-gradient(90deg, rgba(8,15,27,.78), rgba(8,15,27,.52) 58%, rgba(8,15,27,.35)); }
+.theme-celio .capa-content { align-items: flex-end; padding-right: 9%; }
+.theme-celio .capa-mid { align-items: flex-end; text-align: right; width: 67%; gap: 1.6vw; }
+.theme-celio .capa-prop-name,
+.theme-celio .info-title,
+.theme-celio .fim-logo,
+.theme-celio .fim-price-val {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  color: #e5e9ee;
+}
+.theme-celio .capa-prop-name { letter-spacing: .035em; line-height: .98; }
+.theme-celio .capa-divider { width: 86px; align-self: flex-end; background: rgba(207,214,224,.82); }
+.theme-celio .capa-top,
+.theme-celio .capa-prop-addr,
+.theme-celio .info-header,
+.theme-celio .info-addr,
+.theme-celio .fim-sub,
+.theme-celio .fim-price-label { color: #aeb8c5; }
+.theme-celio .capa-watermark {
+  left: 5%;
+  right: auto;
+  bottom: 5%;
+  color: #d7dde6;
+  font-size: clamp(10px,1.15vw,15px);
+  letter-spacing: .22em !important;
+  text-indent: 0 !important;
+}
+.theme-celio .slide-foto { background: #101b2d; }
+.theme-celio .slide-foto > img {
+  inset: 2.5%;
+  width: 95%;
+  height: 95%;
+  filter: saturate(.72) contrast(1.06);
+}
+.theme-celio .slide-foto::after {
+  content: '';
+  position: absolute;
+  inset: 2.5%;
+  border: 1px solid rgba(207,214,224,.48);
+  pointer-events: none;
+}
+.theme-celio .slide-foto .watermark {
+  top: 5%;
+  left: auto;
+  right: 5%;
+  transform: none;
+  color: rgba(255,255,255,.78);
+  text-shadow: 0 2px 10px rgba(0,0,0,.40);
+  font-size: clamp(9px,1.1vw,15px);
+  font-weight: 400;
+  letter-spacing: .18em !important;
+  text-indent: 0 !important;
+}
+.theme-celio .info-left {
+  flex: 0 0 57%;
+  background: #101b2d;
+  padding: 4.2% 4.8%;
+}
+.theme-celio .info-right { flex: 1; }
+.theme-celio .info-right img { filter: saturate(.62) contrast(1.08) brightness(.88); }
+.theme-celio .info-right::after {
+  content: '';
+  position: absolute;
+  inset: 4%;
+  border: 1px solid rgba(207,214,224,.38);
+  pointer-events: none;
+}
+.theme-celio .info-title { letter-spacing: .01em; line-height: 1.00; }
+.theme-celio .info-icons {
+  border-top: 1px solid rgba(207,214,224,.18);
+  border-bottom: 1px solid rgba(207,214,224,.18);
+  padding-top: 2.4%;
+  padding-bottom: 2.4%;
+  gap: 10px 14px;
+}
+.theme-celio .icon-block { border-right-color: rgba(207,214,224,.18); }
+.theme-celio .icon-block svg { stroke: #cfd6e0; }
+.theme-celio .icon-block span { color: #eef1f5; }
+.theme-celio .obs-texto { color: rgba(229,233,238,.80); }
+.theme-celio .info-right-wm {
+  inset: auto 6% 5% auto;
+  display: block;
+  color: rgba(255,255,255,.70);
+  font-size: clamp(9px,1.1vw,15px);
+  letter-spacing: .18em !important;
+  text-indent: 0 !important;
+}
+.theme-celio .slide-fim::before {
+  content: 'CN';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-53%);
+  font-family: 'Jost', sans-serif;
+  font-size: min(34vw, 380px);
+  font-weight: 200;
+  letter-spacing: -.05em;
+  color: rgba(207,214,224,.045);
+  pointer-events: none;
+}
+.theme-celio .slide-fim::after {
+  content: '';
+  position: absolute;
+  inset: 4%;
+  border: 1px solid rgba(207,214,224,.42);
+  pointer-events: none;
+}
+.theme-celio .fim-price-val-secondary { color: rgba(229,233,238,.84); }
+
+/* Ajustes de impressão/PDF para preservar os desenhos individuais. */
+@media print {
+  .theme-kasbaum .slide-foto { background: #eee8df !important; }
+  .theme-kasbaum .slide-foto > img { inset: 5.7mm 5.7mm 18.3mm 5.7mm !important; width: auto !important; height: auto !important; }
+  .theme-kasbaum .slide-foto .watermark { top: auto !important; left: 8.5mm !important; bottom: 5.2mm !important; transform: none !important; color: #4d4439 !important; -webkit-text-fill-color: #4d4439 !important; font-size: 4.1mm !important; }
+  .theme-kasbaum .info-left { flex: 0 0 60% !important; background: #eee8df !important; color: #2b2721 !important; padding: 8.5mm 10mm !important; }
+  .theme-kasbaum .info-right-wm { inset: auto 7mm 7mm auto !important; display: block !important; font-size: 4.1mm !important; }
+  .theme-kasbaum .slide-fim { background: #181612 !important; }
+
+  .theme-fabricio .slide-foto { background: #0b1c29 !important; }
+  .theme-fabricio .slide-foto > img { inset: 0 0 17.3mm 0 !important; width: 100% !important; height: auto !important; }
+  .theme-fabricio .slide-foto .watermark { top: auto !important; left: 8mm !important; bottom: 4.5mm !important; transform: none !important; font-size: 4mm !important; color: #d9e7ef !important; -webkit-text-fill-color: #d9e7ef !important; }
+  .theme-fabricio .info-left { flex: 0 0 58% !important; padding: 8.2mm 9.5mm !important; border-right: 1.2mm solid #5f9bc1 !important; }
+  .theme-fabricio .icon-block { min-height: 11.5mm !important; padding: 2mm 2.2mm !important; border: .25mm solid rgba(130,176,205,.25) !important; }
+  .theme-fabricio .slide-fim { background: #102636 !important; }
+
+  .theme-paulo .slide-foto { background: #4f5230 !important; }
+  .theme-paulo .slide-foto > img { inset: 8.2mm !important; width: auto !important; height: auto !important; }
+  .theme-paulo .info-left { flex: 0 0 61% !important; padding: 8.5mm 10mm !important; background: #a7ab8d !important; }
+  .theme-paulo .info-right { padding: 6.5mm !important; background: #4f5230 !important; }
+  .theme-paulo .info-right img { position: relative !important; inset: auto !important; width: 100% !important; height: 100% !important; }
+  .theme-paulo .slide-fim { background: linear-gradient(108deg, #4f5230 0 68%, #a7ab8d 68% 100%) !important; }
+
+  .theme-celio .slide-foto { background: #101b2d !important; }
+  .theme-celio .slide-foto > img { inset: 5.1mm !important; width: auto !important; height: auto !important; }
+  .theme-celio .slide-foto .watermark { top: 10mm !important; right: 10mm !important; left: auto !important; transform: none !important; font-size: 3.8mm !important; }
+  .theme-celio .info-left { flex: 0 0 57% !important; padding: 8.5mm 10mm !important; }
+  .theme-celio .info-right-wm { inset: auto 7mm 7mm auto !important; display: block !important; font-size: 3.8mm !important; }
+  .theme-celio .slide-fim { background: #101b2d !important; }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .topbar { padding: 0 20px; }
@@ -1048,6 +1613,433 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .main { padding: 20px; }
   .status-bar { padding: 10px 20px; }
 }
+
+
+/* =====================================================================
+   ARBOR IMÓVEIS — COMPOSIÇÃO EDITORIAL INSPIRADA NO BOOK AIMORÉ
+   Base preservada: verde Arbor + areia. Sem mistura de paletas.
+   Apenas o tema .theme-arbor é afetado.
+   ===================================================================== */
+
+/* Paleta efetiva deste refinamento:
+   Verde Arbor  #204030
+   Areia        #BC9570
+   Areia Clara  #E3D9C8
+*/
+
+/* CAPA — campo verde + fotografia vertical enquadrada à direita */
+.theme-arbor .slide-capa {
+  background: #204030;
+  color: #E3D9C8;
+}
+.theme-arbor .slide-capa::after { display: none; }
+.theme-arbor .slide-capa::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 2.4%;
+  width: 1px;
+  background: rgba(188,149,112,.78);
+  z-index: 5;
+  pointer-events: none;
+}
+.theme-arbor .capa-hero {
+  inset: 6.5% 6.2% 6.5% auto;
+  width: 38.5%;
+  height: auto;
+  overflow: hidden;
+  box-shadow: 0 16px 38px rgba(0,0,0,.18);
+}
+.theme-arbor .capa-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.92) contrast(1.02) brightness(.98);
+}
+.theme-arbor .capa-hero-overlay {
+  background: linear-gradient(180deg, rgba(32,64,48,.04), rgba(32,64,48,.12));
+}
+.theme-arbor .capa-content {
+  padding: 6.7% 49% 6.7% 7.2%;
+  justify-content: center;
+}
+.theme-arbor .capa-top {
+  left: 7.2%;
+  right: 49%;
+  top: 7%;
+  color: rgba(227,217,200,.70);
+  font-size: clamp(8px,1vw,13px);
+  letter-spacing: .34em;
+}
+.theme-arbor .capa-mid {
+  width: 100%;
+  align-items: flex-start;
+  text-align: left;
+  gap: 0;
+}
+.theme-arbor .capa-prop-name {
+  color: #E3D9C8;
+  font-family: 'TT Ramillas', 'Playfair Display', Georgia, serif;
+  font-size: clamp(27px,4.6vw,59px);
+  line-height: 1.02;
+  letter-spacing: .025em;
+  text-transform: uppercase;
+  max-width: 100%;
+}
+.theme-arbor .capa-prop-name::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 1px;
+  margin-top: 18px;
+  background: #BC9570;
+}
+.theme-arbor .capa-prop-addr {
+  margin-top: 16px;
+  color: rgba(227,217,200,.72);
+  letter-spacing: .20em;
+  line-height: 1.45;
+}
+.theme-arbor .arbor-cover-brand {
+  left: 7.2%;
+  bottom: 6.7%;
+  width: clamp(78px,9.5vw,128px);
+  opacity: .90;
+  filter: none;
+}
+
+/* FOTOS — preservar fotografia como protagonista; somente assinatura Arbor */
+.theme-arbor .slide-foto {
+  background: #204030;
+}
+.theme-arbor .slide-foto::after { display: none; }
+.theme-arbor .slide-foto::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 74%, rgba(20,42,31,.13) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.theme-arbor .slide-foto > img:not(.arbor-photo-watermark) {
+  filter: saturate(.94) contrast(1.015);
+}
+.theme-arbor .slide-foto img.arbor-photo-watermark {
+  inset: auto 3.7% 4.1% auto;
+  width: clamp(72px,8.5vw,116px);
+  max-height: 15%;
+  opacity: .80;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.18));
+}
+
+/* INFORMAÇÕES — referência estrutural da página de venda do book:
+   conteúdo em areia clara + fotografia enquadrada em campo verde. */
+.theme-arbor .slide-info {
+  background: #E3D9C8;
+  color: #204030;
+}
+.theme-arbor .info-left {
+  flex: 0 0 59%;
+  background: #E3D9C8;
+  padding: 4.7% 5.1% 4.4% 5.1%;
+}
+.theme-arbor .info-left::before { display: none; }
+.theme-arbor .info-header {
+  color: rgba(32,64,48,.66);
+  font-size: clamp(8px,.92vw,12px);
+  letter-spacing: .38em;
+  margin-bottom: 1.8%;
+}
+.theme-arbor .info-title {
+  color: #204030;
+  font-family: 'TT Ramillas', 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: .012em;
+  line-height: 1.05;
+  margin-bottom: 1.35%;
+}
+.theme-arbor .info-addr {
+  color: rgba(32,64,48,.66);
+  letter-spacing: .16em;
+  line-height: 1.4;
+  margin-bottom: 2.5%;
+}
+.theme-arbor .info-icons {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+  border-top: 1px solid rgba(32,64,48,.18);
+  border-bottom: 1px solid rgba(32,64,48,.18);
+  padding: 2.2% 0 2.4%;
+  margin-bottom: 2.5%;
+}
+.theme-arbor .icon-block,
+.theme-arbor .icon-block:nth-child(4n),
+.theme-arbor .icon-block:last-child {
+  min-height: 0;
+  padding: 2px 0;
+  border: 0 !important;
+  background: transparent;
+  border-radius: 0;
+}
+.theme-arbor .icon-block svg {
+  stroke: #204030;
+  opacity: .82;
+}
+.theme-arbor .icon-block span {
+  color: #204030;
+  font-weight: 400;
+}
+.theme-arbor .info-highlights {
+  border-top: 0;
+  padding-top: 0;
+}
+.theme-arbor .obs-texto {
+  color: rgba(32,64,48,.82);
+  line-height: 1.62;
+  font-weight: 350;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  word-break: normal;
+  overflow-wrap: normal;
+  text-wrap: pretty;
+}
+.theme-arbor .obs-texto p {
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+.theme-arbor .info-right {
+  flex: 1;
+  background: #204030;
+  position: relative;
+}
+.theme-arbor .info-right::before {
+  content: '';
+  position: absolute;
+  inset: 6.3% 7.5% 12.2% 7.5%;
+  border: 1px solid rgba(188,149,112,.42);
+  z-index: 0;
+  pointer-events: none;
+}
+.theme-arbor .info-right::after {
+  content: '';
+  position: absolute;
+  left: 7.5%;
+  right: 7.5%;
+  bottom: 8.1%;
+  height: 1px;
+  background: rgba(188,149,112,.44);
+  z-index: 2;
+  pointer-events: none;
+}
+.theme-arbor .info-right img:not(.arbor-info-watermark) {
+  position: absolute;
+  inset: 7.5% 8.7% 13.5% 8.7%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  filter: saturate(.92) contrast(1.015);
+  box-shadow: 0 14px 32px rgba(0,0,0,.18);
+  z-index: 1;
+}
+.theme-arbor .info-right img.arbor-info-watermark {
+  inset: auto 7.8% 3.0% auto;
+  width: clamp(66px,7.4vw,102px);
+  max-height: 18%;
+  opacity: .84;
+  filter: none;
+  z-index: 3;
+}
+
+/* ENCERRAMENTO — minimalismo do fechamento do book, mantendo valores */
+.theme-arbor .slide-fim {
+  background: #204030;
+  color: #E3D9C8;
+  gap: 3.2%;
+}
+.theme-arbor .slide-fim::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 2.4%;
+  left: auto;
+  width: 1px;
+  height: auto;
+  border: 0;
+  background: rgba(188,149,112,.80);
+  pointer-events: none;
+}
+.theme-arbor .fim-prices {
+  min-width: 0;
+  width: min(56%, 510px);
+  padding: 0 0 2.6%;
+  border: 0;
+  border-bottom: 1px solid rgba(188,149,112,.40);
+  margin: 0 0 1.2%;
+}
+.theme-arbor .fim-price-label {
+  color: rgba(227,217,200,.64);
+  letter-spacing: .28em;
+}
+.theme-arbor .fim-price-val {
+  color: #E3D9C8;
+  font-family: 'TT Ramillas', 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+}
+.theme-arbor .fim-price-val-secondary {
+  color: rgba(227,217,200,.82);
+}
+.theme-arbor .fim-divider {
+  width: 34px;
+  background: #BC9570;
+  margin: .4% 0 1.1%;
+}
+.theme-arbor .fim-brand-logo {
+  width: clamp(102px,12.5vw,170px);
+  margin-top: 0;
+  opacity: .94;
+}
+
+/* PDF / IMPRESSÃO — repetir a mesma composição, sem voltar ao template genérico */
+@media print {
+  .theme-arbor .slide-capa { background: #204030 !important; }
+  .theme-arbor .slide-capa::after { display: none !important; }
+  .theme-arbor .slide-capa::before {
+    display: block !important;
+    top: 0 !important; bottom: 0 !important; right: 7mm !important; left: auto !important;
+    width: .3mm !important; background: #BC9570 !important;
+  }
+  .theme-arbor .capa-hero {
+    inset: 13mm 17mm 13mm auto !important;
+    width: 108mm !important;
+    height: auto !important;
+  }
+  .theme-arbor .capa-hero img,
+  .theme-arbor .capa-hero-overlay {
+    inset: 0 !important; width: 100% !important; height: 100% !important;
+  }
+  .theme-arbor .capa-content {
+    padding: 14mm 145mm 14mm 17mm !important;
+  }
+  .theme-arbor .capa-top {
+    left: 17mm !important; right: 145mm !important; top: 14mm !important;
+    font-size: 3.2mm !important;
+  }
+  .theme-arbor .capa-mid { width: 100% !important; gap: 0 !important; }
+  .theme-arbor .capa-prop-name {
+    font-size: 14.5mm !important;
+    line-height: 1.02 !important;
+  }
+  .theme-arbor .capa-prop-name::after {
+    width: 12mm !important; margin-top: 5mm !important;
+  }
+  .theme-arbor .capa-prop-addr {
+    font-size: 3.7mm !important; margin-top: 4.5mm !important;
+  }
+  .theme-arbor .arbor-cover-brand {
+    left: 17mm !important; bottom: 13mm !important; width: 30mm !important;
+    opacity: .90 !important;
+  }
+
+  .theme-arbor .slide-foto { background: #204030 !important; }
+  .theme-arbor .slide-foto::after { display: none !important; }
+  .theme-arbor .slide-foto img.arbor-photo-watermark {
+    inset: auto 10mm 9mm auto !important;
+    width: 27mm !important;
+    opacity: .80 !important;
+  }
+
+  .theme-arbor .slide-info { background: #E3D9C8 !important; }
+  .theme-arbor .info-left {
+    flex: 0 0 59% !important;
+    background: #E3D9C8 !important;
+    padding: 10mm 11mm 9mm 11mm !important;
+  }
+  .theme-arbor .info-header { color: rgba(32,64,48,.66) !important; font-size: 2.8mm !important; }
+  .theme-arbor .info-title { color: #204030 !important; font-size: 7.7mm !important; }
+  .theme-arbor .info-title.title-medium { font-size: 6.9mm !important; }
+  .theme-arbor .info-title.title-long { font-size: 6mm !important; }
+  .theme-arbor .info-title.title-xlong { font-size: 5.2mm !important; }
+  .theme-arbor .info-addr { color: rgba(32,64,48,.66) !important; font-size: 2.9mm !important; }
+  .theme-arbor .info-icons {
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+    gap: 2.8mm 6mm !important;
+    border-top: .25mm solid rgba(32,64,48,.18) !important;
+    border-bottom: .25mm solid rgba(32,64,48,.18) !important;
+    padding: 3.2mm 0 !important;
+    margin-bottom: 3.4mm !important;
+    font-size: 3.25mm !important;
+  }
+  .theme-arbor .icon-block {
+    padding: .5mm 0 !important;
+    min-height: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+  .theme-arbor .icon-block svg { stroke: #204030 !important; width: 3.8mm !important; height: 3.8mm !important; }
+  .theme-arbor .icon-block span { color: #204030 !important; }
+  .theme-arbor .obs-texto {
+    color: rgba(32,64,48,.82) !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+  .theme-arbor .obs-texto p {
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+  .theme-arbor .info-right { background: #204030 !important; }
+  .theme-arbor .info-right img:not(.arbor-info-watermark) {
+    inset: 15mm 9mm 28mm 9mm !important;
+    width: auto !important; height: auto !important;
+    object-fit: cover !important;
+  }
+  .theme-arbor .info-right::before {
+    inset: 13mm 7mm 25mm 7mm !important;
+    border: .25mm solid rgba(188,149,112,.42) !important;
+  }
+  .theme-arbor .info-right::after {
+    left: 7mm !important; right: 7mm !important; bottom: 18mm !important;
+    height: .25mm !important; background: rgba(188,149,112,.44) !important;
+  }
+  .theme-arbor .info-right img.arbor-info-watermark {
+    inset: auto 8mm 7mm auto !important;
+    width: 23mm !important; height: auto !important;
+    opacity: .84 !important;
+  }
+
+  .theme-arbor .slide-fim { background: #204030 !important; }
+  .theme-arbor .slide-fim::after {
+    display: block !important;
+    top: 0 !important; bottom: 0 !important; right: 7mm !important; left: auto !important;
+    width: .3mm !important; height: auto !important; border: 0 !important;
+    background: #BC9570 !important;
+  }
+  .theme-arbor .fim-prices {
+    width: 145mm !important;
+    min-width: 0 !important;
+    padding: 0 0 5mm !important;
+    border: 0 !important;
+    border-bottom: .25mm solid rgba(188,149,112,.40) !important;
+    margin: 0 0 3mm !important;
+  }
+  .theme-arbor .fim-price-label { color: rgba(227,217,200,.64) !important; }
+  .theme-arbor .fim-price-val { color: #E3D9C8 !important; }
+  .theme-arbor .fim-price-val-secondary { color: rgba(227,217,200,.82) !important; }
+  .theme-arbor .fim-divider { width: 10mm !important; background: #BC9570 !important; }
+  .theme-arbor .fim-brand-logo { width: 38mm !important; opacity: .94 !important; }
+}
+
 </style>
 </head>
 <body>
@@ -2244,6 +3236,7 @@ function gerarApresentacao(brandId) {
 
   /* Injeta no DOM */
   document.getElementById('slides').innerHTML = html;
+  document.getElementById('presentation-area').classList.toggle('theme-kasbaum', brandId === 'kasbaum');
   document.getElementById('presentation-area').classList.toggle('theme-arbor', brandId === 'dkz');
   document.getElementById('presentation-area').classList.toggle('theme-paulo', brandId === 'paulo');
   document.getElementById('presentation-area').classList.toggle('theme-fabricio', brandId === 'fabricio');
