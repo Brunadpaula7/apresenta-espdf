@@ -1854,10 +1854,15 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 }
 .theme-arbor .info-right img:not(.arbor-info-watermark) {
   position: absolute;
-  inset: 7.5% 8.7% 13.5% 8.7%;
-  width: auto;
-  height: auto;
+  top: 7.5%;
+  left: 8.7%;
+  right: auto;
+  bottom: auto;
+  width: 82.6%;
+  height: 79%;
   object-fit: cover;
+  object-position: center center;
+  display: block;
   filter: saturate(.92) contrast(1.015);
   box-shadow: 0 14px 32px rgba(0,0,0,.18);
   z-index: 1;
@@ -2016,9 +2021,15 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   }
   .theme-arbor .info-right { background: #204030 !important; }
   .theme-arbor .info-right img:not(.arbor-info-watermark) {
-    inset: 15mm 9mm 28mm 9mm !important;
-    width: auto !important; height: auto !important;
+    top: 15mm !important;
+    left: 9mm !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: calc(100% - 18mm) !important;
+    height: calc(100% - 43mm) !important;
     object-fit: cover !important;
+    object-position: center center !important;
+    display: block !important;
   }
   .theme-arbor .info-right::before {
     inset: 13mm 7mm 25mm 7mm !important;
