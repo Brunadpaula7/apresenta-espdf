@@ -978,7 +978,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .info-right img { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; }
   .info-right-wm { background: transparent !important; color: rgba(255,255,255,0.55) !important; -webkit-text-fill-color: rgba(255,255,255,0.55) !important; text-shadow: none !important; font-size: 5.8mm !important; }
   .info-header    { font-size: 3.4mm !important; margin-bottom: 2mm !important; flex-shrink: 0 !important; }
-  .info-title     { font-size: 8.2mm !important; margin-bottom: 2mm !important; flex-shrink: 0 !important; line-height: 1.06 !important; }
+  .info-title     { font-size: 9.0mm !important; margin-bottom: 2mm !important; flex-shrink: 0 !important; line-height: 1.06 !important; }
   .info-title.title-medium { font-size: 7.2mm !important; }
   .info-title.title-long   { font-size: 6.2mm !important; }
   .info-title.title-xlong  { font-size: 5.4mm !important; }
@@ -1854,15 +1854,10 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 }
 .theme-arbor .info-right img:not(.arbor-info-watermark) {
   position: absolute;
-  top: 7.5%;
-  left: 8.7%;
-  right: auto;
-  bottom: auto;
-  width: 82.6%;
-  height: 79%;
+  inset: 7.5% 8.7% 13.5% 8.7%;
+  width: auto;
+  height: auto;
   object-fit: cover;
-  object-position: center center;
-  display: block;
   filter: saturate(.92) contrast(1.015);
   box-shadow: 0 14px 32px rgba(0,0,0,.18);
   z-index: 1;
@@ -2021,15 +2016,9 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   }
   .theme-arbor .info-right { background: #204030 !important; }
   .theme-arbor .info-right img:not(.arbor-info-watermark) {
-    top: 15mm !important;
-    left: 9mm !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: calc(100% - 18mm) !important;
-    height: calc(100% - 43mm) !important;
+    inset: 15mm 9mm 28mm 9mm !important;
+    width: auto !important; height: auto !important;
     object-fit: cover !important;
-    object-position: center center !important;
-    display: block !important;
   }
   .theme-arbor .info-right::before {
     inset: 13mm 7mm 25mm 7mm !important;
@@ -2153,7 +2142,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 }
 .theme-arbor .arbor-welcome-title {
   font-family: 'Jost', sans-serif;
-  font-size: clamp(22px, 2.45vw, 36px);
+  font-size: clamp(22px, 2.35vw, 35px);
   font-weight: 500;
   letter-spacing: .46em;
   text-indent: .46em;
@@ -2162,7 +2151,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
 }
 .theme-arbor .arbor-welcome-copy {
   font-family: 'Jost', sans-serif;
-  font-size: clamp(28px, 3.05vw, 44px);
+  font-size: clamp(27px, 2.85vw, 40px);
   line-height: 1.38;
   font-weight: 500;
   max-width: none;
@@ -2174,7 +2163,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   font-family: 'La Belle Aurore', cursive;
   font-style: normal;
   font-weight: 400;
-  font-size: clamp(32px, 3.35vw, 48px);
+  font-size: clamp(31px, 3.2vw, 46px);
   line-height: 1.45;
   letter-spacing: 0;
   color: #204030;
@@ -2390,10 +2379,10 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
     padding: 14mm 10mm !important;
   }
   .theme-arbor .arbor-welcome-content { width: 271mm !important; }
-  .theme-arbor .arbor-welcome-title { font-size: 7.3mm !important; margin-bottom: 11mm !important; }
-  .theme-arbor .arbor-welcome-copy { font-size: 9.4mm !important; line-height: 1.30 !important; max-width: 271mm !important; width: 100% !important; }
+  .theme-arbor .arbor-welcome-title { font-size: 7.2mm !important; margin-bottom: 11mm !important; }
+  .theme-arbor .arbor-welcome-copy { font-size: 8.2mm !important; line-height: 1.32 !important; max-width: 271mm !important; width: 100% !important; }
   .theme-arbor .arbor-welcome-copy br { display: none !important; }
-  .theme-arbor .arbor-welcome-note { font-family: 'La Belle Aurore', cursive !important; font-style: normal !important; font-weight: 400 !important; font-size: 10mm !important; line-height: 1.26 !important; margin-top: 10.5mm !important; max-width: 271mm !important; }
+  .theme-arbor .arbor-welcome-note { font-family: 'La Belle Aurore', cursive !important; font-style: normal !important; font-weight: 400 !important; font-size: 9.6mm !important; line-height: 1.28 !important; margin-top: 10.5mm !important; max-width: 271mm !important; }
   .theme-arbor .arbor-welcome-logo { width: 25mm !important; right: 12mm !important; bottom: 11mm !important; }
 
   .theme-arbor .slide-arbor-location {
@@ -3107,38 +3096,6 @@ html.pdf-export-mode #presentation-area.theme-arbor .info-right {
   max-height:778px!important;
 }
 </style>
-
-<style id="aumento-fonte-valor-final-arbor">
-/* Última página ARBOR — destaque maior para VENDA/LOCAÇÃO e valor principal. */
-#presentation-area.theme-arbor .slide-fim .fim-price-label {
-  font-size: clamp(13px, 1.75vw, 22px) !important;
-  line-height: 1.15 !important;
-}
-#presentation-area.theme-arbor .slide-fim .fim-price-val {
-  font-size: clamp(32px, 5.2vw, 66px) !important;
-  line-height: 1.02 !important;
-}
-
-/* Geração pelo botão Baixar PDF (html2canvas/jsPDF). */
-html.pdf-export-mode #presentation-area.theme-arbor .slide-fim .fim-price-label {
-  font-size: 20px !important;
-}
-html.pdf-export-mode #presentation-area.theme-arbor .slide-fim .fim-price-val {
-  font-size: 60px !important;
-}
-
-/* Impressão nativa / Salvar como PDF. */
-@media print {
-  #presentation-area.theme-arbor .slide-fim .fim-price-label {
-    font-size: 5mm !important;
-  }
-  #presentation-area.theme-arbor .slide-fim .fim-price-val {
-    font-size: 15.5mm !important;
-    line-height: 1.02 !important;
-  }
-}
-</style>
-
 </head>
 <body>
 <div class="app">
@@ -3217,7 +3174,7 @@ html.pdf-export-mode #presentation-area.theme-arbor .slide-fim .fim-price-val {
           <svg viewBox="0 0 24 24"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M4 20h16"/></svg>
           Baixar PDF
         </button>
-        <button class="btn-print" onclick="imprimirComImagens()">
+        <button class="btn-print" onclick="window.print()">
           <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Imprimir / Salvar PDF
         </button>
@@ -4072,9 +4029,6 @@ function carregarArquivo(input) {
    ============================================= */
 var ESTADO_IMAGENS_PDF = [];
 var CACHE_BLOBS_IMAGENS_PDF = {};
-var CACHE_BLOBS_OTIMIZADOS_PDF = {};
-var CODIGO_CACHE_IMAGENS_PDF = '';
-var AQUECIMENTO_IMAGENS_EM_CURSO = null;
 
 function aguardarImagemPDF(img, timeoutMs) {
   timeoutMs = timeoutMs || 30000;
@@ -4172,96 +4126,6 @@ async function obterBlobImagemPDF(url) {
   }
 }
 
-
-function ehFotoImovelParaExportacao(img) {
-  if (!img || !img.closest) return false;
-  if (img.classList && (img.classList.contains('arbor-photo-watermark') || img.classList.contains('arbor-info-watermark') || img.classList.contains('arbor-cover-brand') || img.classList.contains('fim-brand-logo'))) return false;
-  return !!img.closest('.slide-foto, .capa-hero, .info-right');
-}
-
-async function otimizarBlobFotoParaExportacao(blob, cacheKey) {
-  if (!blob || !blob.size) return blob;
-  if (cacheKey && CACHE_BLOBS_OTIMIZADOS_PDF[cacheKey]) return CACHE_BLOBS_OTIMIZADOS_PDF[cacheKey];
-
-  var tarefa = (async function() {
-    try {
-      var bitmap = null;
-      if (typeof createImageBitmap === 'function') bitmap = await createImageBitmap(blob);
-      if (!bitmap) return blob;
-
-      var largura = bitmap.width || 0;
-      var altura = bitmap.height || 0;
-      if (!largura || !altura) { if (bitmap.close) bitmap.close(); return blob; }
-
-      // Para A4 paisagem, mais que ~2200 px no lado longo não acrescenta
-      // qualidade visível relevante, mas aumenta muito peso e tempo de renderização.
-      var maxLargura = 2200;
-      var maxAltura = 1700;
-      var escala = Math.min(1, maxLargura / largura, maxAltura / altura);
-      if (escala >= 0.98) { if (bitmap.close) bitmap.close(); return blob; }
-
-      var canvas = document.createElement('canvas');
-      canvas.width = Math.max(1, Math.round(largura * escala));
-      canvas.height = Math.max(1, Math.round(altura * escala));
-      var ctx = canvas.getContext('2d', { alpha: false });
-      if (!ctx) { if (bitmap.close) bitmap.close(); return blob; }
-      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-      if (bitmap.close) bitmap.close();
-
-      var otimizado = await new Promise(function(resolve) {
-        canvas.toBlob(function(b) { resolve(b || blob); }, 'image/jpeg', 0.86);
-      });
-      canvas.width = 1;
-      canvas.height = 1;
-      return otimizado && otimizado.size ? otimizado : blob;
-    } catch(e) {
-      return blob;
-    }
-  })();
-
-  if (cacheKey) CACHE_BLOBS_OTIMIZADOS_PDF[cacheKey] = tarefa;
-  try {
-    return await tarefa;
-  } catch(e) {
-    if (cacheKey) delete CACHE_BLOBS_OTIMIZADOS_PDF[cacheKey];
-    return blob;
-  }
-}
-
-async function aquecerCacheImagensPDF(root) {
-  if (!root) return;
-  if (AQUECIMENTO_IMAGENS_EM_CURSO) return AQUECIMENTO_IMAGENS_EM_CURSO;
-
-  var urls = [];
-  var vistos = {};
-  Array.from(root.querySelectorAll('img')).forEach(function(img) {
-    var src = img.currentSrc || img.src || img.getAttribute('src') || '';
-    if (!src || /^(data:|blob:)/i.test(src)) return;
-    var u = origemDaURLPDF(src);
-    if (!u || u.origin === window.location.origin || vistos[u.href]) return;
-    vistos[u.href] = true;
-    urls.push(u.href);
-  });
-
-  AQUECIMENTO_IMAGENS_EM_CURSO = (async function() {
-    var indice = 0;
-    var concorrencia = Math.min(4, urls.length);
-    async function worker() {
-      while (true) {
-        var i = indice++;
-        if (i >= urls.length) return;
-        try { await obterBlobImagemPDF(urls[i]); } catch(e) {}
-      }
-    }
-    var workers = [];
-    for (var w = 0; w < concorrencia; w++) workers.push(worker());
-    await Promise.all(workers);
-  })();
-
-  try { await AQUECIMENTO_IMAGENS_EM_CURSO; }
-  finally { AQUECIMENTO_IMAGENS_EM_CURSO = null; }
-}
-
 async function prepararUmaImagemPDF(img) {
   if (!img) return { ok:false, motivo:'elemento ausente' };
   var srcOriginalAttr = img.getAttribute('src') || '';
@@ -4283,9 +4147,6 @@ async function prepararUmaImagemPDF(img) {
 
   try {
     var blob = await obterBlobImagemPDF(u.href);
-    if (ehFotoImovelParaExportacao(img)) {
-      blob = await otimizarBlobFotoParaExportacao(blob, u.href);
-    }
     var objectUrl = URL.createObjectURL(blob);
     var crossoriginOriginal = img.getAttribute('crossorigin');
     var referrerOriginal = img.getAttribute('referrerpolicy');
@@ -4368,36 +4229,101 @@ function restaurarImagensAposPDF() {
     } catch(e) {}
   });
   ESTADO_IMAGENS_PDF = [];
-  // Mantém os Blobs em cache para que um segundo PDF/print do mesmo imóvel
-  // não precise baixar todas as fotos novamente. O cache é limpo ao trocar de imóvel.
+  CACHE_BLOBS_IMAGENS_PDF = {};
 }
 
 
-async function imprimirComImagens() {
-  var slidesEl = document.getElementById('slides');
-  var slides = slidesEl ? slidesEl.querySelectorAll('.slide') : [];
-  if (!slides.length) { setStatus('error', 'Gere a apresentação antes de imprimir.'); return; }
+/* =============================================
+   PDF — VALIDAÇÃO DAS FOTOS + RENDERIZAÇÃO LEVE
+   Evita dois problemas após o PDF já estar pronto:
+   1) páginas pretas quando uma foto externa não ficou segura para o canvas;
+   2) páginas demorando para aparecer no leitor de PDF por excesso de resolução/memória.
+   ============================================= */
+function ehDispositivoMovelPDF() {
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '') ||
+         Math.min(window.innerWidth || 9999, window.innerHeight || 9999) < 820;
+}
 
+function configuracaoRenderPDF(totalPaginas) {
+  var mobile = ehDispositivoMovelPDF();
+  var memoria = Number(navigator.deviceMemory || 0);
+  var scale = mobile ? 1.25 : 1.45;
+  var qualidade = mobile ? 0.80 : 0.84;
+
+  // Apresentações extensas não precisam ser rasterizadas em 2200px por página.
+  // 1100px x scale já mantém ótima definição para A4 e melhora muito o leitor do PDF.
+  if (totalPaginas >= 30) scale = mobile ? 1.18 : 1.34;
+  if (totalPaginas >= 45) scale = mobile ? 1.12 : 1.26;
+  if (memoria > 0 && memoria <= 4) scale = Math.min(scale, mobile ? 1.12 : 1.24);
+
+  return { mobile: mobile, scale: scale, qualidade: qualidade };
+}
+
+function imagemSeguraParaCanvasPDF(img) {
+  if (!img || !img.complete || !img.naturalWidth || !img.naturalHeight) return false;
+  var src = img.currentSrc || img.src || '';
+  if (/^(data:|blob:)/i.test(src)) return true;
   try {
-    setStatus('loading', 'Preparando fotos para impressão...');
-    if (document.fonts && document.fonts.ready) {
-      try { await document.fonts.ready; } catch(e) {}
-    }
-    await aguardarMapaArbor();
-    var resultado = await prepararImagensParaPDF(slidesEl);
-    await aguardarLayoutTexto();
-    ajustarTextoInfoAoEspaco();
-    await aguardarLayoutTexto();
-
-    if (resultado.falhas > 0) {
-      console.warn('[PRINT] Algumas imagens não puderam ser pré-processadas:', resultado);
-    }
-    setStatus('ok', 'Fotos prontas. Abrindo impressão...');
-    window.print();
-  } catch(err) {
-    restaurarImagensAposPDF();
-    setStatus('error', 'Erro ao preparar impressão: ' + err.message);
+    return new URL(src, window.location.href).origin === window.location.origin;
+  } catch(e) {
+    return false;
   }
+}
+
+function fotosPrincipaisPDF(root) {
+  if (!root) return [];
+  var seletores = [
+    '.slide-foto > img:first-of-type',
+    '.capa-hero > img:first-of-type',
+    '.info-right > img:first-of-type'
+  ];
+  var vistos = new Set();
+  return Array.from(root.querySelectorAll(seletores.join(','))).filter(function(img) {
+    if (!img || vistos.has(img)) return false;
+    vistos.add(img);
+    return !img.classList.contains('arbor-photo-watermark') &&
+           !img.classList.contains('arbor-info-watermark') &&
+           !img.classList.contains('arbor-cover-brand') &&
+           !img.classList.contains('fim-brand-logo');
+  });
+}
+
+async function garantirFotosPrincipaisPDF(root) {
+  var fotos = fotosPrincipaisPDF(root);
+  if (!fotos.length) return { total:0, falhas:0 };
+
+  var pendentes = fotos.filter(function(img){ return !imagemSeguraParaCanvasPDF(img); });
+  // Segunda tentativa sequencial: evita sobrecarregar os proxies/CDNs e é mais confiável no mobile.
+  for (var i = 0; i < pendentes.length; i++) {
+    setStatus('loading', 'Confirmando fotos para PDF... (' + (i + 1) + '/' + pendentes.length + ')');
+    try { await prepararUmaImagemPDF(pendentes[i]); } catch(e) {}
+    await new Promise(function(resolve){ setTimeout(resolve, 25); });
+  }
+
+  var falhas = fotos.filter(function(img){ return !imagemSeguraParaCanvasPDF(img); });
+  return { total:fotos.length, falhas:falhas.length };
+}
+
+function canvasParaJPEGPDF(canvas, qualidade) {
+  return new Promise(function(resolve, reject) {
+    if (!canvas) { reject(new Error('Canvas indisponível.')); return; }
+    if (typeof canvas.toBlob !== 'function') {
+      try { resolve(canvas.toDataURL('image/jpeg', qualidade)); }
+      catch(e) { reject(e); }
+      return;
+    }
+    canvas.toBlob(function(blob) {
+      if (!blob) { reject(new Error('Falha ao compactar a página do PDF.')); return; }
+      if (typeof blob.arrayBuffer === 'function') {
+        blob.arrayBuffer().then(function(buffer){ resolve(new Uint8Array(buffer)); }).catch(reject);
+      } else {
+        var reader = new FileReader();
+        reader.onload = function(){ resolve(new Uint8Array(reader.result)); };
+        reader.onerror = function(){ reject(reader.error || new Error('Falha ao ler JPEG.')); };
+        reader.readAsArrayBuffer(blob);
+      }
+    }, 'image/jpeg', qualidade);
+  });
 }
 
 function baixarPDF() {
@@ -4434,17 +4360,36 @@ async function gerarPDFAsync(slideDivs) {
     // CRÍTICO: converte temporariamente as fotos externas em Blob URLs seguras
     // antes do html2canvas. Sem isso, imagens de Firebase/CDNs podem aparecer
     // na prévia e desaparecer no PDF por CORS/tempo de decodificação.
-    var resultadoImagensPDF = await prepararImagensParaPDF(document.getElementById('slides'));
+    var raizSlidesPDF = document.getElementById('slides');
+    var resultadoImagensPDF = await prepararImagensParaPDF(raizSlidesPDF);
     await aguardarLayoutTexto();
+
+    // Não aceita mais continuar silenciosamente com fotos externas inseguras.
+    // Faz uma segunda validação apenas das fotografias que realmente compõem os slides.
+    var validacaoFotosPDF = await garantirFotosPrincipaisPDF(raizSlidesPDF);
+    if (validacaoFotosPDF.falhas > 0) {
+      throw new Error('Não foi possível preparar ' + validacaoFotosPDF.falhas + ' foto(s) para o PDF. Tente novamente. O arquivo não foi gerado para evitar páginas pretas.');
+    }
     if (resultadoImagensPDF.falhas > 0) {
-      console.warn('[PDF] Algumas imagens não puderam ser pré-processadas:', resultadoImagensPDF);
+      console.warn('[PDF] Elementos gráficos secundários com falha de pré-processamento:', resultadoImagensPDF);
     }
 
+    var cfgPDF = configuracaoRenderPDF(slideDivs.length);
     var jsPDFLib = window.jspdf.jsPDF;
-    var pdf = new jsPDFLib({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
+    var pdf = new jsPDFLib({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4',
+      compress: true,
+      putOnlyUsedFonts: true,
+      precision: 2
+    });
+
     for (var i = 0; i < slideDivs.length; i++) {
+      setStatus('loading', 'Gerando PDF otimizado... (' + (i + 1) + '/' + slideDivs.length + ')');
+
       var canvas = await html2canvas(slideDivs[i], {
-        scale: 1.7,
+        scale: cfgPDF.scale,
         useCORS: true,
         allowTaint: false,
         imageTimeout: 30000,
@@ -4452,12 +4397,24 @@ async function gerarPDFAsync(slideDivs) {
         logging: false,
         removeContainer: true
       });
-      var imgData = canvas.toDataURL('image/jpeg', 0.86);
+
+      var imgData = await canvasParaJPEGPDF(canvas, cfgPDF.qualidade);
       if (i > 0) pdf.addPage('a4', 'landscape');
+
       // ARBOR: PDF sem margens (full bleed). Demais marcas preservam 3 mm.
-      if (ULTIMA_MARCA === 'dkz') pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210);
-      else pdf.addImage(imgData, 'JPEG', 3, 3, 291, 204);
-      setStatus('loading', 'Gerando PDF... (' + (i + 1) + '/' + slideDivs.length + ')');
+      if (ULTIMA_MARCA === 'dkz') pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210, undefined, 'FAST');
+      else pdf.addImage(imgData, 'JPEG', 3, 3, 291, 204, undefined, 'FAST');
+
+      // Libera imediatamente o bitmap pesado do html2canvas.
+      canvas.width = 1;
+      canvas.height = 1;
+      canvas = null;
+      imgData = null;
+
+      // No mobile dá tempo ao navegador para desalocar memória entre as páginas.
+      if (cfgPDF.mobile && (i % 2 === 1)) {
+        await new Promise(function(resolve){ setTimeout(resolve, 20); });
+      }
     }
     var tituloArquivo = (document.getElementById('prop-title').textContent || 'apresentacao')
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -4641,9 +4598,7 @@ window.addEventListener('beforeprint', function() {
 });
 window.addEventListener('afterprint', function() {
   removerPaginaImpressaoPorMarca();
-  restaurarImagensAposPDF();
   restaurarTextoInfoAposSaida();
-  setStatus('ok', 'Impressão finalizada.');
 });
 
 
@@ -4892,11 +4847,6 @@ function gerarApresentacao(brandId) {
   var codigo = document.getElementById('imovel-select').value;
   var im = imoveis.find(function(x) { return x.codigo === codigo; });
   if (!im) { setStatus('error', 'Imóvel não encontrado.'); return; }
-  if (CODIGO_CACHE_IMAGENS_PDF !== codigo) {
-    CACHE_BLOBS_IMAGENS_PDF = {};
-    CACHE_BLOBS_OTIMIZADOS_PDF = {};
-    CODIGO_CACHE_IMAGENS_PDF = codigo;
-  }
   ULTIMA_MARCA = brandId;
 
   var marca = MARCAS[brandId] || MARCAS['kasbaum'];
@@ -4940,7 +4890,7 @@ function gerarApresentacao(brandId) {
     html += '<div class="slide slide-arbor-welcome">' +
       '<div class="arbor-welcome-content">' +
         '<div class="arbor-welcome-title">Seja bem-vindo</div>' +
-        '<div class="arbor-welcome-copy">Preparamos esta apresentação para conduzir você por cada detalhe <br>deste imóvel com clareza, sensibilidade e intenção.</div>' +
+        '<div class="arbor-welcome-copy">Preparamos esta apresentação para conduzir você por cada detalhe deste espaço com clareza, sensibilidade e intenção.</div>' +
         '<div class="arbor-welcome-note">Esperamos que você se sinta em casa desde a primeira visita.</div>' +
       '</div>' +
       '<img class="arbor-welcome-logo" crossorigin="anonymous" src="' + ARBOR_WATERMARK_LOGO + '" alt="Arbor Imóveis" onerror="this.onerror=null;this.src=ARBOR_LOGO;">' +
@@ -5043,16 +4993,6 @@ function gerarApresentacao(brandId) {
   /* Injeta no DOM */
   document.getElementById('slides').innerHTML = html;
 
-  // Carrega/decodifica as fotos desde já. Assim o usuário não precisa esperar
-  // o primeiro carregamento somente depois de clicar em PDF ou impressão.
-  Array.from(document.getElementById('slides').querySelectorAll('img')).forEach(function(img, idx) {
-    try {
-      img.loading = 'eager';
-      img.decoding = 'async';
-      if ('fetchPriority' in img) img.fetchPriority = idx < 8 ? 'high' : 'auto';
-    } catch(e) {}
-  });
-
   /* Paulo Henrique: a página de informações deve ser sempre a página 2, logo após a capa.
      Apenas reordena o DOM; não duplica nem altera o conteúdo da página. */
   if (brandId === 'paulo') {
@@ -5082,9 +5022,6 @@ function gerarApresentacao(brandId) {
   setTimeout(function() {
     document.getElementById('presentation-area').scrollIntoView({ behavior: 'smooth' });
   }, 150);
-  setTimeout(function() {
-    aquecerCacheImagensPDF(document.getElementById('slides'));
-  }, 250);
 }
 </script>
 </body>
