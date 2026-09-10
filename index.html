@@ -4247,16 +4247,58 @@ function ehDispositivoMovelPDF() {
 function configuracaoRenderPDF(totalPaginas) {
   var mobile = ehDispositivoMovelPDF();
   var memoria = Number(navigator.deviceMemory || 0);
-  var scale = mobile ? 1.25 : 1.45;
-  var qualidade = mobile ? 0.80 : 0.84;
 
-  // Apresentações extensas não precisam ser rasterizadas em 2200px por página.
-  // 1100px x scale já mantém ótima definição para A4 e melhora muito o leitor do PDF.
-  if (totalPaginas >= 30) scale = mobile ? 1.18 : 1.34;
-  if (totalPaginas >= 45) scale = mobile ? 1.12 : 1.26;
-  if (memoria > 0 && memoria <= 4) scale = Math.min(scale, mobile ? 1.12 : 1.24);
+  // Páginas fotográficas são a maior parte do arquivo e o principal custo
+  // de decodificação nos leitores de PDF. Elas podem ser rasterizadas em
+  // resolução menor sem afetar textos, títulos e páginas editoriais.
+  var fotoScale = mobile ? 0.74 : 0.82;
+  var fotoQualidade = mobile ? 0.64 : 0.69;
 
-  return { mobile: mobile, scale: scale, qualidade: qualidade };
+  // Capa, informações, boas-vindas e encerramento preservam resolução maior
+  // para manter tipografia e pequenos elementos nítidos.
+  var estruturaScale = mobile ? 0.90 : 0.98;
+  var estruturaQualidade = mobile ? 0.77 : 0.81;
+
+  if (totalPaginas >= 30) {
+    fotoScale = mobile ? 0.68 : 0.76;
+    fotoQualidade = mobile ? 0.62 : 0.67;
+    estruturaScale = mobile ? 0.87 : 0.95;
+  }
+  if (totalPaginas >= 45) {
+    fotoScale = mobile ? 0.64 : 0.72;
+    fotoQualidade = mobile ? 0.60 : 0.65;
+    estruturaScale = mobile ? 0.84 : 0.92;
+    estruturaQualidade = mobile ? 0.75 : 0.79;
+  }
+  if (memoria > 0 && memoria <= 4) {
+    fotoScale = Math.min(fotoScale, mobile ? 0.62 : 0.70);
+    estruturaScale = Math.min(estruturaScale, mobile ? 0.82 : 0.90);
+  }
+
+  return {
+    mobile: mobile,
+    fotoScale: fotoScale,
+    fotoQualidade: fotoQualidade,
+    estruturaScale: estruturaScale,
+    estruturaQualidade: estruturaQualidade
+  };
+}
+
+function configuracaoDoSlidePDF(slide, cfg) {
+  var somenteFoto = !!(slide && slide.classList && slide.classList.contains('slide-foto'));
+  return somenteFoto
+    ? { scale: cfg.fotoScale, qualidade: cfg.fotoQualidade, tipo: 'foto' }
+    : { scale: cfg.estruturaScale, qualidade: cfg.estruturaQualidade, tipo: 'estrutura' };
+}
+
+function corDeFundoSlidePDF(slide) {
+  try {
+    var cor = window.getComputedStyle(slide).backgroundColor;
+    // Evita canvas transparente. JPEG transforma transparência em preto em
+    // alguns navegadores/leitores, então usa branco somente como último fallback.
+    if (cor && cor !== 'rgba(0, 0, 0, 0)' && cor !== 'transparent') return cor;
+  } catch(e) {}
+  return '#ffffff';
 }
 
 function imagemSeguraParaCanvasPDF(img) {
@@ -4388,17 +4430,21 @@ async function gerarPDFAsync(slideDivs) {
     for (var i = 0; i < slideDivs.length; i++) {
       setStatus('loading', 'Gerando PDF otimizado... (' + (i + 1) + '/' + slideDivs.length + ')');
 
+      var cfgSlidePDF = configuracaoDoSlidePDF(slideDivs[i], cfgPDF);
+      var fundoSlidePDF = corDeFundoSlidePDF(slideDivs[i]);
+
       var canvas = await html2canvas(slideDivs[i], {
-        scale: cfgPDF.scale,
+        scale: cfgSlidePDF.scale,
         useCORS: true,
         allowTaint: false,
         imageTimeout: 30000,
-        backgroundColor: null,
+        backgroundColor: fundoSlidePDF,
         logging: false,
-        removeContainer: true
+        removeContainer: true,
+        foreignObjectRendering: false
       });
 
-      var imgData = await canvasParaJPEGPDF(canvas, cfgPDF.qualidade);
+      var imgData = await canvasParaJPEGPDF(canvas, cfgSlidePDF.qualidade);
       if (i > 0) pdf.addPage('a4', 'landscape');
 
       // ARBOR: PDF sem margens (full bleed). Demais marcas preservam 3 mm.
@@ -4411,9 +4457,10 @@ async function gerarPDFAsync(slideDivs) {
       canvas = null;
       imgData = null;
 
-      // No mobile dá tempo ao navegador para desalocar memória entre as páginas.
-      if (cfgPDF.mobile && (i % 2 === 1)) {
-        await new Promise(function(resolve){ setTimeout(resolve, 20); });
+      // Dá tempo ao navegador para desalocar o bitmap antes da próxima página.
+      // Em apresentações fotográficas longas isso reduz picos de memória e o peso final.
+      if (cfgPDF.mobile || slideDivs.length >= 30) {
+        await new Promise(function(resolve){ setTimeout(resolve, cfgPDF.mobile ? 24 : 8); });
       }
     }
     var tituloArquivo = (document.getElementById('prop-title').textContent || 'apresentacao')
