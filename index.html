@@ -974,6 +974,9 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
     color-adjust: exact !important;
   }
   .slide:last-child { page-break-after: auto !important; break-after: auto !important; }
+  /* Reforço para WebKit/iOS: cada slide é uma unidade física de página. */
+  .slides-wrapper { display: block !important; width: 297mm !important; height: auto !important; }
+  .slide { float: none !important; flex: none !important; -webkit-column-break-inside: avoid !important; }
   .slide, .slide * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
   .slide-capa { display: flex !important; flex-direction: column !important; width: 297mm !important; height: 210mm !important; max-height: none !important; }
   .capa-hero, .capa-hero img, .capa-hero-overlay { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }
@@ -993,7 +996,12 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
   .theme-fabricio .slide-foto { background: #2e3033 !important; }
   .theme-celio .slide-foto { background: #131d30 !important; }
   .theme-bruna .slide-foto { background: #974315 !important; }
-  .slide-foto .slide-photo-main { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; }
+  /* Nas páginas de fotografia, mostrar a imagem inteira no PDF.
+     O fundo do próprio tema preenche eventuais faixas sem recortar a foto. */
+  .slide-foto .slide-photo-main { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center center !important; display: block !important; }
+  /* Preserva as molduras específicas das marcas também na impressão. */
+  .theme-paulo .slide-foto .slide-photo-main { inset: 4% !important; width: 92% !important; height: 92% !important; object-fit: contain !important; }
+  .theme-bruna .slide-foto .slide-photo-main { inset: 3.2% 3.2% auto 3.2% !important; width: 93.6% !important; height: 89.2% !important; object-fit: contain !important; }
   .slide-foto .watermark { font-size: 9.6mm !important; color: rgba(255,255,255,0.55) !important; -webkit-text-fill-color: rgba(255,255,255,0.55) !important; text-shadow: none !important; background: transparent !important; }
   .slide-info { display: flex !important; flex-direction: row !important; width: 297mm !important; height: 210mm !important; max-height: none !important; overflow: hidden !important; }
   .info-left { flex: 0 0 62% !important; display: flex !important; flex-direction: column !important; padding: 7.7mm 8.7mm !important; height: 100% !important; max-height: 210mm !important; overflow: hidden !important; }
@@ -1038,10 +1046,15 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
-  .slide-foto .slide-photo-main,
+  /* Capa e painel de informações mantêm o enquadramento editorial original.
+     Somente as páginas exclusivamente fotográficas usam contain para não cortar. */
   .capa-hero img,
   .info-right .info-photo-main {
     object-fit: cover !important;
+    object-position: center center !important;
+  }
+  .slide-foto .slide-photo-main {
+    object-fit: contain !important;
     object-position: center center !important;
   }
 }
@@ -1136,7 +1149,7 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
           <div class="prop-sub" id="prop-sub"></div>
         </div>
         <div class="print-btn-group">
-        <button class="btn-print" onclick="window.print()">
+        <button class="btn-print" onclick="imprimirPDFOtimizado(false)">
           <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Imprimir / Salvar PDF
         </button>
@@ -1514,55 +1527,245 @@ function carregarArquivo(input) {
   input.value = '';
 }
 
-function imprimirIsolado() {
+/* ============================================================
+   PDF OTIMIZADO — desktop + Safari/iPhone/iPad
+   - imprime em uma janela dedicada (evita interferência do layout responsivo)
+   - comprime apenas as fotos do imóvel para reduzir o PDF
+   - preserva marcas, textos, temas e a ordem original dos slides
+   ============================================================ */
+var PDF_IMG_CACHE = Object.create(null);
+var PDF_MAX_LADO = 1600;
+var PDF_QUALIDADE_JPEG = 0.76;
+
+function esperar(ms) {
+  return new Promise(function(resolve) { setTimeout(resolve, ms); });
+}
+
+function carregarImagemDeBlob(blob) {
+  return new Promise(function(resolve, reject) {
+    var url = URL.createObjectURL(blob);
+    var img = new Image();
+    img.decoding = 'async';
+    img.onload = function() { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = function() { URL.revokeObjectURL(url); reject(new Error('Falha ao decodificar imagem.')); };
+    img.src = url;
+  });
+}
+
+async function otimizarImagemParaPDF(src) {
+  if (!src || /^data:/i.test(src) || /^blob:/i.test(src)) return src;
+  if (PDF_IMG_CACHE[src]) return PDF_IMG_CACHE[src];
+
+  try {
+    var resp = await fetch(src, { mode: 'cors', credentials: 'omit', cache: 'force-cache' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    var blob = await resp.blob();
+    if (!/^image\//i.test(blob.type || '')) throw new Error('Resposta não é imagem.');
+
+    var img = await carregarImagemDeBlob(blob);
+    var w = img.naturalWidth || img.width;
+    var h = img.naturalHeight || img.height;
+    if (!w || !h) throw new Error('Imagem sem dimensões válidas.');
+
+    var escala = Math.min(1, PDF_MAX_LADO / Math.max(w, h));
+    var cw = Math.max(1, Math.round(w * escala));
+    var ch = Math.max(1, Math.round(h * escala));
+    var canvas = document.createElement('canvas');
+    canvas.width = cw;
+    canvas.height = ch;
+    var ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) throw new Error('Canvas indisponível.');
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.imageSmoothingEnabled = true;
+    if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, cw, ch);
+
+    var data = canvas.toDataURL('image/jpeg', PDF_QUALIDADE_JPEG);
+    canvas.width = 1;
+    canvas.height = 1;
+    PDF_IMG_CACHE[src] = data;
+    return data;
+  } catch (err) {
+    /* Se o servidor da foto bloquear CORS, não quebra a apresentação:
+       mantém a imagem original e só deixa de comprimi-la. */
+    PDF_IMG_CACHE[src] = src;
+    return src;
+  }
+}
+
+async function prepararSlidesLevesParaPDF() {
   var slidesEl = document.getElementById('slides');
-  if (!slidesEl || !slidesEl.innerHTML.trim()) { setStatus('error', 'Gere a apresentação antes de imprimir.'); return; }
-  var estiloCompleto = document.querySelector('style') ? document.querySelector('style').innerHTML : '';
-  var classesTema = document.getElementById('presentation-area').className
-    .split(' ').filter(function(c){ return c.indexOf('theme-') === 0; }).join(' ');
+  var clone = slidesEl.cloneNode(true);
+  var seletorFotos = '.slide-photo-main, .capa-hero img, .info-photo-main';
+  var imgs = Array.prototype.slice.call(clone.querySelectorAll(seletorFotos));
+  var fontes = [];
+  var vistas = Object.create(null);
 
-  var iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;';
-  document.body.appendChild(iframe);
-  var doc = iframe.contentDocument || iframe.contentWindow.document;
-  doc.open();
-  doc.write(
-    '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
-    '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-    '<style>' + estiloCompleto + '</style>' +
-    '</head><body style="background:#0c0c0c;">' +
-    '<div class="app"><main class="main" style="padding:0;">' +
-    '<div id="presentation-area" class="' + classesTema + '" style="display:block">' +
-    '<div class="slides-wrapper" id="slides">' + slidesEl.innerHTML + '</div>' +
-    '</div></main></div>' +
-    '</body></html>'
-  );
-  doc.close();
-
-  // Espera as imagens do iframe carregarem antes de chamar a impressão
-  var imgs = doc.querySelectorAll('img');
-  var pendentes = imgs.length;
-  function tentarImprimir() {
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-    setTimeout(function() { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 2000);
-  }
-  if (pendentes === 0) {
-    setTimeout(tentarImprimir, 300);
-  } else {
-    var carregadas = 0;
-    var finalizado = false;
-    imgs.forEach(function(img) {
-      img.addEventListener('load', verificar);
-      img.addEventListener('error', verificar);
-    });
-    function verificar() {
-      carregadas++;
-      if (carregadas >= pendentes && !finalizado) { finalizado = true; setTimeout(tentarImprimir, 200); }
+  imgs.forEach(function(img) {
+    var src = img.getAttribute('src') || '';
+    if (src && !vistas[src] && !/^data:/i.test(src)) {
+      vistas[src] = true;
+      fontes.push(src);
     }
-    // trava de segurança: imprime mesmo se alguma imagem nunca disparar load/error
-    setTimeout(function() { if (!finalizado) { finalizado = true; tentarImprimir(); } }, 6000);
+  });
+
+  for (var i = 0; i < fontes.length; i++) {
+    setStatus('loading', 'Preparando PDF leve: foto ' + (i + 1) + ' de ' + fontes.length + '...');
+    await otimizarImagemParaPDF(fontes[i]);
+    /* Libera o Safari/iOS entre imagens para reduzir picos de memória. */
+    if (i % 3 === 2) await esperar(0);
   }
+
+  imgs.forEach(function(img) {
+    var original = img.getAttribute('src') || '';
+    if (PDF_IMG_CACHE[original]) img.setAttribute('src', PDF_IMG_CACHE[original]);
+    img.removeAttribute('crossorigin');
+    img.removeAttribute('referrerpolicy');
+    img.setAttribute('loading', 'eager');
+    img.setAttribute('decoding', 'sync');
+  });
+
+  return clone.innerHTML;
+}
+
+function esperarRecursosDaImpressao(doc, limiteMs) {
+  var imagens = Array.prototype.slice.call(doc.images || []);
+  var promessas = imagens.map(function(img) {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(function(resolve) {
+      var acabou = false;
+      function fim() {
+        if (acabou) return;
+        acabou = true;
+        img.removeEventListener('load', fim);
+        img.removeEventListener('error', fim);
+        resolve();
+      }
+      img.addEventListener('load', fim, { once: true });
+      img.addEventListener('error', fim, { once: true });
+    });
+  });
+
+  if (doc.fonts && doc.fonts.ready) promessas.push(doc.fonts.ready.catch(function(){}));
+  return Promise.race([
+    Promise.all(promessas),
+    esperar(limiteMs || 12000)
+  ]);
+}
+
+function cssExtraPDF() {
+  return `
+    html, body { margin: 0 !important; padding: 0 !important; }
+    body { background: #111; }
+    .pdf-toolbar {
+      position: sticky; top: 0; z-index: 9999; display: flex; align-items: center;
+      justify-content: center; gap: 12px; padding: 12px; background: #111;
+      border-bottom: 1px solid rgba(255,255,255,.14); font-family: Inter, Arial, sans-serif;
+    }
+    .pdf-toolbar button {
+      border: 1px solid rgba(255,255,255,.3); background: #f4f1ec; color: #111;
+      padding: 10px 18px; border-radius: 3px; font-size: 12px; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+    .pdf-toolbar span { color: rgba(255,255,255,.7); font-size: 12px; }
+    @media screen {
+      #presentation-area { display: block !important; }
+      .slides-wrapper { gap: 6px; }
+    }
+    @media print {
+      @page { size: A4 landscape; margin: 0 !important; }
+      html, body {
+        width: auto !important; min-width: 0 !important; height: auto !important;
+        overflow: visible !important; background: transparent !important;
+      }
+      .pdf-toolbar { display: none !important; }
+      .app, .main, #presentation-area, .slides-wrapper {
+        width: 297mm !important; max-width: 297mm !important; height: auto !important;
+        margin: 0 !important; padding: 0 !important; display: block !important;
+      }
+      .slide {
+        width: 297mm !important; height: 210mm !important; min-height: 210mm !important;
+        max-height: 210mm !important; margin: 0 !important; padding: 0 !important;
+        overflow: hidden !important; box-sizing: border-box !important;
+        page-break-inside: avoid !important; break-inside: avoid-page !important;
+        page-break-after: always !important; break-after: page !important;
+        float: none !important; flex: none !important;
+      }
+      .slide:last-child { page-break-after: auto !important; break-after: auto !important; }
+      .slide-foto .slide-photo-main {
+        object-fit: contain !important; object-position: center center !important;
+      }
+      .theme-paulo .slide-foto .slide-photo-main {
+        inset: 4% !important; width: 92% !important; height: 92% !important;
+        object-fit: contain !important;
+      }
+      .theme-bruna .slide-foto .slide-photo-main {
+        inset: 3.2% 3.2% auto 3.2% !important; width: 93.6% !important; height: 89.2% !important;
+        object-fit: contain !important;
+      }
+      .capa-hero img, .info-right .info-photo-main {
+        object-fit: cover !important; object-position: center center !important;
+      }
+    }
+  `;
+}
+
+async function imprimirPDFOtimizado(modoIOS) {
+  var slidesEl = document.getElementById('slides');
+  if (!slidesEl || !slidesEl.innerHTML.trim()) {
+    setStatus('error', 'Gere a apresentação antes de imprimir.');
+    return;
+  }
+
+  /* Abre imediatamente durante o clique: isso evita bloqueio de pop-up no iPhone/iPad. */
+  var janela = window.open('', '_blank');
+  if (!janela) {
+    setStatus('error', 'O navegador bloqueou a janela de impressão. Permita pop-ups para este site e tente novamente.');
+    return;
+  }
+
+  janela.document.open();
+  janela.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Preparando PDF</title></head><body style="margin:0;background:#111;color:#eee;font-family:Arial,sans-serif"><div style="padding:24px">Preparando PDF...</div></body></html>');
+  janela.document.close();
+
+  try {
+    var htmlSlides = await prepararSlidesLevesParaPDF();
+    var estiloCompleto = document.querySelector('style') ? document.querySelector('style').innerHTML : '';
+    var classesTema = document.getElementById('presentation-area').className
+      .split(' ').filter(function(c){ return c.indexOf('theme-') === 0; }).join(' ');
+
+    janela.document.open();
+    janela.document.write(
+      '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">' +
+      '<title>Apresentação do imóvel</title>' +
+      '<style>' + estiloCompleto + cssExtraPDF() + '</style>' +
+      '</head><body>' +
+      '<div class="pdf-toolbar no-print"><button type="button" onclick="window.print()">Imprimir / Salvar PDF</button>' +
+      '<span>Se a janela de impressão não abrir automaticamente, toque no botão.</span></div>' +
+      '<div class="app"><main class="main" style="padding:0">' +
+      '<div id="presentation-area" class="' + classesTema + '" style="display:block">' +
+      '<div class="slides-wrapper" id="slides">' + htmlSlides + '</div>' +
+      '</div></main></div>' +
+      '</body></html>'
+    );
+    janela.document.close();
+
+    await esperarRecursosDaImpressao(janela.document, modoIOS ? 15000 : 10000);
+    await esperar(modoIOS ? 500 : 180);
+    janela.focus();
+    try { janela.print(); } catch (e) { /* o botão permanece disponível */ }
+    setStatus('ok', 'PDF preparado com fotos otimizadas, sem recorte nas páginas de foto e com uma página por slide.');
+  } catch (err) {
+    setStatus('error', 'Não foi possível preparar o PDF: ' + err.message);
+    try { janela.close(); } catch (e) {}
+  }
+}
+
+function imprimirIsolado() {
+  return imprimirPDFOtimizado(true);
 }
 
 function setStatus(tipo, msg) {
