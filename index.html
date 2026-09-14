@@ -1153,9 +1153,9 @@ body { font-family: 'Inter', sans-serif; background: #141414; color: #f4f1ec; mi
           <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Imprimir / Salvar PDF
         </button>
-        <button class="btn-print" onclick="imprimirIsolado()" title="Use esta opção se a impressão pelo iPhone/Safari sair desconfigurada">
+        <button class="btn-print" onclick="gerarPDFDiretoIOS()" title="Gera o PDF diretamente, sem cabeçalho ou rodapé do Safari/AirPrint">
           <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/></svg>
-          Imprimir (iPhone/Safari)
+          PDF iPhone/iPad · sem cabeçalho
         </button>
         </div>
       </div>
@@ -1708,6 +1708,58 @@ function cssExtraPDF() {
       .capa-hero img, .info-right .info-photo-main {
         object-fit: cover !important; object-position: center center !important;
       }
+
+      /* iPhone/iPad (WebKit/AirPrint): não usar 297x210mm fixos.
+         O Safari reserva uma área própria para cabeçalho/rodapé e, em alguns
+         aparelhos, 210mm ultrapassa a altura efetivamente imprimível. Quando
+         isso acontece, o WebKit fragmenta o slide e cria uma página quase
+         vazia com apenas uma faixa da foto. A largura útil da página passa a
+         ser a referência; a altura é calculada pela proporção A4 paisagem. */
+      body.ios-print .app,
+      body.ios-print .main,
+      body.ios-print #presentation-area,
+      body.ios-print .slides-wrapper {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+      }
+      body.ios-print .slide,
+      body.ios-print .slide.slide-capa,
+      body.ios-print .slide.slide-info,
+      body.ios-print .slide.slide-fim,
+      body.ios-print .slide.slide-foto {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        aspect-ratio: 297 / 210 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+        page-break-after: auto !important;
+        break-after: auto !important;
+        page-break-before: auto !important;
+        break-before: auto !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+        -webkit-column-break-inside: avoid !important;
+      }
+      body.ios-print .slide + .slide {
+        page-break-before: always !important;
+        break-before: page !important;
+      }
+      body.ios-print .slide-capa,
+      body.ios-print .slide-info,
+      body.ios-print .slide-fim {
+        display: flex !important;
+      }
     }
   `;
 }
@@ -1742,7 +1794,7 @@ async function imprimirPDFOtimizado(modoIOS) {
       '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">' +
       '<title>Apresentação do imóvel</title>' +
       '<style>' + estiloCompleto + cssExtraPDF() + '</style>' +
-      '</head><body>' +
+      '</head><body class="' + (modoIOS ? 'ios-print' : '') + '">' +
       '<div class="pdf-toolbar no-print"><button type="button" onclick="window.print()">Imprimir / Salvar PDF</button>' +
       '<span>Se a janela de impressão não abrir automaticamente, toque no botão.</span></div>' +
       '<div class="app"><main class="main" style="padding:0">' +
@@ -1757,15 +1809,194 @@ async function imprimirPDFOtimizado(modoIOS) {
     await esperar(modoIOS ? 500 : 180);
     janela.focus();
     try { janela.print(); } catch (e) { /* o botão permanece disponível */ }
-    setStatus('ok', 'PDF preparado com fotos otimizadas, sem recorte nas páginas de foto e com uma página por slide.');
+    setStatus('ok', 'PDF preparado com fotos otimizadas. No iPhone/iPad, cada slide é ajustado à área útil real da folha para impedir páginas partidas.');
   } catch (err) {
     setStatus('error', 'Não foi possível preparar o PDF: ' + err.message);
     try { janela.close(); } catch (e) {}
   }
 }
 
+function carregarScriptExterno(src) {
+  return new Promise(function(resolve, reject) {
+    var existente = document.querySelector('script[data-pdf-lib="' + src + '"]');
+    if (existente) {
+      if (existente.dataset.loaded === '1') return resolve();
+      existente.addEventListener('load', resolve, { once: true });
+      existente.addEventListener('error', reject, { once: true });
+      return;
+    }
+    var script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.dataset.pdfLib = src;
+    script.onload = function() { script.dataset.loaded = '1'; resolve(); };
+    script.onerror = function() { reject(new Error('Falha ao carregar biblioteca necessária para gerar o PDF.')); };
+    document.head.appendChild(script);
+  });
+}
+
+async function garantirBibliotecasPDFDireto() {
+  if (!window.html2canvas) {
+    await carregarScriptExterno('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  }
+  if (!(window.jspdf && window.jspdf.jsPDF)) {
+    await carregarScriptExterno('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  }
+  if (!window.html2canvas || !(window.jspdf && window.jspdf.jsPDF)) {
+    throw new Error('As bibliotecas de geração direta de PDF não ficaram disponíveis.');
+  }
+}
+
+function obterCSSPrintComoTela() {
+  var partes = [];
+  Array.prototype.forEach.call(document.styleSheets || [], function(sheet) {
+    var regras;
+    try { regras = sheet.cssRules; } catch (e) { return; }
+    if (!regras) return;
+    Array.prototype.forEach.call(regras, function(rule) {
+      var cond = (rule.conditionText || '').toLowerCase();
+      if (cond && cond.indexOf('print') !== -1 && rule.cssRules) {
+        Array.prototype.forEach.call(rule.cssRules, function(interna) {
+          partes.push(interna.cssText);
+        });
+      }
+    });
+  });
+  return partes.join('\n');
+}
+
+function esperarImagensDocumento(doc, limiteMs) {
+  var imgs = Array.prototype.slice.call(doc.images || []);
+  var lista = imgs.map(function(img) {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(function(resolve) {
+      var fim = function() { resolve(); };
+      img.addEventListener('load', fim, { once: true });
+      img.addEventListener('error', fim, { once: true });
+    });
+  });
+  if (doc.fonts && doc.fonts.ready) lista.push(doc.fonts.ready.catch(function(){}));
+  return Promise.race([Promise.all(lista), esperar(limiteMs || 15000)]);
+}
+
+async function gerarPDFDiretoIOS() {
+  var slidesEl = document.getElementById('slides');
+  if (!slidesEl || !slidesEl.innerHTML.trim()) {
+    setStatus('error', 'Gere a apresentação antes de criar o PDF.');
+    return;
+  }
+
+  /* A aba é aberta imediatamente durante o clique para o Safari não bloquear
+     a exibição final do PDF após o processamento assíncrono. */
+  var abaPDF = null;
+  try {
+    abaPDF = window.open('', '_blank');
+    if (abaPDF) {
+      abaPDF.document.open();
+      abaPDF.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gerando PDF</title></head><body style="margin:0;background:#111;color:#eee;font-family:Arial,sans-serif"><div style="padding:24px">Gerando PDF sem cabeçalho e rodapé...</div></body></html>');
+      abaPDF.document.close();
+    }
+
+    setStatus('loading', 'Preparando PDF direto, sem cabeçalho e rodapé do Safari...');
+    await garantirBibliotecasPDFDireto();
+    var htmlSlides = await prepararSlidesLevesParaPDF();
+
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('aria-hidden', 'true');
+    iframe.style.position = 'fixed';
+    iframe.style.left = '-20000px';
+    iframe.style.top = '0';
+    iframe.style.width = '1123px';
+    iframe.style.height = '794px';
+    iframe.style.border = '0';
+    iframe.style.opacity = '0';
+    iframe.style.pointerEvents = 'none';
+    document.body.appendChild(iframe);
+
+    var doc = iframe.contentDocument;
+    var estiloBase = document.querySelector('style') ? document.querySelector('style').innerHTML : '';
+    var cssPrintTela = obterCSSPrintComoTela();
+    var classesTema = document.getElementById('presentation-area').className
+      .split(' ').filter(function(c){ return c.indexOf('theme-') === 0; }).join(' ');
+
+    doc.open();
+    doc.write(
+      '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' +
+      '<meta name="viewport" content="width=1123, initial-scale=1">' +
+      '<title>Render PDF</title>' +
+      '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+      '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+      '<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&family=Anton&display=swap" rel="stylesheet">' +
+      '<style>' + estiloBase + '\n' + cssPrintTela + '\n' +
+      'html,body{margin:0!important;padding:0!important;width:297mm!important;min-width:297mm!important;background:#fff!important;overflow:visible!important;}' +
+      '.app,.main,#presentation-area,.slides-wrapper{width:297mm!important;max-width:297mm!important;margin:0!important;padding:0!important;display:block!important;}' +
+      '.slide{width:297mm!important;height:210mm!important;min-height:210mm!important;max-height:210mm!important;margin:0!important;overflow:hidden!important;box-shadow:none!important;}' +
+      '.slide-foto .slide-photo-main{object-fit:contain!important;object-position:center center!important;}' +
+      '</style></head><body><div class="app"><main class="main" style="padding:0">' +
+      '<div id="presentation-area" class="' + classesTema + '" style="display:block">' +
+      '<div class="slides-wrapper" id="slides">' + htmlSlides + '</div>' +
+      '</div></main></div></body></html>'
+    );
+    doc.close();
+
+    await esperarImagensDocumento(doc, 18000);
+    await esperar(120);
+
+    var slides = Array.prototype.slice.call(doc.querySelectorAll('.slide'));
+    if (!slides.length) throw new Error('Nenhuma página foi encontrada para gerar o PDF.');
+
+    var jsPDF = window.jspdf.jsPDF;
+    var pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
+
+    for (var i = 0; i < slides.length; i++) {
+      setStatus('loading', 'Gerando PDF sem cabeçalho: página ' + (i + 1) + ' de ' + slides.length + '...');
+      if (i > 0) pdf.addPage('a4', 'landscape');
+
+      var canvas = await window.html2canvas(slides[i], {
+        backgroundColor: null,
+        scale: 1.35,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        imageTimeout: 15000,
+        width: slides[i].offsetWidth,
+        height: slides[i].offsetHeight,
+        windowWidth: 1123,
+        windowHeight: 794,
+        scrollX: 0,
+        scrollY: 0
+      });
+
+      var jpg = canvas.toDataURL('image/jpeg', 0.78);
+      pdf.addImage(jpg, 'JPEG', 0, 0, 297, 210, undefined, 'FAST');
+      canvas.width = 1;
+      canvas.height = 1;
+      if (i % 2 === 1) await esperar(0);
+    }
+
+    try { document.body.removeChild(iframe); } catch (e) {}
+
+    var blob = pdf.output('blob');
+    var url = URL.createObjectURL(blob);
+    if (abaPDF && !abaPDF.closed) {
+      abaPDF.location.replace(url);
+    } else {
+      var nome = ((document.getElementById('prop-title') || {}).textContent || 'Apresentacao_Arbor')
+        .replace(/[^a-zA-Z0-9À-ÿ_-]+/g, '_').replace(/^_+|_+$/g, '') || 'Apresentacao_Arbor';
+      pdf.save(nome + '.pdf');
+    }
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 120000);
+    setStatus('ok', 'PDF gerado diretamente, sem URL, data/hora, cabeçalho ou rodapé do Safari.');
+  } catch (err) {
+    if (abaPDF && !abaPDF.closed) {
+      try { abaPDF.document.body.innerHTML = '<div style="padding:24px;font-family:Arial,sans-serif">Não foi possível gerar o PDF: ' + String(err.message || err) + '</div>'; } catch (e) {}
+    }
+    setStatus('error', 'Não foi possível gerar o PDF direto: ' + (err.message || err));
+  }
+}
+
 function imprimirIsolado() {
-  return imprimirPDFOtimizado(true);
+  return gerarPDFDiretoIOS();
 }
 
 function setStatus(tipo, msg) {
